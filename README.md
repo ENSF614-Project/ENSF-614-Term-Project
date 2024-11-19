@@ -26,11 +26,21 @@ A Movie Theater Ticket Reservation App
 1. To run the program: `npx expo start`
 1. Once the program is running, specify `w` to open the project in a web browser.
 
+
 ## To connect to the database
 1. Ensure that you've run the backend, as that should create the database `ENSF614PROJECT`
 1. Connect to the database throught the `MySQL Workbench`
 1. Check that it worked with `SHOW DATABASES;`
     1. `ENSF614PROJECT` should appear in the results.
+
+## Code to run when errors occur
+### Frontend
+1. When you are trying to install the package, but you're getting version error 
+    - `npm install --save-dev --legacy-peer-deps`
+
+### Backend
+1. When the springboot isn't recognized 
+    - `mvn -U idea:idea`
 
 ## I don't think that you'll need to run the commands below this line, they are just included for reference
 

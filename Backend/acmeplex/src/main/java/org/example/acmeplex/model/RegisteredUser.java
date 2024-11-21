@@ -10,7 +10,7 @@ import java.util.Date;
 public class RegisteredUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Integer userId;
 
     @Column(nullable = false, unique = true)
     private String username;

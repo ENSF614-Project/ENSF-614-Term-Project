@@ -40,7 +40,7 @@ public class RegisteredUserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RegisteredUser> getUserById(@PathVariable Long id) {
+    public ResponseEntity<RegisteredUser> getUserById(@PathVariable Integer id) {
         RegisteredUser user = userService.getUserById(id);
         if (user != null) {
             return ResponseEntity.ok(user);

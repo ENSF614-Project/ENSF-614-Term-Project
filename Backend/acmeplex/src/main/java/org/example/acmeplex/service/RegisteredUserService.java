@@ -19,7 +19,7 @@ public class RegisteredUserService {
         return userRepository.save(user);
     }
 
-    public RegisteredUser getUserById(Long id) {
+    public RegisteredUser getUserById(Integer id) {
         return userRepository.findById(id).orElse(null);
     }
 

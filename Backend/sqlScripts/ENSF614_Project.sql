@@ -41,13 +41,13 @@ CREATE TABLE IF NOT EXISTS TICKET (
 
 CREATE TABLE IF NOT EXISTS SEAT (
     seatId INT NOT NULL AUTO_INCREMENT,
-    theatreId INT NOT NULL,
+    showtimeId INT NOT NULL,
     seatRow INT NOT NULL,
     seatNum INT NOT NULL,
     isAvailable boolean default TRUE,
     PRIMARY KEY (seatId),
     UNIQUE (showtimeId, seatRow, seatNum),
-    FOREIGN KEY(theatreId) REFERENCES THEATRE(theatreId)
+    FOREIGN KEY(showtimeId) REFERENCES SHOWTIME(showtimeId)
 );
 
 CREATE TABLE IF NOT EXISTS THEATRE_TICKET (
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS THEATRE_TICKET (
     seatId INT NOT NULL,
     PRIMARY KEY(ticketId, seatId),
     FOREIGN KEY(ticketId) REFERENCES TICKET(ticketId),
-    FOREIGN KEY(seatId) REFERENCES THEATRE_SEAT(seatId)
+    FOREIGN KEY(seatId) REFERENCES SEAT(seatId)
 );
 
 CREATE TABLE IF NOT EXISTS COUPON (
@@ -143,7 +143,7 @@ INSERT INTO TICKET (showtimeId, price, purchaseDateTime) VALUES
 (9, 9.00, '2024-11-18 17:00:00'),
 (10, 16.50, '2024-11-19 18:00:00');
 
-INSERT INTO SEAT (theatreId, seatRow, seatNum) VALUES
+INSERT INTO SEAT (showtimeId, seatRow, seatNum) VALUES
 (1, 1, 1),
 (1, 1, 2),
 (1, 1, 3),

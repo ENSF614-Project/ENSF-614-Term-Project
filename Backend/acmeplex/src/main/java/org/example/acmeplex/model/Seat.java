@@ -5,15 +5,15 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "THEATRE_SEAT", uniqueConstraints = {@UniqueConstraint(columnNames = {"theatreId", "seatRow", "seatNum"})})
-public class TheatreSeat {
+@Table(name = "SEAT", uniqueConstraints = {@UniqueConstraint(columnNames = {"showtimeId", "seatRow", "seatNum"})})
+public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer seatId;
 
     @ManyToOne
-    @JoinColumn(name = "theatreId", nullable = false)
-    private Theatre theatre;
+    @JoinColumn(name = "showtimeId", nullable = false)
+    private Showtime showtime;
 
     @Column(nullable = false)
     private Integer seatRow;
@@ -22,5 +22,5 @@ public class TheatreSeat {
     private Integer seatNum;
 
     @Column(nullable = false)
-    private Boolean isAvailable;
+    private Boolean isAvailable = true;
 }

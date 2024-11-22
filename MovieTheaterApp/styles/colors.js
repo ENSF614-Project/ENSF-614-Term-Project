@@ -8,5 +8,6 @@ export const COLORS = {
     text: {
         primary: '#1E1E1E',
         secondary: '#666666',
-    }
+    },
+    RED: "#E31837",
 };

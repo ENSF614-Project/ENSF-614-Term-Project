@@ -4,18 +4,23 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { styles } from './styles';
 import { SPACING } from '../../styles';
 
-const MovieCard = ({ movie }) => {
-    // Calculate image dimensions based on SPACING constants
-    const imageWidth = SPACING.cardPoster.width;
-    const imageHeight = SPACING.cardPoster.height;
+const MovieCard = ({ movie, onPress }) => {
+    // Used for debugging purposes
+    const handlePress = () => {
+        console.log('Card pressed');
+        onPress && onPress();
+    };
 
     return (
         <TouchableOpacity
             style={styles.container}
             activeOpacity={0.7}
+            onPress={handlePress}
         >
             <Image
-                source={{ uri: `https://picsum.photos/${imageWidth}/${imageHeight}` }}
+                source={{
+                    uri: `https://picsum.photos/${SPACING.cardPoster.width}/${SPACING.cardPoster.height}`
+                }}
                 style={styles.poster}
                 resizeMode="cover"
             />

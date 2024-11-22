@@ -1,51 +1,35 @@
 // screens/HomeScreen/index.js
 import React from 'react';
 import { View, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Header from '../../components/Header';
 import MovieCard from '../../components/MovieCard';
 import { styles } from './styles';
 import { SPACING } from '../../styles';
+import { movies } from '../../MockData';
 
 const HomeScreen = () => {
-    const movies = [
-        {
-            movieId: 1,
-            title: 'Avengers: Endgame',
-            genre: 'Action/Sci-Fi',
-            duration: 180,
-            rating: 8.5,
-        },
-        {
-            movieId: 2,
-            title: 'Inception',
-            genre: 'Sci-Fi/Thriller',
-            duration: 148,
-            rating: 8.8,
-        },
-        {
-            movieId: 3,
-            title: 'The Dark Knight',
-            genre: 'Action/Drama',
-            duration: 152,
-            rating: 9.0,
-        },
-        {
-            movieId: 4,
-            title: 'Pulp Fiction',
-            genre: 'Crime/Drama',
-            duration: 154,
-            rating: 8.9,
-        }
-    ];
+    const navigation = useNavigation();
 
-    const renderMovieCard = ({ item }) => (
-        <MovieCard movie={item} />
-    );
+    // Used for debugging purposes
+    const handleMoviePress = (movie) => {
+        console.log('Movie pressed:', movie);
+        navigation.navigate('MovieDetails', {
+            movie: movie
+        });
+    };
 
     const getNumColumns = () => {
-        const cardWidth = SPACING.cardPoster.width + (SPACING.xs * 2); // card width + margins
+        const cardWidth = SPACING.cardPoster.width + (SPACING.xs * 2);
         return Math.floor(((window?.innerWidth || 400) - (SPACING.lg * 2)) / cardWidth);
     };
+
+    const renderMovieCard = ({ item }) => (
+        <MovieCard
+            movie={item}
+            onPress={() => handleMoviePress(item)}
+        />
+    );
 
     return (
         <View style={styles.container}>

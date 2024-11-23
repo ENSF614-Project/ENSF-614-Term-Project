@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS REGISTEREDUSER (
     credits DOUBLE DEFAULT 0.0,
     username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    FOREIGN KEY (email) REFERENCES User(email)
+    FOREIGN KEY (email) REFERENCES User(email),
+    hasPaymentInfo BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS THEATRE (
@@ -102,4 +103,16 @@ CREATE TABLE IF NOT EXISTS MOVIE_THEATRE (
     FOREIGN KEY (movieID) REFERENCES Movie(movieID) ON DELETE CASCADE,
     FOREIGN KEY (theatreID) REFERENCES Theatre(theatreID) ON DELETE CASCADE,
     UNIQUE(movieID, theatreID) -- Prevents duplicate movie-theatre relationships
+);
+
+CREATE TABLE IF NOT EXISTS PaymentInfo (
+    paymentInfoID INT PRIMARY KEY AUTO_INCREMENT,
+    ruID INT NOT NULL,
+    cardType VARCHAR(50) NOT NULL,
+    cardNumber VARCHAR(16) NOT NULL,
+    expiryMonth INT NOT NULL, -- Store the month (1 to 12)
+    expiryYear INT NOT NULL,  -- Store the year (e.g., 2025)
+    cardHolderName VARCHAR(255) NOT NULL,
+    billingAddress TEXT NOT NULL,
+    FOREIGN KEY (ruID) REFERENCES RegisteredUser(ruID) ON DELETE CASCADE
 );

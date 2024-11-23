@@ -1,29 +1,37 @@
 // components/Header/index.js
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { User, Search } from 'lucide-react-native';
+import { User, Menu } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 import { COLORS } from '../../styles';
 
 const Header = () => {
     const navigation = useNavigation();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLoginPress = () => {
-        console.log('Navigate to Login'); // Debug log
         navigation.navigate('Login');
     };
 
+    const handleMenuItemPress = (route) => {
+        setIsMenuOpen(false);
+        navigation.navigate(route);
+    };
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.logo}>AcmePlex</Text>
-            <View style={styles.rightContainer}>
-                {/*Search Icon*/}
-                <TouchableOpacity style={styles.iconButton}>
-                    {/*TODO: Add functionality*/}
-                    <Search size={24} color={COLORS.text.primary} />
-                </TouchableOpacity>
-                {/*User Icon*/}
+        <>
+            <View style={styles.container}>
+                <View style={styles.leftContainer}>
+                    <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={() => setIsMenuOpen(!isMenuOpen)}
+                    >
+                        <Menu size={24} color={COLORS.text.primary} />
+                    </TouchableOpacity>
+                    <Text style={styles.logo}>AcmePlex</Text>
+                </View>
+
                 <TouchableOpacity
                     style={styles.iconButton}
                     onPress={handleLoginPress}
@@ -31,7 +39,24 @@ const Header = () => {
                     <User size={24} color={COLORS.text.primary} />
                 </TouchableOpacity>
             </View>
-        </View>
+
+            {isMenuOpen && (
+                <View style={styles.menuContainer}>
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => handleMenuItemPress('CancelTicket')}
+                    >
+                        <Text style={styles.menuItemText}>Cancel Ticket</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => handleMenuItemPress('News')}
+                    >
+                        <Text style={styles.menuItemText}>View News</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+        </>
     );
 };
 

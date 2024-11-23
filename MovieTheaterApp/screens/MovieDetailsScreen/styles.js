@@ -9,38 +9,70 @@ export const styles = StyleSheet.create({
     },
     headerImage: {
         width: '100%',
-        height: 300,
+        height: 500,
+        backgroundColor: COLORS.border,
     },
     contentContainer: {
         padding: SPACING.lg,
+        marginTop: -SPACING.xl,
+        backgroundColor: COLORS.background,
+        borderTopLeftRadius: SPACING.lg,
+        borderTopRightRadius: SPACING.lg,
     },
     title: {
         ...TYPOGRAPHY.title,
         fontSize: 24,
-        marginBottom: SPACING.md,
+        marginBottom: SPACING.lg,
+        color: COLORS.text.primary,
     },
-    infoRow: {
+    infoContainer: {
+        flexDirection: 'column',
+        gap: SPACING.md,
+        marginBottom: SPACING.lg,
+        backgroundColor: COLORS.background,
+        padding: SPACING.md,
+        borderRadius: SPACING.sm,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+    },
+    infoItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: SPACING.lg,
-        gap: SPACING.md,
+        gap: SPACING.sm,
     },
-    genre: {
+    infoText: {
         ...TYPOGRAPHY.body,
-        color: COLORS.text.secondary,
+        color: COLORS.text.primary,
+        flex: 1,
     },
-    duration: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.text.secondary,
+    genreContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: SPACING.xs,
+        marginBottom: SPACING.xl,
     },
-    rating: {
+    genreTag: {
+        backgroundColor: COLORS.RED,
+        paddingVertical: SPACING.xs,
+        paddingHorizontal: SPACING.sm,
+        borderRadius: SPACING.lg,
+    },
+    genreText: {
+        color: COLORS.background,
         ...TYPOGRAPHY.body,
-        color: COLORS.text.secondary,
+        fontSize: 12,
+    },
+    sectionTitle: {
+        ...TYPOGRAPHY.title,
+        fontSize: 18,
+        marginBottom: SPACING.md,
+        color: COLORS.text.primary,
     },
     description: {
         ...TYPOGRAPHY.body,
         marginBottom: SPACING.xl,
         lineHeight: 24,
+        color: COLORS.text.secondary,
     },
     showtimeButton: {
         backgroundColor: COLORS.RED,
@@ -51,5 +83,6 @@ export const styles = StyleSheet.create({
     showtimeButtonText: {
         color: COLORS.background,
         ...TYPOGRAPHY.title,
+        fontSize: 16,
     },
 });

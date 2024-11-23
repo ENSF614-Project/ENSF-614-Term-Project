@@ -61,6 +61,6 @@ export const styles = StyleSheet.create({
     },
     price: {
         ...TYPOGRAPHY.title,
-        color: '#E31837',
+        color: COLORS.RED,
     },
 });

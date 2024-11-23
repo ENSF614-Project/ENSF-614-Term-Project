@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
         fontSize: 16,
     },
     loginButton: {
-        backgroundColor: '#E31837',
+        backgroundColor: COLORS.RED,
         padding: SPACING.md,
         borderRadius: SPACING.sm,
         marginBottom: SPACING.md,

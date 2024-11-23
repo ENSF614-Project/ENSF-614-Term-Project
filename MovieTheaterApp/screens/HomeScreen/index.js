@@ -1,5 +1,6 @@
+// screens\HomeScreen\index.js
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, FlatList, TextInput, TouchableOpacity, Text, useWindowDimensions } from 'react-native';
+import { View, FlatList, TextInput, TouchableOpacity, Text, useWindowDimensions, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Search, X } from 'lucide-react-native';
 import MovieCard from '../../components/MovieCard';
@@ -10,26 +11,47 @@ import { movies } from '../../MockData';
 const HomeScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedGenres, setSelectedGenres] = useState([]);
     const { width } = useWindowDimensions();
 
-    // Filter movies based on search query
+    // Extract unique genres from movies
+    const allGenres = useMemo(() => {
+        const genreSet = new Set();
+        movies.forEach(movie => {
+            movie.genre.split('/').forEach(genre => {
+                genreSet.add(genre.trim());
+            });
+        });
+        return Array.from(genreSet).sort();
+    }, []);
+
+    // Filter movies based on search query and selected genres
     const filteredMovies = useMemo(() => {
-        if (!searchQuery.trim()) {
-            return movies;
+        let filtered = movies;
+
+        // Apply search filter
+        if (searchQuery.trim()) {
+            const searchTerms = searchQuery.toLowerCase().trim().split(' ');
+            filtered = filtered.filter(movie => {
+                const title = movie.title.toLowerCase();
+                const genre = movie.genre.toLowerCase();
+                // Check if all search terms are found in either title or genre
+                return searchTerms.every(term =>
+                    title.includes(term) || genre.includes(term)
+                );
+            });
         }
 
-        const searchTerms = searchQuery.toLowerCase().trim().split(' ');
+        // Apply genre filter
+        if (selectedGenres.length > 0) {
+            filtered = filtered.filter(movie => {
+                const movieGenres = movie.genre.split('/').map(g => g.trim());
+                return selectedGenres.some(genre => movieGenres.includes(genre));
+            });
+        }
 
-        return movies.filter(movie => {
-            const title = movie.title.toLowerCase();
-            const genre = movie.genre.toLowerCase();
-
-            // Check if all search terms are found in either title or genre
-            return searchTerms.every(term =>
-                title.includes(term) || genre.includes(term)
-            );
-        });
-    }, [searchQuery]);
+        return filtered;
+    }, [searchQuery, selectedGenres]);
 
     const handleMoviePress = (movie) => {
         navigation.navigate('MovieDetails', {
@@ -43,6 +65,20 @@ const HomeScreen = () => {
 
     const handleSearch = (text) => {
         setSearchQuery(text);
+    };
+
+    const handleGenrePress = (genre) => {
+        setSelectedGenres(prevGenres => {
+            if (prevGenres.includes(genre)) {
+                return prevGenres.filter(g => g !== genre);
+            }
+            return [...prevGenres, genre];
+        });
+    };
+
+    const handleClearFilters = () => {
+        setSelectedGenres([]);
+        setSearchQuery('');
     };
 
     const getNumColumns = useCallback(() => {
@@ -59,6 +95,26 @@ const HomeScreen = () => {
                 onPress={() => handleMoviePress(item)}
             />
         </View>
+    );
+
+    const renderGenreChip = (genre) => (
+        <TouchableOpacity
+            key={genre}
+            style={[
+                styles.genreChip,
+                selectedGenres.includes(genre) && styles.genreChipSelected
+            ]}
+            onPress={() => handleGenrePress(genre)}
+        >
+            <Text
+                style={[
+                    styles.genreChipText,
+                    selectedGenres.includes(genre) && styles.genreChipTextSelected
+                ]}
+            >
+                {genre}
+            </Text>
+        </TouchableOpacity>
     );
 
     const numColumns = getNumColumns();
@@ -92,18 +148,24 @@ const HomeScreen = () => {
 
     const renderEmptyResult = () => (
         <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No movies found matching "{searchQuery}"</Text>
+            <Text style={styles.emptyText}>
+                No movies found {searchQuery ? `matching "${searchQuery}"` : ''}
+                {selectedGenres.length > 0 ?
+                    `\nwith selected genres: ${selectedGenres.join(', ')}` :
+                    ''
+                }
+            </Text>
             <TouchableOpacity
                 style={styles.clearSearchButton}
-                onPress={handleClearSearch}
+                onPress={handleClearFilters}
             >
-                <Text style={styles.clearSearchButtonText}>Clear Search</Text>
+                <Text style={styles.clearSearchButtonText}>Clear All Filters And Search</Text>
             </TouchableOpacity>
         </View>
     );
 
     const renderSearchCount = () => {
-        if (!searchQuery.trim()) return null;
+        if (!searchQuery.trim() && selectedGenres.length === 0) return null;
 
         return (
             <View style={styles.searchResultsContainer}>
@@ -113,6 +175,26 @@ const HomeScreen = () => {
             </View>
         );
     };
+
+    const renderGenreFilters = () => (
+        <View style={styles.genreFilterContainer}>
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.genreScrollContainer}
+            >
+                {allGenres.map(renderGenreChip)}
+            </ScrollView>
+            {(selectedGenres.length > 0 || searchQuery) && (
+                <TouchableOpacity
+                    style={styles.clearFiltersButton}
+                    onPress={handleClearFilters}
+                >
+                    <X size={16} color={COLORS.text.secondary} />
+                </TouchableOpacity>
+            )}
+        </View>
+    );
 
     return (
         <View style={styles.container}>
@@ -140,6 +222,7 @@ const HomeScreen = () => {
                 </TouchableOpacity>
             </View>
 
+            {renderGenreFilters()}
             {renderSearchCount()}
 
             <FlatList

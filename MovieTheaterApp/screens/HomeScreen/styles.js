@@ -38,6 +38,41 @@ export const styles = StyleSheet.create({
     searchButton: {
         padding: SPACING.xs,
     },
+    genreFilterContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.border,
+        backgroundColor: COLORS.background,
+    },
+    genreScrollContainer: {
+        paddingHorizontal: SPACING.lg,
+        paddingVertical: SPACING.md,
+    },
+    genreChip: {
+        paddingHorizontal: SPACING.md,
+        paddingVertical: SPACING.xs,
+        borderRadius: SPACING.lg,
+        backgroundColor: COLORS.background,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        marginRight: SPACING.sm,
+    },
+    genreChipSelected: {
+        backgroundColor: COLORS.RED,
+        borderColor: COLORS.RED,
+    },
+    genreChipText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+    },
+    genreChipTextSelected: {
+        color: COLORS.background,
+    },
+    clearFiltersButton: {
+        padding: SPACING.md,
+        marginRight: SPACING.md,
+    },
     cardWrapper: {
         flex: 1,
         alignItems: 'center',

@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { View, FlatList, TextInput, TouchableOpacity, useWindowDimensions } from 'react-native';
+import React, { useState, useCallback, useMemo } from 'react';
+import { View, FlatList, TextInput, TouchableOpacity, Text, useWindowDimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Search } from 'lucide-react-native';
+import { Search, X } from 'lucide-react-native';
 import MovieCard from '../../components/MovieCard';
 import { styles } from './styles';
 import { SPACING, COLORS } from '../../styles';
@@ -12,11 +12,37 @@ const HomeScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const { width } = useWindowDimensions();
 
+    // Filter movies based on search query
+    const filteredMovies = useMemo(() => {
+        if (!searchQuery.trim()) {
+            return movies;
+        }
+
+        const searchTerms = searchQuery.toLowerCase().trim().split(' ');
+
+        return movies.filter(movie => {
+            const title = movie.title.toLowerCase();
+            const genre = movie.genre.toLowerCase();
+
+            // Check if all search terms are found in either title or genre
+            return searchTerms.every(term =>
+                title.includes(term) || genre.includes(term)
+            );
+        });
+    }, [searchQuery]);
+
     const handleMoviePress = (movie) => {
-        console.log('Movie pressed:', movie);
         navigation.navigate('MovieDetails', {
             movie: movie
         });
+    };
+
+    const handleClearSearch = () => {
+        setSearchQuery('');
+    };
+
+    const handleSearch = (text) => {
+        setSearchQuery(text);
     };
 
     const getNumColumns = useCallback(() => {
@@ -52,6 +78,7 @@ const HomeScreen = () => {
     const getContentContainerStyle = () => ({
         padding: SPACING.lg,
         alignItems: numColumns === 1 ? 'center' : undefined,
+        flexGrow: 1, // Ensures the container takes up all available space
     });
 
     // This is only needed when there are multiple columns
@@ -63,28 +90,67 @@ const HomeScreen = () => {
         };
     };
 
+    const renderEmptyResult = () => (
+        <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No movies found matching "{searchQuery}"</Text>
+            <TouchableOpacity
+                style={styles.clearSearchButton}
+                onPress={handleClearSearch}
+            >
+                <Text style={styles.clearSearchButtonText}>Clear Search</Text>
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderSearchCount = () => {
+        if (!searchQuery.trim()) return null;
+
+        return (
+            <View style={styles.searchResultsContainer}>
+                <Text style={styles.searchResultsText}>
+                    Found {filteredMovies.length} {filteredMovies.length === 1 ? 'movie' : 'movies'}
+                </Text>
+            </View>
+        );
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.searchContainer}>
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search movies..."
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    placeholderTextColor={COLORS.placeholder}
-                />
+                <View style={styles.searchInputContainer}>
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search movies by title or genre..."
+                        value={searchQuery}
+                        onChangeText={handleSearch}
+                        placeholderTextColor={COLORS.placeholder}
+                        returnKeyType="search"
+                    />
+                    {searchQuery.length > 0 && (
+                        <TouchableOpacity
+                            style={styles.clearButton}
+                            onPress={handleClearSearch}
+                        >
+                            <X size={20} color={COLORS.text.secondary} />
+                        </TouchableOpacity>
+                    )}
+                </View>
                 <TouchableOpacity style={styles.searchButton}>
                     <Search size={24} color={COLORS.text.primary} />
                 </TouchableOpacity>
             </View>
+
+            {renderSearchCount()}
+
             <FlatList
-                data={movies}
+                data={filteredMovies}
                 renderItem={renderMovieCard}
                 keyExtractor={(item) => item.movieId.toString()}
                 numColumns={numColumns}
                 contentContainerStyle={getContentContainerStyle()}
                 columnWrapperStyle={getColumnWrapperStyle()}
                 key={numColumns}
+                ListEmptyComponent={renderEmptyResult}
             />
         </View>
     );

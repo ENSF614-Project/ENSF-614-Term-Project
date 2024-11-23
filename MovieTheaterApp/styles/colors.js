@@ -10,4 +10,5 @@ export const COLORS = {
         secondary: '#666666',
     },
     RED: "#E31837",
+    placeholder: "#666",
 };

@@ -1,29 +1,67 @@
 // App.js
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { User } from 'lucide-react-native';
 import HomeScreen from './screens/HomeScreen';
 import MovieDetailsScreen from './screens/MovieDetailsScreen';
 import ShowtimeScreen from './screens/ShowtimeScreen';
 import LoginScreen from './screens/LoginScreen';
 import SeatSelectionScreen from './screens/SeatSelectionScreen';
-
+import Header from './components/Header';
+import { COLORS } from './styles';
 const Stack = createNativeStackNavigator();
+
+const HeaderRight = ({ navigation }) => {
+    const handleLoginPress = () => {
+        navigation.navigate('Login');
+    };
+
+    return (
+        <TouchableOpacity
+            onPress={handleLoginPress}
+            style={{ padding: 8, marginRight: 8 }}
+        >
+            <User size={24} color={COLORS.text.primary} />
+        </TouchableOpacity>
+    );
+};
+
+
 
 export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator
                 initialRouteName="Home"
-                screenOptions={{
-                    headerShown: false,
-                }}
+                screenOptions={({ navigation }) => ({
+                    headerRight: () => <HeaderRight navigation={navigation} />,
+                    headerTintColor: COLORS.text.primary,
+                    headerStyle: {
+                        backgroundColor: COLORS.background,
+                        height: 64,
+                    },
+                    headerTitleStyle: {
+                        fontSize: 20,
+                    },
+                    contentStyle: {
+                        backgroundColor: COLORS.background,
+                    }
+                })}
             >
-                <Stack.Screen name="Home" component={HomeScreen} />
-                <Stack.Screen name="Login"
+                <Stack.Screen
+                    name="Home"
+                    component={HomeScreen}
+                    options={{
+                        header: () => <Header />
+                    }}
+                />
+                <Stack.Screen
+                    name="Login"
                     component={LoginScreen}
                     options={{
-                        headerShown: true,
+                        headerRight: null,
                         headerTitle: 'Login',
                     }}
                 />
@@ -31,7 +69,6 @@ export default function App() {
                     name="MovieDetails"
                     component={MovieDetailsScreen}
                     options={{
-                        headerShown: true,
                         headerTitle: 'Movie Details',
                     }}
                 />
@@ -39,7 +76,6 @@ export default function App() {
                     name="Showtime"
                     component={ShowtimeScreen}
                     options={{
-                        headerShown: true,
                         headerTitle: 'Select Showtime',
                     }}
                 />
@@ -47,7 +83,6 @@ export default function App() {
                     name="SeatSelection"
                     component={SeatSelectionScreen}
                     options={{
-                        headerShown: true,
                         headerTitle: 'Select Seats',
                     }}
                 />

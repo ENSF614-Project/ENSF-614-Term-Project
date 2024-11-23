@@ -1,5 +1,5 @@
 // components/Header/styles.js
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 
 export const styles = StyleSheet.create({
@@ -8,8 +8,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: SPACING.lg,
-        paddingTop: StatusBar.currentHeight + SPACING.sm,
-        paddingBottom: SPACING.sm,
+        height: 64,
         backgroundColor: COLORS.background,
         borderBottomWidth: 1,
         borderBottomColor: COLORS.border,
@@ -17,11 +16,6 @@ export const styles = StyleSheet.create({
     logo: {
         ...TYPOGRAPHY.logo,
         color: COLORS.text.primary,
-    },
-    rightContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: SPACING.md,
     },
     iconButton: {
         padding: SPACING.xs,

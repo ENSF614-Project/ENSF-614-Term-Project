@@ -1,17 +1,17 @@
 // screens/HomeScreen/index.js
-import React from 'react';
-import { View, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { View, FlatList, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Header from '../../components/Header';
+import { Search } from 'lucide-react-native';
 import MovieCard from '../../components/MovieCard';
 import { styles } from './styles';
-import { SPACING } from '../../styles';
+import { SPACING, COLORS } from '../../styles';
 import { movies } from '../../MockData';
 
 const HomeScreen = () => {
     const navigation = useNavigation();
+    const [searchQuery, setSearchQuery] = useState('');
 
-    // Used for debugging purposes
     const handleMoviePress = (movie) => {
         console.log('Movie pressed:', movie);
         navigation.navigate('MovieDetails', {
@@ -33,7 +33,18 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Header />
+            <View style={styles.searchContainer}>
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search movies..."
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    placeholderTextColor={styles.searchInput.placeholderTextColor}
+                />
+                <TouchableOpacity style={styles.searchButton}>
+                    <Search size={24} color={COLORS.text.primary} />
+                </TouchableOpacity>
+            </View>
             <FlatList
                 data={movies}
                 renderItem={renderMovieCard}

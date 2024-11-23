@@ -1,4 +1,3 @@
-// screens/HomeScreen/styles.js
 import { StyleSheet } from 'react-native';
 import { COLORS, SPACING } from '../../styles';
 
@@ -29,5 +28,9 @@ export const styles = StyleSheet.create({
     },
     searchButton: {
         padding: SPACING.xs,
+    },
+    cardWrapper: {
+        flex: 1,
+        alignItems: 'center',
     }
 });

@@ -1,4 +1,3 @@
-// screens/HomeScreen/index.js
 import React, { useState, useCallback } from 'react';
 import { View, FlatList, TextInput, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -21,35 +20,46 @@ const HomeScreen = () => {
     };
 
     const getNumColumns = useCallback(() => {
-        const cardWidth = SPACING.cardPoster.width + (SPACING.xs * 2);
-        const columns = Math.floor((width - (SPACING.lg * 2)) / cardWidth);
-        return Math.max(1, columns); // Need to have at least 1 column, otherwise FlatList will throw an error
+        const availableWidth = width - (SPACING.lg * 2);
+        const cardWidth = SPACING.cardPoster.width;
+        const possibleColumns = Math.floor(availableWidth / cardWidth);
+        return Math.max(1, possibleColumns); // Need to have at least 1 column, otherwise FlatList will throw an error
     }, [width]);
 
     const renderMovieCard = ({ item }) => (
-        <MovieCard
-            movie={item}
-            onPress={() => handleMoviePress(item)}
-        />
+        <View style={styles.cardWrapper}>
+            <MovieCard
+                movie={item}
+                onPress={() => handleMoviePress(item)}
+            />
+        </View>
     );
 
     const numColumns = getNumColumns();
 
-    // Dynamically calculate styles based on number of columns
-    const getContentContainerStyle = () => {
+    // Calculate the spacing dynamically based on current width
+    const calculateSpacing = () => {
+        const availableWidth = width - (SPACING.lg * 2);
+        const totalCardWidth = SPACING.cardPoster.width * numColumns;
+        const remainingSpace = availableWidth - totalCardWidth;
+        const spaceBetweenCards = remainingSpace / (numColumns - 1);
         return {
-            padding: SPACING.lg,
-            // For single column, center the items
-            alignItems: numColumns === 1 ? 'center' : undefined
+            gap: Math.max(SPACING.md, spaceBetweenCards)
         };
     };
 
-    // Only use columnWrapperStyle when there are multiple columns
+    // Get content container style with dynamic spacing
+    const getContentContainerStyle = () => ({
+        padding: SPACING.lg,
+        alignItems: numColumns === 1 ? 'center' : undefined,
+    });
+
+    // This is only needed when there are multiple columns
     const getColumnWrapperStyle = () => {
         if (numColumns === 1) return undefined;
         return {
-            justifyContent: 'flex-start',
-            gap: SPACING.md,
+            justifyContent: 'space-between',
+            ...calculateSpacing()
         };
     };
 

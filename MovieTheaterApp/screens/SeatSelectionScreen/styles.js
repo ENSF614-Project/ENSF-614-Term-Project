@@ -53,12 +53,12 @@ export const styles = StyleSheet.create({
         borderRadius: 6,
         backgroundColor: COLORS.background,
         borderWidth: 1,
-        borderColor: '#E31837',
+        borderColor: COLORS.RED,
         justifyContent: 'center',
         alignItems: 'center',
     },
     selectedSeat: {
-        backgroundColor: '#E31837',
+        backgroundColor: COLORS.RED,
     },
     occupiedSeat: {
         backgroundColor: COLORS.border,
@@ -66,10 +66,13 @@ export const styles = StyleSheet.create({
     },
     seatText: {
         fontSize: 12,
-        color: '#E31837',
+        color: COLORS.RED,
     },
     selectedSeatText: {
         color: COLORS.background,
+    },
+    occupiedSeatText: {
+        color: COLORS.text.secondary,
     },
     legend: {
         flexDirection: 'row',
@@ -88,7 +91,7 @@ export const styles = StyleSheet.create({
         borderRadius: 4,
         backgroundColor: COLORS.background,
         borderWidth: 1,
-        borderColor: '#E31837',
+        borderColor: COLORS.RED,
     },
     legendText: {
         ...TYPOGRAPHY.body,
@@ -109,10 +112,10 @@ export const styles = StyleSheet.create({
     },
     summaryTotal: {
         ...TYPOGRAPHY.title,
-        color: '#E31837',
+        color: COLORS.RED,
     },
     confirmButton: {
-        backgroundColor: '#E31837',
+        backgroundColor: COLORS.RED,
         margin: SPACING.lg,
         padding: SPACING.md,
         borderRadius: SPACING.sm,

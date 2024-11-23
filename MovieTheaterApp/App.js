@@ -9,8 +9,11 @@ import MovieDetailsScreen from './screens/MovieDetailsScreen';
 import ShowtimeScreen from './screens/ShowtimeScreen';
 import LoginScreen from './screens/LoginScreen';
 import SeatSelectionScreen from './screens/SeatSelectionScreen';
+import NewsScreen from './screens/NewsScreen';
+import CancelTicketScreen from './screens/CancelTicketScreen';
 import Header from './components/Header';
 import { COLORS } from './styles';
+
 const Stack = createNativeStackNavigator();
 
 const HeaderRight = ({ navigation }) => {
@@ -27,8 +30,6 @@ const HeaderRight = ({ navigation }) => {
         </TouchableOpacity>
     );
 };
-
-
 
 export default function App() {
     return (
@@ -84,6 +85,20 @@ export default function App() {
                     component={SeatSelectionScreen}
                     options={{
                         headerTitle: 'Select Seats',
+                    }}
+                />
+                <Stack.Screen
+                    name="News"
+                    component={NewsScreen}
+                    options={{
+                        headerTitle: 'Movie News',
+                    }}
+                />
+                <Stack.Screen
+                    name="CancelTicket"
+                    component={CancelTicketScreen}
+                    options={{
+                        headerTitle: 'Cancel Ticket',
                     }}
                 />
             </Stack.Navigator>

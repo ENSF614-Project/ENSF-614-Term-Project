@@ -1,34 +1,65 @@
 // screens/MovieDetailsScreen/index.js
 import React from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Calendar, Clock, Star } from 'lucide-react-native';
 import { styles } from './styles';
-import { SPACING } from '../../styles';
+import { COLORS } from '../../styles';
 
 const MovieDetailsScreen = ({ route, navigation }) => {
     const { movie } = route.params;
 
+    const formatDate = (dateString) => {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    };
+
     return (
         <ScrollView style={styles.container}>
             <Image
-                source={{
-                    uri: `https://picsum.photos/${SPACING.cardPoster.width * 2}/${SPACING.cardPoster.height * 1.5}`
-                }}
+                source={{ uri: movie.posterUrl }}
                 style={styles.headerImage}
+                resizeMode="cover"
             />
 
             <View style={styles.contentContainer}>
                 <Text style={styles.title}>{movie.title}</Text>
 
-                <View style={styles.infoRow}>
-                    <Text style={styles.genre}>{movie.genre}</Text>
-                    <Text style={styles.duration}>{movie.duration}m</Text>
-                    <Text style={styles.rating}>{movie.rating}/10</Text>
+                <View style={styles.infoContainer}>
+                    <View style={styles.infoItem}>
+                        <Calendar size={20} color={COLORS.RED} />
+                        <Text style={styles.infoText}>
+                            {formatDate(movie.releaseDate)} (Release Date)
+                        </Text>
+                    </View>
+
+                    <View style={styles.infoItem}>
+                        <Clock size={20} color={COLORS.RED} />
+                        <Text style={styles.infoText}>
+                            {movie.duration} minutes
+                        </Text>
+                    </View>
+
+                    <View style={styles.infoItem}>
+                        <Star size={20} color={COLORS.RED} />
+                        <Text style={styles.infoText}>
+                            {movie.rating}/10
+                        </Text>
+                    </View>
                 </View>
 
+                <View style={styles.genreContainer}>
+                    {movie.genre.split('/').map((genre, index) => (
+                        <View key={index} style={styles.genreTag}>
+                            <Text style={styles.genreText}>{genre.trim()}</Text>
+                        </View>
+                    ))}
+                </View>
+
+                <Text style={styles.sectionTitle}>Synopsis</Text>
                 <Text style={styles.description}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    {/*TODO: Implement a description?*/}
+                    {movie.description ||
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."}
                 </Text>
 
                 <TouchableOpacity

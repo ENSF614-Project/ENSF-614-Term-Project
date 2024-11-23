@@ -2,10 +2,13 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { styles } from './styles';
-import { SPACING } from '../../styles';
 
 const MovieCard = ({ movie, onPress }) => {
-    // Used for debugging purposes
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    };
+
     const handlePress = () => {
         console.log('Card pressed');
         onPress && onPress();
@@ -18,9 +21,7 @@ const MovieCard = ({ movie, onPress }) => {
             onPress={handlePress}
         >
             <Image
-                source={{
-                    uri: `https://picsum.photos/${SPACING.cardPoster.width}/${SPACING.cardPoster.height}`
-                }}
+                source={{ uri: movie.posterUrl }}
                 style={styles.poster}
                 resizeMode="cover"
             />
@@ -35,6 +36,12 @@ const MovieCard = ({ movie, onPress }) => {
                     <Text style={styles.duration}>
                         {movie.duration}m
                     </Text>
+                </View>
+                <View style={styles.dateContainer}>
+                    <Text style={styles.releaseDate}>
+                        {formatDate(movie.releaseDate)}
+                    </Text>
+                    <Text style={styles.rating}>★ {movie.rating}</Text>
                 </View>
             </View>
         </TouchableOpacity>

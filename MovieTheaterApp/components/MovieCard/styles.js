@@ -35,6 +35,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        marginBottom: SPACING.xs,
     },
     genre: {
         ...TYPOGRAPHY.body,
@@ -45,5 +46,24 @@ export const styles = StyleSheet.create({
     duration: {
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
+    },
+    dateContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: SPACING.xs,
+        borderTopWidth: 1,
+        borderTopColor: COLORS.border,
+    },
+    releaseDate: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        fontSize: 12,
+    },
+    rating: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.RED,
+        fontSize: 12,
+        fontWeight: 'bold',
     }
 });

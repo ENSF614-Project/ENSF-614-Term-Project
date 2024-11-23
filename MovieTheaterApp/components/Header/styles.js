@@ -1,5 +1,5 @@
 // components/Header/styles.js
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 
 export const styles = StyleSheet.create({
@@ -8,22 +8,38 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: SPACING.lg,
-        paddingTop: StatusBar.currentHeight + SPACING.sm,
-        paddingBottom: SPACING.sm,
+        height: 64,
         backgroundColor: COLORS.background,
         borderBottomWidth: 1,
         borderBottomColor: COLORS.border,
     },
+    leftContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     logo: {
         ...TYPOGRAPHY.logo,
         color: COLORS.text.primary,
-    },
-    rightContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: SPACING.md,
+        marginLeft: SPACING.lg,
+        fontSize: 20,
     },
     iconButton: {
         padding: SPACING.xs,
-    }
+    },
+    menuContainer: {
+        width: '100%',
+        backgroundColor: COLORS.background,
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.border,
+        paddingVertical: SPACING.xs,
+    },
+    menuItem: {
+        paddingVertical: SPACING.md,
+        paddingHorizontal: SPACING.lg,
+    },
+    menuItemText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+        fontSize: 16,
+    },
 });

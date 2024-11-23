@@ -2,7 +2,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { styles } from './styles';
-import { SPACING } from '../../styles';
 
 const MovieCard = ({ movie, onPress }) => {
     const formatDate = (dateString) => {
@@ -22,9 +21,7 @@ const MovieCard = ({ movie, onPress }) => {
             onPress={handlePress}
         >
             <Image
-                source={{
-                    uri: `https://picsum.photos/${SPACING.cardPoster.width}/${SPACING.cardPoster.height}`
-                }}
+                source={{ uri: movie.posterUrl }}
                 style={styles.poster}
                 resizeMode="cover"
             />

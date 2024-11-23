@@ -26,16 +26,8 @@ export const styles = StyleSheet.create({
         paddingHorizontal: SPACING.md,
         marginRight: SPACING.sm,
         color: COLORS.text.primary,
-        placeholderTextColor: COLORS.placeholder,
     },
     searchButton: {
         padding: SPACING.xs,
-    },
-    movieList: {
-        padding: SPACING.lg,
-    },
-    columnWrapper: {
-        justifyContent: 'flex-start',
-        gap: SPACING.md,
     }
 });

@@ -1,6 +1,6 @@
 // screens/HomeScreen/index.js
-import React, { useState } from 'react';
-import { View, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, FlatList, TextInput, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Search } from 'lucide-react-native';
 import MovieCard from '../../components/MovieCard';
@@ -11,6 +11,7 @@ import { movies } from '../../MockData';
 const HomeScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
+    const { width } = useWindowDimensions();
 
     const handleMoviePress = (movie) => {
         console.log('Movie pressed:', movie);
@@ -19,10 +20,11 @@ const HomeScreen = () => {
         });
     };
 
-    const getNumColumns = () => {
+    const getNumColumns = useCallback(() => {
         const cardWidth = SPACING.cardPoster.width + (SPACING.xs * 2);
-        return Math.floor(((window?.innerWidth || 400) - (SPACING.lg * 2)) / cardWidth);
-    };
+        const columns = Math.floor((width - (SPACING.lg * 2)) / cardWidth);
+        return Math.max(1, columns); // Need to have at least 1 column, otherwise FlatList will throw an error
+    }, [width]);
 
     const renderMovieCard = ({ item }) => (
         <MovieCard
@@ -30,6 +32,26 @@ const HomeScreen = () => {
             onPress={() => handleMoviePress(item)}
         />
     );
+
+    const numColumns = getNumColumns();
+
+    // Dynamically calculate styles based on number of columns
+    const getContentContainerStyle = () => {
+        return {
+            padding: SPACING.lg,
+            // For single column, center the items
+            alignItems: numColumns === 1 ? 'center' : undefined
+        };
+    };
+
+    // Only use columnWrapperStyle when there are multiple columns
+    const getColumnWrapperStyle = () => {
+        if (numColumns === 1) return undefined;
+        return {
+            justifyContent: 'flex-start',
+            gap: SPACING.md,
+        };
+    };
 
     return (
         <View style={styles.container}>
@@ -39,7 +61,7 @@ const HomeScreen = () => {
                     placeholder="Search movies..."
                     value={searchQuery}
                     onChangeText={setSearchQuery}
-                    placeholderTextColor={styles.searchInput.placeholderTextColor}
+                    placeholderTextColor={COLORS.placeholder}
                 />
                 <TouchableOpacity style={styles.searchButton}>
                     <Search size={24} color={COLORS.text.primary} />
@@ -49,9 +71,10 @@ const HomeScreen = () => {
                 data={movies}
                 renderItem={renderMovieCard}
                 keyExtractor={(item) => item.movieId.toString()}
-                numColumns={getNumColumns()}
-                contentContainerStyle={styles.movieList}
-                columnWrapperStyle={styles.columnWrapper}
+                numColumns={numColumns}
+                contentContainerStyle={getContentContainerStyle()}
+                columnWrapperStyle={getColumnWrapperStyle()}
+                key={numColumns}
             />
         </View>
     );

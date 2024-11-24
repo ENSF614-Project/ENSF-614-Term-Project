@@ -37,12 +37,6 @@ public class Ticket {
     @Column(name = "refund", nullable = false, columnDefinition = "DOUBLE DEFAULT 0.0")
     private Double refund = 0.0;
 
-    @Column(name = "userID", nullable = false)
-    private Integer userID;
-
-    @Column(name = "email", nullable = false, length = 100)
-    private String email;
-
     @Column(name = "cancellationFee", nullable = false)
     private Double cancellationFee;
 

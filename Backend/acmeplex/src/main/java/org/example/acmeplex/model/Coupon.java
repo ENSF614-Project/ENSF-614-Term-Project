@@ -24,6 +24,9 @@ public class Coupon {
     @Column(name = "status", nullable = false, length = 50)
     private String status;
 
+    @Column(name = "email", nullable = false, length = 100)
+    private String email;
+
     @ManyToOne
     @JoinColumn(name = "ticketID", nullable = false)
     private Ticket ticket;

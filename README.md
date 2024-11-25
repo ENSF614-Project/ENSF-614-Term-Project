@@ -37,6 +37,8 @@ A Movie Theater Ticket Reservation App
 ### Frontend
 1. When you are trying to install the package, but you're getting version error 
     - `npm install --save-dev --legacy-peer-deps`
+1. When a package is too new to work
+    - `npm i packagename@X.X.X`
 
 ### Backend
 1. When the springboot isn't recognized 

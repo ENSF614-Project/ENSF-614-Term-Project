@@ -1,10 +1,11 @@
+// User.java
 package org.example.acmeplex.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "userType", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "USER")
 public class User {

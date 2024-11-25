@@ -34,7 +34,7 @@ public class Ticket {
     @Column(name = "price", nullable = false)
     private Double price;
 
-    @Column(name = "refund", nullable = false, columnDefinition = "DOUBLE DEFAULT 0.0")
+    @Column(name = "refund", nullable = false)
     private Double refund = 0.0;
 
     @Column(name = "cancellationFee", nullable = false)

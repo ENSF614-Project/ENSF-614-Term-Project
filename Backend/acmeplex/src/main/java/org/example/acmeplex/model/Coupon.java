@@ -14,15 +14,6 @@ public class Coupon {
     @Column(name = "couponID", nullable = false)
     private Integer couponID;
 
-    @Column(name = "ticketID", nullable = false)
-    private Integer ticketID;
-
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @Column(name = "userID", nullable = false)
-    private Integer userID;
-
     @Column(name = "expiryDate", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date expiryDate;
@@ -33,11 +24,14 @@ public class Coupon {
     @Column(name = "status", nullable = false, length = 50)
     private String status;
 
+    @Column(name = "email", nullable = false, length = 100)
+    private String email;
+
     @ManyToOne
-    @JoinColumn(name = "ticketID", insertable = false, updatable = false)
+    @JoinColumn(name = "ticketID", nullable = false)
     private Ticket ticket;
 
     @ManyToOne
-    @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
+    @JoinColumn(name = "userID", nullable = false)
     private User user;
 }

@@ -1,9 +1,11 @@
 // screens/SeatSelectionScreen/index.js
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 
 const SeatSelectionScreen = ({ route }) => {
+    const navigation = useNavigation();
     const { showtime, movie } = route.params;
     const [selectedSeats, setSelectedSeats] = useState([]);
 
@@ -62,11 +64,27 @@ const SeatSelectionScreen = ({ route }) => {
 
     const handleConfirm = () => {
         if (selectedSeats.length === 0) {
-            alert('Please select at least one seat');
+            Alert.alert('Error', 'Please select at least one seat');
             return;
         }
-        // TODO: Navigate to payment screen 
-        console.log('Selected seats:', selectedSeats);
+
+        navigation.navigate('Payment', {
+            selectedSeats,
+            total: selectedSeats.length * 12, // hardcoded price calculation (need to connect to database here)
+            showtime,
+            movie,
+            onComplete: (paymentResult) => {
+                if (paymentResult.success) {
+                    navigation.navigate('TicketConfirmation', {
+                        tickets: selectedSeats,
+                        movie,
+                        showtime,
+                        total: selectedSeats.length * 12,
+                        paymentInfo: paymentResult.paymentInfo
+                    });
+                }
+            }
+        });
     };
 
     return (

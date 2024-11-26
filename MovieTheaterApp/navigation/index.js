@@ -12,6 +12,8 @@ import SeatSelectionScreen from '../screens/SeatSelectionScreen';
 import NewsScreen from '../screens/NewsScreen';
 import CancelTicketScreen from '../screens/CancelTicketScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import PaymentScreen from '../screens/PaymentScreen';
+import TicketConfirmationScreen from '../screens/TicketConfirmationScreen';
 import Header from '../components/Header';
 import { COLORS } from '../styles';
 
@@ -104,6 +106,23 @@ const screens = [
         component: RegisterScreen,
         options: {
             headerTitle: 'Registration',
+        }
+    },
+    {
+        name: 'Payment',
+        component: PaymentScreen,
+        options: {
+            headerTitle: 'Payment',
+        }
+    },
+    {
+        name: 'TicketConfirmation',
+        component: TicketConfirmationScreen,
+        options: {
+            headerTitle: 'Confirmation',
+            // Prevent going back to payment screen after confirmation
+            headerLeft: () => null,
+            gestureEnabled: false
         }
     }
 ];

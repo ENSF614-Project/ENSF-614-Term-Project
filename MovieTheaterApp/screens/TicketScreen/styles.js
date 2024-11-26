@@ -26,6 +26,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: SPACING.lg,
         gap: SPACING.sm,
+        iconColor: "#0000FF",
     },
     searchTitle: {
         ...TYPOGRAPHY.title,
@@ -34,11 +35,12 @@ export const styles = StyleSheet.create({
     errorContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#FEE2E2',
+        backgroundColor: COLORS.pinkERROR,
         padding: SPACING.md,
         borderRadius: SPACING.sm,
         marginBottom: SPACING.lg,
         gap: SPACING.sm,
+        iconColor: "#0000FF",
     },
     errorText: {
         ...TYPOGRAPHY.body,
@@ -54,6 +56,7 @@ export const styles = StyleSheet.create({
         padding: SPACING.md,
         marginBottom: SPACING.md,
         color: COLORS.text.primary,
+        placeholderTextColor: "#0000FF",
     },
     searchButton: {
         backgroundColor: COLORS.RED,
@@ -97,7 +100,7 @@ export const styles = StyleSheet.create({
         borderRadius: SPACING.lg,
     },
     activeBadge: {
-        backgroundColor: '#D1FAE5',
+        backgroundColor: COLORS.greenACTIVE,
     },
     pastBadge: {
         backgroundColor: COLORS.border,
@@ -140,10 +143,14 @@ export const styles = StyleSheet.create({
         borderRadius: SPACING.sm,
         borderWidth: 1,
         borderColor: COLORS.border,
+        textColor: "#0000FF",
     },
     emptyText: {
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
         marginTop: SPACING.md,
+    },
+    spinner: {
+        color: "#0000FF",
     }
 });

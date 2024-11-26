@@ -7,7 +7,6 @@ import {
     ScrollView
 } from 'react-native';
 import { CreditCard, Trash2 } from 'lucide-react-native';
-import { COLORS } from '../../styles';
 import CreditCardForm from '../../components/CreditCardForm';
 import { styles } from './styles';
 
@@ -87,7 +86,7 @@ const PaymentScreen = ({ route, navigation }) => {
                         onPress={() => setSelectedPaymentMethod(card.id)}
                     >
                         <View style={styles.savedCardInfo}>
-                            <CreditCard size={24} color={COLORS.text.primary} />
+                            <CreditCard size={24} color={styles.savedCardInfo.cardColor} />
                             <Text style={styles.savedCardText}>
                                 **** {card.last4} | {card.expiryDate}
                             </Text>
@@ -100,7 +99,7 @@ const PaymentScreen = ({ route, navigation }) => {
                         >
                             <Trash2
                                 size={20}
-                                color={COLORS.text.secondary}
+                                color={styles.trashIcon.color}
                             />
                         </TouchableOpacity>
                     </TouchableOpacity>
@@ -113,7 +112,7 @@ const PaymentScreen = ({ route, navigation }) => {
                     onPress={() => setSelectedPaymentMethod('new')}
                 >
                     <View style={styles.savedCardInfo}>
-                        <CreditCard size={24} color={COLORS.text.primary} />
+                        <CreditCard size={24} color={styles.savedCardInfo.cardColor} />
                         <Text style={styles.savedCardText}>Add New Card</Text>
                     </View>
                 </TouchableOpacity>

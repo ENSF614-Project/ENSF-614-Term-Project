@@ -6,7 +6,6 @@ import {
     TouchableOpacity
 } from 'react-native';
 import { Check } from 'lucide-react-native';
-import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 import { styles } from './styles';
 
 const TicketConfirmationScreen = ({ route, navigation }) => {
@@ -24,7 +23,7 @@ const TicketConfirmationScreen = ({ route, navigation }) => {
         <ScrollView style={styles.container}>
             <View style={styles.successContainer}>
                 <View style={styles.checkCircle}>
-                    <Check size={48} color={COLORS.background} />
+                    <Check size={48} color={styles.checkCircle.iconColor} />
                 </View>
                 <Text style={styles.successTitle}>Payment Successful!</Text>
                 <Text style={styles.successText}>Your tickets have been booked</Text>

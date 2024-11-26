@@ -68,7 +68,7 @@ export const styles = StyleSheet.create({
     debugContainer: {
         margin: SPACING.lg,
         padding: SPACING.md,
-        backgroundColor: '#f0f0f0',
+        backgroundColor: COLORS.greyDEBUG,
         borderRadius: SPACING.sm,
     },
     debugTitle: {
@@ -80,5 +80,8 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
         fontFamily: 'monospace',
+    },
+    activity: {
+        color: "#0000FF",
     }
 });

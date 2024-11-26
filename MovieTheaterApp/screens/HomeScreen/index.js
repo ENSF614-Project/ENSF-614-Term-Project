@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Search, X } from 'lucide-react-native';
 import MovieCard from '../../components/MovieCard';
 import { styles } from './styles';
-import { SPACING, COLORS } from '../../styles';
+import { SPACING } from '../../styles';
 import { movies } from '../../MockData';
 
 const HomeScreen = () => {
@@ -190,7 +190,7 @@ const HomeScreen = () => {
                     style={styles.clearFiltersButton}
                     onPress={handleClearFilters}
                 >
-                    <X size={16} color={COLORS.text.secondary} />
+                    <X size={16} color={styles.clearFiltersButton.color} />
                 </TouchableOpacity>
             )}
         </View>
@@ -205,7 +205,7 @@ const HomeScreen = () => {
                         placeholder="Search movies by title or genre..."
                         value={searchQuery}
                         onChangeText={handleSearch}
-                        placeholderTextColor={COLORS.placeholder}
+                        placeholderTextColor={styles.searchInput.placeholderTextColor}
                         returnKeyType="search"
                     />
                     {searchQuery.length > 0 && (
@@ -213,12 +213,12 @@ const HomeScreen = () => {
                             style={styles.clearButton}
                             onPress={handleClearSearch}
                         >
-                            <X size={20} color={COLORS.text.secondary} />
+                            <X size={20} color={styles.clearButton.color} />
                         </TouchableOpacity>
                     )}
                 </View>
                 <TouchableOpacity style={styles.searchButton}>
-                    <Search size={24} color={COLORS.text.primary} />
+                    <Search size={24} color={styles.searchButton.color} />
                 </TouchableOpacity>
             </View>
 

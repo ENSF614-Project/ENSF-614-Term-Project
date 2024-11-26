@@ -30,13 +30,16 @@ export const styles = StyleSheet.create({
         height: 40,
         paddingHorizontal: SPACING.md,
         color: COLORS.text.primary,
+        placeholderTextColor: "#0000FF",
     },
     clearButton: {
         padding: SPACING.xs,
         marginRight: SPACING.xs,
+        color: "#0000FF",
     },
     searchButton: {
         padding: SPACING.xs,
+        color: "#0000FF",
     },
     genreFilterContainer: {
         flexDirection: 'row',
@@ -72,6 +75,7 @@ export const styles = StyleSheet.create({
     clearFiltersButton: {
         padding: SPACING.md,
         marginRight: SPACING.md,
+        color: "#0000FF",
     },
     cardWrapper: {
         flex: 1,

@@ -34,6 +34,7 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.border,
         borderRadius: SPACING.sm,
+        iconColor: "#0000FF",
     },
     dateText: {
         ...TYPOGRAPHY.body,

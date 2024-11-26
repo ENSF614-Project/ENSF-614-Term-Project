@@ -39,6 +39,9 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: SPACING.sm,
+        calendarColor: "#0000FF",
+        clockColor: "#FF0000",
+        starColor: "#FFD700",
     },
     infoText: {
         ...TYPOGRAPHY.body,

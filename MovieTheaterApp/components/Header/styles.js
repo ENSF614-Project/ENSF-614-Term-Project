@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
     },
     iconButton: {
         padding: SPACING.xs,
+        color: "#0000FF",
     },
     menuContainer: {
         width: '100%',
@@ -41,5 +42,8 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.body,
         color: COLORS.text.primary,
         fontSize: 16,
+    },
+    iconColor: {
+        color: "0000FF",
     },
 });

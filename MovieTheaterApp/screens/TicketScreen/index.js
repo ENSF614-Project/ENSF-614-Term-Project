@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { Ticket, AlertCircle } from 'lucide-react-native';
 import { styles } from './styles';
-import { COLORS } from '../../styles';
 import { getUserTickets, getTicketById } from '../../MockData';
 
 const TicketScreen = () => {
@@ -146,7 +145,7 @@ const TicketScreen = () => {
     if (loading) {
         return (
             <View style={styles.centered}>
-                <ActivityIndicator size="large" color={COLORS.RED} />
+                <ActivityIndicator size="large" color={styles.spinner.color} />
                 <Text style={styles.loadingText}>Loading tickets...</Text>
             </View>
         );
@@ -167,13 +166,13 @@ const TicketScreen = () => {
             {!isLoggedIn ? (
                 <View style={styles.searchContainer}>
                     <View style={styles.searchHeader}>
-                        <Ticket color={COLORS.RED} size={24} />
+                        <Ticket color={styles.searchHeader.iconColor} size={24} />
                         <Text style={styles.searchTitle}>Find Your Ticket</Text>
                     </View>
 
                     {error && (
                         <View style={styles.errorContainer}>
-                            <AlertCircle color={COLORS.RED} size={20} />
+                            <AlertCircle color={styles.errorContainer.iconColor} size={20} />
                             <Text style={styles.errorText}>{error}</Text>
                         </View>
                     )}
@@ -184,7 +183,7 @@ const TicketScreen = () => {
                             value={ticketNumber}
                             onChangeText={setTicketNumber}
                             placeholder="Enter ticket number"
-                            placeholderTextColor={COLORS.placeholder}
+                            placeholderTextColor={styles.input.placeholderTextColor}
                             keyboardType="numeric"
                         />
                         <TouchableOpacity
@@ -204,7 +203,7 @@ const TicketScreen = () => {
                         userTickets.map(renderTicketCard)
                     ) : (
                         <View style={styles.emptyContainer}>
-                            <Ticket size={48} color={COLORS.text.secondary} />
+                            <Ticket size={48} color={styles.emptyContainer.textColor} />
                             <Text style={styles.emptyText}>No tickets found</Text>
                         </View>
                     )}

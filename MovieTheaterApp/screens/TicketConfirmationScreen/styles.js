@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: SPACING.lg,
+        iconColor: "#0000FF",
     },
     successTitle: {
         ...TYPOGRAPHY.title,

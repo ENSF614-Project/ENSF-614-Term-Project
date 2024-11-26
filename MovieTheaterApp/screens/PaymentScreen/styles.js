@@ -55,6 +55,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: SPACING.md,
+        cardColor: "#0000FF",
     },
     savedCardText: {
         ...TYPOGRAPHY.body,
@@ -108,4 +109,7 @@ export const styles = StyleSheet.create({
         color: COLORS.background,
         textAlign: 'center',
     },
+    trashIcon: {
+        color: "#0000FF",
+    }
 });

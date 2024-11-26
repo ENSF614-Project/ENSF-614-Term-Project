@@ -15,7 +15,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import TicketConfirmationScreen from '../screens/TicketConfirmationScreen';
 import Header from '../components/Header';
-import { COLORS } from '../styles';
+import { styles } from './styles';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +29,7 @@ const HeaderRight = ({ navigation }) => {
             onPress={handleLoginPress}
             style={{ padding: 8, marginRight: 8 }}
         >
-            <User size={24} color={COLORS.text.primary} />
+            <User size={24} color={styles.icon.color} />
         </TouchableOpacity>
     );
 };
@@ -37,16 +37,16 @@ const HeaderRight = ({ navigation }) => {
 // Default screen options that apply to all screens
 const screenOptions = ({ navigation }) => ({
     headerRight: () => <HeaderRight navigation={navigation} />,
-    headerTintColor: COLORS.text.primary,
+    headerTintColor: styles.header.tintColor,
     headerStyle: {
-        backgroundColor: COLORS.background,
+        backgroundColor: styles.header.backgroundColor,
         height: 64,
     },
     headerTitleStyle: {
         fontSize: 20,
     },
     contentStyle: {
-        backgroundColor: COLORS.background,
+        backgroundColor: styles.header.backgroundColor,
     }
 });
 

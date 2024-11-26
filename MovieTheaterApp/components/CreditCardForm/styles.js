@@ -16,6 +16,9 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.title,
         fontSize: 18,
     },
+    cardIcon: {
+        color: "#0000FF",
+    },
     input: {
         borderWidth: 1,
         borderColor: COLORS.border,

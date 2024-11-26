@@ -3,7 +3,6 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Calendar } from 'lucide-react-native';
 import { styles } from './styles';
-import { COLORS } from '../../styles';
 import { showtimes } from '../../MockData';
 
 const ShowtimeScreen = ({ route, navigation }) => {
@@ -55,7 +54,7 @@ const ShowtimeScreen = ({ route, navigation }) => {
                 style={styles.dateButton}
                 onPress={() => setShowCalendar(!showCalendar)}
             >
-                <Calendar size={24} color={COLORS.text.primary} />
+                <Calendar size={24} color={styles.dateButton.iconColor} />
                 <Text style={styles.dateText}>{formatDate(selectedDate)}</Text>
             </TouchableOpacity>
 

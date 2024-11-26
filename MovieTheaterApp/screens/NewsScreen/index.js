@@ -52,7 +52,7 @@ const NewsScreen = () => {
     if (loading) {
         return (
             <View style={styles.centered}>
-                <ActivityIndicator size="large" color="#E31837" />
+                <ActivityIndicator size="large" color={styles.activity.color} />
                 <Text style={styles.loadingText}>Fetching Users...</Text>
             </View>
         );
@@ -65,7 +65,7 @@ const NewsScreen = () => {
             {error ? (
                 <View style={styles.messageContainer}>
                     <Text style={styles.errorText}>{error}</Text>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.retryButton}
                         onPress={handleRetry}
                     >

@@ -17,13 +17,7 @@ public class Ticket {
     @Column(name = "showtimeID", nullable = false)
     private Integer showtimeID;
 
-    @Column(name = "movieID", nullable = false)
-    private Integer movieID;
-
-    @Column(name = "theatreID", nullable = false)
-    private Integer theatreID;
-
-    @Column(name = "seatID", nullable = false, length = 10) // Single seat ID
+    @Column(name = "seatID", nullable = false, length = 10)
     private String seatID;
 
     @Column(name = "ticketDate", nullable = false)
@@ -41,31 +35,13 @@ public class Ticket {
     private Double price;
 
     @Column(name = "refund", nullable = false)
-    private Double refund = 0.0;
-
-    @Column(name = "userID", nullable = false)
-    private Integer userID;
-
-    @Column(name = "transactionID", nullable = false) // New column to reference the transaction
-    private Integer transactionID;
+    private Double refund;
 
     @ManyToOne
-    @JoinColumn(name = "userID", insertable = false, updatable = false)
+    @JoinColumn(name = "userID")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "showtimeID", insertable = false, updatable = false)
-    private Showtime showtime;
-
-    @ManyToOne
-    @JoinColumn(name = "movieID", insertable = false, updatable = false)
-    private Movie movie;
-
-    @ManyToOne
-    @JoinColumn(name = "theatreID", insertable = false, updatable = false)
-    private Theatre theatre;
-
-    @ManyToOne
-    @JoinColumn(name = "transactionID", insertable = false, updatable = false) // New relationship to Transaction
+    @JoinColumn(name = "transactionID")
     private Transaction transaction;
 }

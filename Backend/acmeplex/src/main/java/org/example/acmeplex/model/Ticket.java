@@ -23,15 +23,15 @@ public class Ticket {
     @Column(name = "theatreID", nullable = false)
     private Integer theatreID;
 
-    @Column(name = "seatIDList", nullable = false, columnDefinition = "TEXT")
-    private String seatIDList;
+    @Column(name = "seatID", nullable = false, length = 10) // Single seat ID
+    private String seatID;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ticketDate", nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date ticketDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "cancellationDeadline", nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date cancellationDeadline;
 
     @Column(name = "status", nullable = false, length = 50)
@@ -45,6 +45,9 @@ public class Ticket {
 
     @Column(name = "userID", nullable = false)
     private Integer userID;
+
+    @Column(name = "transactionID", nullable = false) // New column to reference the transaction
+    private Integer transactionID;
 
     @ManyToOne
     @JoinColumn(name = "userID", insertable = false, updatable = false)
@@ -63,6 +66,6 @@ public class Ticket {
     private Theatre theatre;
 
     @ManyToOne
-    @JoinColumn(name = "transactionID", nullable = false)
+    @JoinColumn(name = "transactionID", insertable = false, updatable = false) // New relationship to Transaction
     private Transaction transaction;
 }

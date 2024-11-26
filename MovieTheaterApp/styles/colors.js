@@ -11,4 +11,5 @@ export const COLORS = {
     },
     RED: "#E31837",
     placeholder: "#666",
+    secondaryBackground: "#FFF5F5",
 };

@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
     },
     selectedCard: {
         borderColor: COLORS.RED,
-        backgroundColor: '#FFF5F5',
+        backgroundColor: COLORS.secondaryBackground,
     },
     savedCardInfo: {
         flexDirection: 'row',

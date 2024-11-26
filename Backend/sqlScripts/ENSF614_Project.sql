@@ -97,6 +97,21 @@ CREATE TABLE IF NOT EXISTS USER_PAYMENT (
     FOREIGN KEY(paymentId) REFERENCES PAYMENT(paymentId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS PAYMENTINFO (
+    paymentInfoID INT AUTO_INCREMENT PRIMARY KEY,
+    userID INT NOT NULL,
+    cardType VARCHAR(50) NOT NULL,
+    cardNumber VARCHAR(16) NOT NULL,
+    expiryMonth INT NOT NULL,
+    expiryYear INT NOT NULL,
+    cw INT NOT NULL,
+    cardHolderName VARCHAR(100) NOT NULL,
+    billingAddress VARCHAR(255) NOT NULL,
+    FOREIGN KEY (userID) REFERENCES RegisteredUser(userID)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
 INSERT INTO THEATRE (theatreName) VALUES 
 ('Cinema One'),
 ('Star Theater'),

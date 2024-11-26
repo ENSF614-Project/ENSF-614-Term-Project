@@ -4,47 +4,35 @@ const API_URL = 'http://localhost:8080';
 export const api = {
     getAllUsers: async () => {
         try {
+            console.log('Making request to:', `${API_URL}/api/users`);
+            
             const response = await fetch(`${API_URL}/api/users`);
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            throw error;
-        }
-    },
-
-    createUser: async (userData) => {
-        try {
-            const response = await fetch(`${API_URL}/api/users`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: userData.username,
-                    email: userData.email,
-                    password: 'defaultPassword', // This will be updated into a password field
-                    address: 'defaultAddress',   // This will be updated into a address field 
-                }),
-            });
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
             if (!response.ok) {
-                const errorData = await response.text();
-                throw new Error(errorData || 'Failed to create user');
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
-            return response.json();
+            
+            const data = await response.json();
+            console.log('Parsed response data:', data);
+            return data;
+            
         } catch (error) {
-            console.error('Error creating user:', error);
+            console.error('Error in getAllUsers:', error);
             throw error;
         }
     },
 
-    getUserById: async (id) => {
+    testEndpoint: async () => {
         try {
-            const response = await fetch(`${API_URL}/api/users/${id}`);
+            const response = await fetch(`${API_URL}/api/users/test`);
             if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
+            return response.text(); // Using text() instead of json() since it returns a string
         } catch (error) {
-            console.error('Error fetching user:', error);
+            console.error('Error testing endpoint:', error);
             throw error;
         }
     },

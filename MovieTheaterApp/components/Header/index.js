@@ -44,9 +44,9 @@ const Header = () => {
                 <View style={styles.menuContainer}>
                     <TouchableOpacity
                         style={styles.menuItem}
-                        onPress={() => handleMenuItemPress('CancelTicket')}
+                        onPress={() => handleMenuItemPress('Ticket')}
                     >
-                        <Text style={styles.menuItemText}>Cancel Ticket</Text>
+                        <Text style={styles.menuItemText}>View and Cancel Tickets</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.menuItem}

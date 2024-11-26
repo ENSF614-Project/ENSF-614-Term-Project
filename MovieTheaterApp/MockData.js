@@ -260,3 +260,72 @@ export const showtimes = [
     { id: 4, time: '7:30 PM', theatre: 'Theater Two', price: '$16.99' },
     { id: 5, time: '10:00 PM', theatre: 'Theater One', price: '$14.99' },
 ];
+
+export const mockUsers = [
+    {
+        userId: 1,
+        username: "testuser1",
+        email: "test1@example.com",
+        name: "Test User 1",
+        address: "123 Test St",
+        registrationDate: "2024-11-15",
+        annualFeeDueDate: "2025-11-15",
+        credits: 100.0,
+        isRU: true
+    },
+    {
+        userId: 2,
+        username: "testuser2",
+        email: "test2@example.com",
+        name: "Test User 2",
+        address: "456 Test Ave",
+        registrationDate: "2024-11-16",
+        annualFeeDueDate: "2025-11-16",
+        credits: 50.0,
+        isRU: true
+    }
+];
+
+export const mockTickets = [
+    {
+        ticketID: 1,
+        userID: 1,
+        showtimeID: 1,
+        seatID: 1,
+        purchasedDate: "2024-11-15",
+        cancellationDeadline: "2024-11-28",
+        status: "active",
+        price: 15.00,
+        refund: 0.0,
+        cancellationFee: 2.25,
+        // Additional fields for UI display that will be found by joining with other tables
+        movieTitle: "Avengers: Endgame",
+        theatre: "Cinema One",
+        showtime: "2024-12-01 14:00:00",
+        seatInfo: "A12"
+    },
+    {
+        ticketID: 2,
+        userID: 1,
+        showtimeID: 2,
+        seatID: 2,
+        purchasedDate: "2024-11-10",
+        cancellationDeadline: "2024-11-23",
+        status: "completed",
+        price: 12.00,
+        refund: 0.0,
+        cancellationFee: 1.80,
+        movieTitle: "Inception",
+        theatre: "Star Theater",
+        showtime: "2024-11-24 16:30:00",
+        seatInfo: "B15"
+    }
+];
+
+export const getUserTickets = (userId) => {
+    return mockTickets.filter(ticket => ticket.userID === userId);
+};
+
+export const getTicketById = (ticketId) => {
+    return mockTickets.find(ticket => ticket.ticketID.toString() === ticketId.toString());
+};

@@ -16,8 +16,8 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Transaction> getTransactionsByUser(@PathVariable Integer userId) {
-        return transactionService.getTransactionsByUserId(userId);
+    @GetMapping("/{transactionID}/tickets")
+    public List<Ticket> getTicketsByTransactionId(@PathVariable Integer transactionID) {
+        return transactionService.getTicketsByTransactionId(transactionID);
     }
 }

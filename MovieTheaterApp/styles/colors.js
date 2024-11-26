@@ -10,6 +10,7 @@ export const COLORS = {
         secondary: '#666666',
     },
     RED: "#E31837",
+    hoverRED: "#961328",
     placeholder: "#666",
     secondaryBackground: "#FFF5F5",
 };

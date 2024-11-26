@@ -1,7 +1,14 @@
 // screens/RegisterScreen/index.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ScrollView
+} from 'react-native';
 import { styles } from './styles';
+import CreditCardForm from '../../components/CreditCardForm';
 
 const RegisterScreen = ({ navigation }) => {
     const [username, setUsername] = useState(''); //remove if not using username (taken from login page)
@@ -10,10 +17,11 @@ const RegisterScreen = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [name, setName] = useState('');
     const [address, setAddress] = useState(''); //Can maybe change out to multiple fields, depends how we are storing address in DB
-    const [billingAddress, setBillingAddress] = useState(''); //same as above
-    const [cardNumber, setCardNumber] = useState('');
-    const [expiryDate, setExpiryDate] = useState('');
-    const [cvv, setCvv] = useState('');
+
+    const [formValues, setFormValues] = useState({});
+    const [formErrors, setFormErrors] = useState({});
+    const [isFormValid, setIsFormValid] = useState(false);
+
 
     const handleRegister = () => {
         //TODO: Add logic for registration
@@ -26,15 +34,7 @@ const RegisterScreen = ({ navigation }) => {
 
         //Needs to check if address is valid
 
-        //Needs to check valid card number
-
-        //Needs to check card isn't expired
-
-        //Needs to ensure CVV is valid
-
-        //Needs to ensure billing address is valid
-
-        console.log('Registration attempted:', {
+        /*console.log('Registration attempted:', {
             username,
             email,
             password,
@@ -43,10 +43,30 @@ const RegisterScreen = ({ navigation }) => {
             billingAddress,
             cardDetails: { cardNumber, expiryDate, cvv },
         });
-
         
+        navigation.navigate('Login');*/
+        // Construct user data
+        const userData = {
+            username,
+            email,
+            password,
+            name,
+            address,
+            paymentInfo: formValues
+        };
+
+        console.log('Registration data:', userData);
+
         //Right now takes you to login, but should take you to payment?
-        navigation.navigate('Login');
+        if (!isFormValid) {
+            console.log('Form is not valid:', formErrors);
+            alert('Error', 'Please check all card details are correct');
+            return;
+        } else {
+            console.log('Form is valid:', formValues);
+            navigation.navigate('Login');
+
+        }
     };
 
     const handleLogin = () => {
@@ -107,48 +127,33 @@ const RegisterScreen = ({ navigation }) => {
                     secureTextEntry
                 />
 
-                <Text style={styles.sectionTitle}>Payment Information</Text>
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Card Number"
-                    value={cardNumber}
-                    onChangeText={setCardNumber}
-                    keyboardType="numeric"
-                />
-
-                <View style={styles.cardDetailsContainer}>
-                    <TextInput
-                        style={[styles.input, styles.cardExpiryInput]}
-                        placeholder="MM/YY"
-                        value={expiryDate}
-                        onChangeText={setExpiryDate}
-                        keyboardType="numeric"
-                    />
-
-                    <TextInput
-                        style={[styles.input, styles.cardCvvInput]}
-                        placeholder="CVV"
-                        value={cvv}
-                        onChangeText={setCvv}
-                        keyboardType="numeric"
-                        secureTextEntry
-                    />
+                <View style={styles.section}>
+                    <View style={styles.membershipContainer}>
+                        <Text style={styles.membershipTitle}>Annual Membership Fee</Text>
+                        <Text style={styles.membershipAmount}>$20.00</Text>
+                    </View>
+                    <Text style={styles.membershipInfo}>
+                        Your membership includes early access to movie tickets and no cancellation fees.
+                    </Text>
                 </View>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Billing Address"
-                    value={billingAddress}
-                    onChangeText={setBillingAddress}
-                    autoCapitalize="words"
-                />
+                <View style={styles.section}>
+                    <CreditCardForm
+                        onValuesChange={setFormValues}
+                        onValidationChange={(isValid, errors) => {
+                            setIsFormValid(isValid);
+                            setFormErrors(errors);
+                        }}
+                        errors={formErrors}
+                        includeBillingAddress={false}
+                    />
+                </View>
 
                 <TouchableOpacity
                     style={styles.registerButton}
                     onPress={handleRegister}
                 >
-                    <Text style={styles.registerButtonText}>Register</Text>
+                    <Text style={styles.registerButtonText}>Register & Pay $20.00</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity

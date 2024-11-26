@@ -28,7 +28,6 @@ public class AcmeplexApplication {
             user1.setAddress("123 Test St");
             user1.setRegistrationDate(new Date());
             user1.setAnnualFeeDueDate(new Date());
-            user1.setCredits(100.0);
             user1.setIsRU(true);
 
             RegisteredUser user2 = new RegisteredUser();
@@ -39,7 +38,6 @@ public class AcmeplexApplication {
             user2.setAddress("456 Test Ave");
             user2.setRegistrationDate(new Date());
             user2.setAnnualFeeDueDate(new Date());
-            user2.setCredits(50.0);
             user2.setIsRU(true);
 
             userService.createUser(user1);

@@ -20,7 +20,7 @@ public class Transaction {
     private List<Ticket> tickets = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "couponId", nullable = false)
+    @JoinColumn(name = "couponId", nullable = true)
     private Coupon coupon;
 
     @ManyToOne

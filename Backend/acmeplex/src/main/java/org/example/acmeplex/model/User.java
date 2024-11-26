@@ -6,7 +6,6 @@ import lombok.Data;
 @Entity
 @Data
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "userType", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "USER")
 public class User {
     @Id

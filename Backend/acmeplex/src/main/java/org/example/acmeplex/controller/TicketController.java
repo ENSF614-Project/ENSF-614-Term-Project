@@ -4,27 +4,27 @@ import org.example.acmeplex.model.Ticket;
 import org.example.acmeplex.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/tickets")
+@RequestMapping("/tickets")
 public class TicketController {
 
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Ticket createTicket(@RequestBody Ticket ticket) {
         return ticketService.createTicket(ticket);
     }
 
-    @GetMapping("/user/{userID}")
-    public List<Ticket> getTicketsByUser(@PathVariable Integer userID) {
-        return ticketService.getTicketsByUser(userID);
+    @GetMapping("/{ticketID}")
+    public Ticket getTicket(@PathVariable Integer ticketID) {
+        return ticketService.getTicketById(ticketID);
     }
 
-    @PostMapping("/cancel/{ticketID}")
-    public void cancelTicket(@PathVariable Integer ticketID) {
+    @PutMapping("/cancel/{ticketID}")
+    public String cancelTicket(@PathVariable Integer ticketID) {
         ticketService.cancelTicket(ticketID);
+        return "Ticket canceled successfully";
     }
 }

@@ -1,3 +1,4 @@
+//RegisteredUserController.java
 package org.example.acmeplex.controller;
 
 import org.example.acmeplex.model.RegisteredUser;
@@ -8,12 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/registered-users")
 @CrossOrigin(origins = "*")
 public class RegisteredUserController {
 
     @Autowired
-    private RegisteredUserService userService;
+    private RegisteredUserService registeredUserService;
 
     @GetMapping("/test")
     public String testEndpoint() {
@@ -22,26 +23,26 @@ public class RegisteredUserController {
 
     @GetMapping
     public List<RegisteredUser> getAllUsers() {
-        return userService.getAllUsers();
+        return registeredUserService.getAllUsers();
     }
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody RegisteredUser user) {
         // Basic validation
-        if (userService.existsByUsername(user.getUsername())) {
+        if (registeredUserService.existsByUsername(user.getUsername())) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
-        if (userService.existsByEmail(user.getEmail())) {
+        if (registeredUserService.existsByEmail(user.getEmail())) {
             return ResponseEntity.badRequest().body("Email already exists");
         }
 
-        RegisteredUser newUser = userService.createUser(user);
+        RegisteredUser newUser = registeredUserService.createUser(user);
         return ResponseEntity.ok(newUser);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RegisteredUser> getUserById(@PathVariable Integer id) {
-        RegisteredUser user = userService.getUserById(id);
+        RegisteredUser user = registeredUserService.getUserById(id);
         if (user != null) {
             return ResponseEntity.ok(user);
         }
@@ -50,7 +51,7 @@ public class RegisteredUserController {
 
     @GetMapping("/username/{username}")
     public ResponseEntity<RegisteredUser> getUserByUsername(@PathVariable String username) {
-        RegisteredUser user = userService.getUserByUsername(username);
+        RegisteredUser user = registeredUserService.getUserByUsername(username);
         if (user != null) {
             return ResponseEntity.ok(user);
         }

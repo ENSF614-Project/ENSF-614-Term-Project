@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { styles } from './styles';
 
 const LoginScreen = ({ navigation }) => {
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(''); //Change to email?
     const [password, setPassword] = useState('');
 
     const handleLogin = () => {
@@ -17,6 +17,7 @@ const LoginScreen = ({ navigation }) => {
     const handleRegister = () => {
         // TODO: Navigate to Register screen 
         console.log('Navigate to Register');
+        navigation.navigate('Register');
     };
 
     return (

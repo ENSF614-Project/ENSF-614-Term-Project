@@ -17,12 +17,12 @@ public class Ticket {
     @Column(name = "showtimeID", nullable = false)
     private Integer showtimeID;
 
-    @Column(name = "seatID", nullable = false)
-    private Integer seatID;
+    @Column(name = "seatID", nullable = false, length = 10)
+    private String seatID;
 
-    @Column(name = "purchasedDate", nullable = false)
+    @Column(name = "ticketDate", nullable = false)
     @Temporal(TemporalType.DATE)
-    private Date purchasedDate;
+    private Date ticketDate;
 
     @Column(name = "cancellationDeadline", nullable = false)
     @Temporal(TemporalType.DATE)
@@ -35,16 +35,13 @@ public class Ticket {
     private Double price;
 
     @Column(name = "refund", nullable = false)
-    private Double refund = 0.0;
-
-    @Column(name = "cancellationFee", nullable = false)
-    private Double cancellationFee;
+    private Double refund;
 
     @ManyToOne
-    @JoinColumn(name = "userID", insertable = false, updatable = false)
+    @JoinColumn(name = "userID")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "transactionID", insertable = false, updatable = false)
+    @JoinColumn(name = "transactionID")
     private Transaction transaction;
 }

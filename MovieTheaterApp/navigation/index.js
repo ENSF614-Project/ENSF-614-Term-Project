@@ -11,6 +11,7 @@ import LoginScreen from '../screens/LoginScreen';
 import SeatSelectionScreen from '../screens/SeatSelectionScreen';
 import NewsScreen from '../screens/NewsScreen';
 import CancelTicketScreen from '../screens/CancelTicketScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 import Header from '../components/Header';
 import { COLORS } from '../styles';
 
@@ -96,6 +97,13 @@ const screens = [
         component: CancelTicketScreen,
         options: {
             headerTitle: 'Cancel Ticket',
+        }
+    },
+    {
+        name: 'Register',
+        component: RegisterScreen,
+        options: {
+            headerTitle: 'Registration',
         }
     }
 ];

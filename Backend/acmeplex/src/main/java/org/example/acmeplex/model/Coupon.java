@@ -14,11 +14,17 @@ public class Coupon {
     @Column(name = "couponID", nullable = false)
     private Integer couponID;
 
+    @Column(name = "ticketID", nullable = false)
+    private Integer ticketID;
+
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "userID", nullable = false)
+    private Integer userID;
+
     @Column(name = "expiryDate", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date expiryDate;
 
     @Column(name = "value", nullable = false)
@@ -28,13 +34,13 @@ public class Coupon {
     private Double amount;
 
     @Column(name = "status", nullable = false, length = 50)
-    private String status; // Example: Active, Redeemed, Expired
+    private String status;
 
     @ManyToOne
-    @JoinColumn(name = "userID", insertable = false, updatable = false)
+    @JoinColumn(name = "ticketID", insertable = false, updatable = false)
+    private Ticket ticket;
+
+    @ManyToOne
+    @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
     private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "transactionID", nullable = false)
-    private Transaction transaction;
 }

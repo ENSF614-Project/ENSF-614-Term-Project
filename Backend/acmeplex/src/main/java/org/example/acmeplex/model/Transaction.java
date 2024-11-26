@@ -2,7 +2,6 @@ package org.example.acmeplex.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,10 +16,10 @@ public class Transaction {
     private Integer transactionID;
 
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Ticket> tickets = new ArrayList<>();
+    private List<Ticket> tickets;
 
     @ManyToOne
-    @JoinColumn(name = "couponId", nullable = true)
+    @JoinColumn(name = "couponId")
     private Coupon coupon;
 
     @ManyToOne

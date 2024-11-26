@@ -23,6 +23,15 @@ const PaymentScreen = ({ route, navigation }) => {
         { id: 2, last4: '1234', expiryDate: '10/25', cardHolderName: 'Test User' }
     ]);
 
+    const formatDate = (date) => {
+        return date.toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
     const handlePayment = () => {
         if (selectedPaymentMethod === 'new' && !isFormValid) {
             alert('Please check all card details are correct');
@@ -60,8 +69,16 @@ const PaymentScreen = ({ route, navigation }) => {
                     <Text style={styles.summaryText}>{movie.title}</Text>
                 </View>
                 <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Showtime:</Text>
+                    <Text style={styles.summaryLabel}>Date:</Text>
+                    <Text style={styles.summaryText}>{formatDate(showtime.date)}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Time:</Text>
                     <Text style={styles.summaryText}>{showtime.time}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Theatre:</Text>
+                    <Text style={styles.summaryText}>{showtime.theatre}</Text>
                 </View>
                 <View style={styles.summaryRow}>
                     <Text style={styles.summaryLabel}>Seats:</Text>

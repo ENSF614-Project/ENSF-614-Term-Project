@@ -2,26 +2,28 @@ package org.example.acmeplex.service;
 
 import org.example.acmeplex.model.Ticket;
 import org.example.acmeplex.repository.TicketRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class TicketService {
 
-    @Autowired
-    private TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
 
-    public Ticket createTicket(Ticket ticket) {
-        return ticketRepository.save(ticket);
+    public TicketService(TicketRepository ticketRepository) {
+        this.ticketRepository = ticketRepository;
     }
 
-    public Ticket getTicketById(Integer ticketID) {
-        return ticketRepository.findById(ticketID).orElse(null);
+    public List<Ticket> getAvailableSeats(Integer showtimeID) {
+        return ticketRepository.findByShowtimeShowtimeIdAndStatus(showtimeID, "AVAILABLE");
     }
-    
-    public void cancelTicket(Integer ticketID) {
-        Ticket ticket = getTicketById(ticketID);
+
+    public void cancelTicket(Integer ticketID, boolean isRegisteredUser) {
+        Ticket ticket = ticketRepository.findById(ticketID).orElse(null);
         if (ticket != null && isCancelable(ticket)) {
+            ticket.setRefund(isRegisteredUser ? ticket.getPrice() : ticket.getPrice() * 0.85);
             ticket.setStatus("Canceled");
             ticketRepository.save(ticket);
         }

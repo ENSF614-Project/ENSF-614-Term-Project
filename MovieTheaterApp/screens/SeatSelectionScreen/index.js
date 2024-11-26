@@ -1,11 +1,9 @@
 // screens/SeatSelectionScreen/index.js
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 
-const SeatSelectionScreen = ({ route }) => {
-    const navigation = useNavigation();
+const SeatSelectionScreen = ({ route, navigation }) => {
     const { showtime, movie } = route.params;
     const [selectedSeats, setSelectedSeats] = useState([]);
 
@@ -13,18 +11,22 @@ const SeatSelectionScreen = ({ route }) => {
     const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     const seatsPerRow = 10;
 
-    // Hardcoded occupied seats to test the UI
-    const occupiedSeats = [
-        { row: 'C', seat: 4 },
-        { row: 'C', seat: 5 },
-        { row: 'F', seat: 7 },
-        { row: 'F', seat: 8 },
-    ];
+    const formatDate = (date) => {
+        return date.toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
+    const formatTime = (time) => {
+        return time;  // may need to update method depending on how we get the time from the database
+    };
 
     const isSeatOccupied = (row, seat) => {
-        return occupiedSeats.some(
-            occupied => occupied.row === row && occupied.seat === seat
-        );
+        const seatKey = `${row}${seat}`;
+        return showtime.occupiedSeats.includes(seatKey);
     };
 
     const isSeatSelected = (row, seat) => {
@@ -70,20 +72,9 @@ const SeatSelectionScreen = ({ route }) => {
 
         navigation.navigate('Payment', {
             selectedSeats,
-            total: selectedSeats.length * 12, // hardcoded price calculation (need to connect to database here)
+            total: selectedSeats.length * showtime.price,
             showtime,
-            movie,
-            onComplete: (paymentResult) => {
-                if (paymentResult.success) {
-                    navigation.navigate('TicketConfirmation', {
-                        tickets: selectedSeats,
-                        movie,
-                        showtime,
-                        total: selectedSeats.length * 12,
-                        paymentInfo: paymentResult.paymentInfo
-                    });
-                }
-            }
+            movie
         });
     };
 
@@ -92,8 +83,9 @@ const SeatSelectionScreen = ({ route }) => {
             <View style={styles.movieInfo}>
                 <Text style={styles.movieTitle}>{movie.title}</Text>
                 <Text style={styles.showtimeInfo}>
-                    {showtime.time} - {showtime.theatre}
+                    {formatDate(showtime.date)} at {formatTime(showtime.time)}
                 </Text>
+                <Text style={styles.theatreInfo}>{showtime.theatre}</Text>
             </View>
 
             <View style={styles.screen}>
@@ -143,7 +135,7 @@ const SeatSelectionScreen = ({ route }) => {
                         : 'None'}
                 </Text>
                 <Text style={styles.summaryTotal}>
-                    Total: ${(selectedSeats.length * 12).toFixed(2)}
+                    Total: ${(selectedSeats.length * showtime.price).toFixed(2)}
                 </Text>
             </View>
 

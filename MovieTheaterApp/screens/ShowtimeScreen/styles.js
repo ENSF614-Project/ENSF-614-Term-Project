@@ -21,14 +21,48 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
     },
-    dateSelector: {
+    datePickerContainer: {
         padding: SPACING.lg,
         borderBottomWidth: 1,
         borderBottomColor: COLORS.border,
     },
-    dateTitle: {
-        ...TYPOGRAPHY.title,
-        marginBottom: SPACING.md,
+    dateButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: SPACING.md,
+        padding: SPACING.md,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        borderRadius: SPACING.sm,
+    },
+    dateText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+    },
+    calendarContainer: {
+        marginTop: SPACING.md,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: SPACING.sm,
+    },
+    calendarDate: {
+        padding: SPACING.md,
+        borderRadius: SPACING.sm,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        minWidth: 100,
+        alignItems: 'center',
+    },
+    selectedDate: {
+        backgroundColor: COLORS.RED,
+        borderColor: COLORS.RED,
+    },
+    calendarDateText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+    },
+    selectedDateText: {
+        color: COLORS.background,
     },
     showtimesContainer: {
         padding: SPACING.lg,
@@ -62,5 +96,11 @@ export const styles = StyleSheet.create({
     price: {
         ...TYPOGRAPHY.title,
         color: COLORS.RED,
+    },
+    noShowtimesText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        textAlign: 'center',
+        padding: SPACING.xl,
     },
 });

@@ -2,24 +2,22 @@ package org.example.acmeplex.controller;
 
 import org.example.acmeplex.model.Coupon;
 import org.example.acmeplex.service.CouponService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/coupons")
 public class CouponController {
 
-    @Autowired
-    private CouponService couponService;
+    private final CouponService couponService;
 
-    @PostMapping
-    public Coupon createCoupon(@RequestBody Coupon coupon) {
-        return couponService.createCoupon(coupon);
+    public CouponController(CouponService couponService) {
+        this.couponService = couponService;
     }
 
-    @GetMapping("/validate/{couponID}")
-    public String validateCoupon(@PathVariable Integer couponID) {
-        Coupon coupon = couponService.getCouponById(couponID);
-        return couponService.validateCoupon(coupon) ? "Coupon is valid" : "Coupon is invalid";
+    @GetMapping("/user/{userId}")
+    public List<Coupon> getValidCoupons(@PathVariable Integer userId) {
+        return couponService.getValidCouponsByUserId(userId);
     }
 }

@@ -17,15 +17,21 @@ public class Ticket {
     @Column(name = "showtimeID", nullable = false)
     private Integer showtimeID;
 
-    @Column(name = "seatID", nullable = false)
-    private Integer seatID;
+    @Column(name = "movieID", nullable = false)
+    private Integer movieID;
 
-    @Column(name = "purchasedDate", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date purchasedDate;
+    @Column(name = "theatreID", nullable = false)
+    private Integer theatreID;
 
+    @Column(name = "seatIDList", nullable = false, columnDefinition = "TEXT")
+    private String seatIDList;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "ticketDate", nullable = false)
+    private Date ticketDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "cancellationDeadline", nullable = false)
-    @Temporal(TemporalType.DATE)
     private Date cancellationDeadline;
 
     @Column(name = "status", nullable = false, length = 50)
@@ -37,14 +43,26 @@ public class Ticket {
     @Column(name = "refund", nullable = false)
     private Double refund = 0.0;
 
-    @Column(name = "cancellationFee", nullable = false)
-    private Double cancellationFee;
+    @Column(name = "userID", nullable = false)
+    private Integer userID;
 
     @ManyToOne
     @JoinColumn(name = "userID", insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "transactionID", insertable = false, updatable = false)
+    @JoinColumn(name = "showtimeID", insertable = false, updatable = false)
+    private Showtime showtime;
+
+    @ManyToOne
+    @JoinColumn(name = "movieID", insertable = false, updatable = false)
+    private Movie movie;
+
+    @ManyToOne
+    @JoinColumn(name = "theatreID", insertable = false, updatable = false)
+    private Theatre theatre;
+
+    @ManyToOne
+    @JoinColumn(name = "transactionID", nullable = false)
     private Transaction transaction;
 }

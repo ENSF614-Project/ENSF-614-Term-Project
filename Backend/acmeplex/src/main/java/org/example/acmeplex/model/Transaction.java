@@ -2,6 +2,7 @@ package org.example.acmeplex.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,19 +20,18 @@ public class Transaction {
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ticket> tickets = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "couponId", nullable = false)
-    private Coupon coupon;
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Coupon> coupons = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userID", nullable = false)
     private User user;
 
     @Column(name = "total", nullable = false)
     private Double total;
 
     @Column(name = "paymentMethod", nullable = false)
-    private String paymentMethod;
+    private String paymentMethod; // Example: CreditCard, PayPal
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "transactionDate", nullable = false)

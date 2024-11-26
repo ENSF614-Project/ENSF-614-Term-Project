@@ -6,24 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/coupons")
+@RequestMapping("/coupons")
 public class CouponController {
 
     @Autowired
     private CouponService couponService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Coupon createCoupon(@RequestBody Coupon coupon) {
         return couponService.createCoupon(coupon);
     }
 
-    @PutMapping("/updateValue/{couponID}")
-    public Coupon updateCouponValue(@PathVariable Integer couponID, @RequestParam Double value) {
-        return couponService.updateCouponValue(couponID, value);
-    }
-
-    @PutMapping("/deactivate/{couponID}")
-    public void deactivateCoupon(@PathVariable Integer couponID) {
-        couponService.deactivateCoupon(couponID);
+    @GetMapping("/validate/{couponID}")
+    public String validateCoupon(@PathVariable Integer couponID) {
+        Coupon coupon = couponService.getCouponById(couponID);
+        return couponService.validateCoupon(coupon) ? "Coupon is valid" : "Coupon is invalid";
     }
 }

@@ -1,5 +1,6 @@
 package org.example.acmeplex.controller;
 
+import org.example.acmeplex.model.Ticket;
 import org.example.acmeplex.model.Transaction;
 import org.example.acmeplex.service.TransactionService;
 import org.springframework.web.bind.annotation.*;

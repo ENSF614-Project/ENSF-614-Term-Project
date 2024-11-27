@@ -79,7 +79,7 @@ export const showtimes = {
         ]
     },
     3: {
-        "2024-12-6": [
+        "2024-12-06": [
             { id: "3-1", time: "12:00 PM", theatre: "Theater One", price: 12.99, occupiedSeats: generateOccupiedSeats() },
             { id: "3-2", time: "5:00 PM", theatre: "Theater Two", price: 14.99, occupiedSeats: generateOccupiedSeats() },
             { id: "3-3", time: "9:00 PM", theatre: "Theater One", price: 16.99, occupiedSeats: generateOccupiedSeats() }

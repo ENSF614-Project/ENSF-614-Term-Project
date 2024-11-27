@@ -31,6 +31,6 @@ public class Coupon {
     @Column(name = "expiry_date", nullable = false)
     private Date expiryDate;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "status", nullable = false, length = 50)
     private String status;
 }

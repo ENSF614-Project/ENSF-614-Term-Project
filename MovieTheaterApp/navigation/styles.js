@@ -1,12 +1,13 @@
-import { COLORS } from '../styles';
+// navigation/styles.js
 import { StyleSheet } from 'react-native';
+import { COLORS } from '../styles';
 
 export const styles = StyleSheet.create({
     header: {
-        tintColor: "#0000FF",//COLORS.text.primary,
-        backgroundColor: COLORS.background,
+        tintColor: COLORS.text.primary,
+        backgroundColor: COLORS.background.primary,
     },
     icon: {
-        color: "#0000FF",
+        color: COLORS.icon.primary,
     }
 });

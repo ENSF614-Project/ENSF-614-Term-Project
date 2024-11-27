@@ -5,27 +5,28 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
     },
     successContainer: {
         alignItems: 'center',
         padding: SPACING.xl,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
     },
     checkCircle: {
         width: 80,
         height: 80,
         borderRadius: 40,
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: SPACING.lg,
-        iconColor: "#0000FF",
+        iconColor: COLORS.text.inverse,
     },
     successTitle: {
         ...TYPOGRAPHY.title,
         fontSize: 24,
         marginBottom: SPACING.sm,
+        color: COLORS.text.primary,
     },
     successText: {
         ...TYPOGRAPHY.body,
@@ -38,6 +39,7 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.title,
         fontSize: 18,
         marginBottom: SPACING.md,
+        color: COLORS.text.primary,
     },
     detailRow: {
         flexDirection: 'row',
@@ -56,27 +58,27 @@ export const styles = StyleSheet.create({
     },
     total: {
         ...TYPOGRAPHY.title,
-        color: COLORS.RED,
+        color: COLORS.button.primary.background,
     },
     paymentInfoContainer: {
         marginTop: SPACING.xl,
         paddingTop: SPACING.lg,
         borderTopWidth: 1,
-        borderTopColor: COLORS.border,
+        borderTopColor: COLORS.border.default,
     },
     paymentText: {
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
     },
     doneButton: {
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
         padding: SPACING.md,
         borderRadius: SPACING.sm,
         margin: SPACING.lg,
     },
     doneButtonText: {
         ...TYPOGRAPHY.title,
-        color: COLORS.background,
+        color: COLORS.button.primary.text,
         textAlign: 'center',
     },
 });

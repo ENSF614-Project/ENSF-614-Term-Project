@@ -9,9 +9,9 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: SPACING.lg,
         height: 64,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.border.default,
     },
     leftContainer: {
         flexDirection: 'row',
@@ -25,13 +25,13 @@ export const styles = StyleSheet.create({
     },
     iconButton: {
         padding: SPACING.xs,
-        color: "#0000FF",
+        color: COLORS.icon.primary,
     },
     menuContainer: {
         width: '100%',
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.border.default,
         paddingVertical: SPACING.xs,
     },
     menuItem: {
@@ -44,6 +44,6 @@ export const styles = StyleSheet.create({
         fontSize: 16,
     },
     iconColor: {
-        color: "0000FF",
+        color: COLORS.icon.primary,
     },
 });

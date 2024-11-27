@@ -1,10 +1,11 @@
+// screens/HomeScreen/styles.js
 import { StyleSheet } from 'react-native';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
     },
     searchContainer: {
         flexDirection: 'row',
@@ -12,16 +13,16 @@ export const styles = StyleSheet.create({
         paddingHorizontal: SPACING.lg,
         paddingVertical: SPACING.md,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
-        backgroundColor: COLORS.secondary,
+        borderBottomColor: COLORS.border.default,
+        backgroundColor: COLORS.background.secondary,
     },
     searchInputContainer: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.input.background,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.input.border,
         borderRadius: SPACING.sm,
         marginRight: SPACING.sm,
     },
@@ -30,23 +31,23 @@ export const styles = StyleSheet.create({
         height: 40,
         paddingHorizontal: SPACING.md,
         color: COLORS.text.primary,
-        placeholderTextColor: "#0000FF",
+        placeholderTextColor: COLORS.input.placeholder,
     },
     clearButton: {
         padding: SPACING.xs,
         marginRight: SPACING.xs,
-        color: "#0000FF",
+        color: COLORS.icon.secondary,
     },
     searchButton: {
         padding: SPACING.xs,
-        color: "#0000FF",
+        color: COLORS.icon.primary,
     },
     genreFilterContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
-        backgroundColor: COLORS.background,
+        borderBottomColor: COLORS.border.default,
+        backgroundColor: COLORS.background.primary,
     },
     genreScrollContainer: {
         paddingHorizontal: SPACING.lg,
@@ -56,26 +57,26 @@ export const styles = StyleSheet.create({
         paddingHorizontal: SPACING.md,
         paddingVertical: SPACING.xs,
         borderRadius: SPACING.lg,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         marginRight: SPACING.sm,
     },
     genreChipSelected: {
-        backgroundColor: COLORS.RED,
-        borderColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
+        borderColor: COLORS.button.primary.background,
     },
     genreChipText: {
         ...TYPOGRAPHY.body,
         color: COLORS.text.primary,
     },
     genreChipTextSelected: {
-        color: COLORS.background,
+        color: COLORS.text.inverse,
     },
     clearFiltersButton: {
         padding: SPACING.md,
         marginRight: SPACING.md,
-        color: "#0000FF",
+        color: COLORS.icon.primary,
     },
     cardWrapper: {
         flex: 1,
@@ -96,19 +97,19 @@ export const styles = StyleSheet.create({
     },
     clearSearchButton: {
         padding: SPACING.md,
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
         borderRadius: SPACING.sm,
     },
     clearSearchButtonText: {
         ...TYPOGRAPHY.body,
-        color: COLORS.background,
+        color: COLORS.button.primary.text,
         fontWeight: 'bold',
     },
     searchResultsContainer: {
         paddingHorizontal: SPACING.lg,
         paddingVertical: SPACING.md,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.border.default,
     },
     searchResultsText: {
         ...TYPOGRAPHY.body,

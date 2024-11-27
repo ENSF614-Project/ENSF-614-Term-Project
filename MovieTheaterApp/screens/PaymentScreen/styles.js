@@ -1,21 +1,22 @@
-// screens\PaymentScreen\styles.js
+// screens/PaymentScreen/styles.js
 import { StyleSheet } from 'react-native';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
     },
     summaryContainer: {
         padding: SPACING.lg,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.border.default,
     },
     sectionTitle: {
         ...TYPOGRAPHY.title,
         fontSize: 20,
         marginBottom: SPACING.md,
+        color: COLORS.text.primary,
     },
     summaryRow: {
         flexDirection: 'row',
@@ -28,10 +29,11 @@ export const styles = StyleSheet.create({
     },
     summaryText: {
         ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
     },
     totalText: {
         ...TYPOGRAPHY.title,
-        color: COLORS.RED,
+        color: COLORS.button.primary.background,
         fontSize: 18,
     },
     paymentMethodContainer: {
@@ -43,73 +45,40 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: SPACING.md,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         borderRadius: SPACING.sm,
         marginBottom: SPACING.md,
+        backgroundColor: COLORS.background.primary,
     },
     selectedCard: {
-        borderColor: COLORS.RED,
-        backgroundColor: COLORS.secondaryBackground,
+        borderColor: COLORS.button.primary.background,
+        backgroundColor: COLORS.background.secondary,
     },
     savedCardInfo: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: SPACING.md,
-        cardColor: "#0000FF",
+        cardColor: COLORS.icon.primary,
     },
     savedCardText: {
         ...TYPOGRAPHY.body,
-    },
-    formContainer: {
-        padding: SPACING.lg,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        borderRadius: SPACING.sm,
-        padding: SPACING.md,
-        marginBottom: SPACING.md,
-        fontSize: 16,
-    },
-    row: {
-        flexDirection: 'row',
-        gap: SPACING.md,
-    },
-    halfInput: {
-        flex: 1,
-    },
-    saveCardContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: SPACING.lg,
-        gap: SPACING.sm,
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderWidth: 2,
-        borderColor: COLORS.border,
-        borderRadius: 4,
-    },
-    checkboxChecked: {
-        backgroundColor: COLORS.RED,
-        borderColor: COLORS.RED,
-    },
-    saveCardText: {
-        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
     },
     payButton: {
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
         padding: SPACING.md,
         borderRadius: SPACING.sm,
         margin: SPACING.lg,
     },
+    payButtonDisabled: {
+        backgroundColor: COLORS.button.secondary.background,
+    },
     payButtonText: {
         ...TYPOGRAPHY.title,
-        color: COLORS.background,
+        color: COLORS.button.primary.text,
         textAlign: 'center',
     },
     trashIcon: {
-        color: "#0000FF",
+        color: COLORS.icon.error,
     }
 });

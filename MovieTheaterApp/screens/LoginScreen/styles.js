@@ -5,7 +5,7 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         justifyContent: 'center',
         padding: SPACING.xl,
     },
@@ -19,23 +19,26 @@ export const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: SPACING.xl,
         textAlign: 'center',
+        color: COLORS.text.primary,
     },
     input: {
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.input.border,
         borderRadius: SPACING.sm,
         padding: SPACING.md,
         marginBottom: SPACING.lg,
         fontSize: 16,
+        backgroundColor: COLORS.input.background,
+        color: COLORS.text.primary,
     },
     loginButton: {
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
         padding: SPACING.md,
         borderRadius: SPACING.sm,
         marginBottom: SPACING.md,
     },
     loginButtonText: {
-        color: COLORS.background,
+        color: COLORS.button.primary.text,
         textAlign: 'center',
         fontSize: 16,
         fontWeight: 'bold',

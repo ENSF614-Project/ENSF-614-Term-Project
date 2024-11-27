@@ -5,15 +5,16 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
     },
     movieInfo: {
         padding: SPACING.lg,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.border.default,
     },
     movieTitle: {
         ...TYPOGRAPHY.title,
+        color: COLORS.text.primary,
         marginBottom: SPACING.xs,
     },
     showtimeInfo: {
@@ -23,7 +24,7 @@ export const styles = StyleSheet.create({
     screen: {
         height: 40,
         marginVertical: SPACING.xl,
-        backgroundColor: COLORS.border,
+        backgroundColor: COLORS.background.secondary,
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: SPACING.xl,
@@ -45,31 +46,32 @@ export const styles = StyleSheet.create({
         width: 30,
         ...TYPOGRAPHY.body,
         textAlign: 'center',
+        color: COLORS.text.primary,
     },
     seat: {
         width: 35,
         height: 35,
         margin: 3,
         borderRadius: 6,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         borderWidth: 1,
-        borderColor: COLORS.RED,
+        borderColor: COLORS.button.primary.background,
         justifyContent: 'center',
         alignItems: 'center',
     },
     selectedSeat: {
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
     },
     occupiedSeat: {
-        backgroundColor: COLORS.border,
-        borderColor: COLORS.border,
+        backgroundColor: COLORS.background.secondary,
+        borderColor: COLORS.border.default,
     },
     seatText: {
         fontSize: 12,
-        color: COLORS.RED,
+        color: COLORS.button.primary.background,
     },
     selectedSeatText: {
-        color: COLORS.background,
+        color: COLORS.text.inverse,
     },
     occupiedSeatText: {
         color: COLORS.text.secondary,
@@ -89,9 +91,9 @@ export const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderRadius: 4,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         borderWidth: 1,
-        borderColor: COLORS.RED,
+        borderColor: COLORS.button.primary.background,
     },
     legendText: {
         ...TYPOGRAPHY.body,
@@ -100,22 +102,24 @@ export const styles = StyleSheet.create({
     summary: {
         padding: SPACING.lg,
         borderTopWidth: 1,
-        borderTopColor: COLORS.border,
+        borderTopColor: COLORS.border.default,
     },
     summaryTitle: {
         ...TYPOGRAPHY.title,
+        color: COLORS.text.primary,
         marginBottom: SPACING.xs,
     },
     summaryText: {
         ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
         marginBottom: SPACING.sm,
     },
     summaryTotal: {
         ...TYPOGRAPHY.title,
-        color: COLORS.RED,
+        color: COLORS.button.primary.background,
     },
     confirmButton: {
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
         margin: SPACING.lg,
         padding: SPACING.md,
         borderRadius: SPACING.sm,
@@ -125,7 +129,7 @@ export const styles = StyleSheet.create({
         opacity: 0.5,
     },
     confirmButtonText: {
-        color: COLORS.background,
+        color: COLORS.button.primary.text,
         ...TYPOGRAPHY.title,
     },
 });

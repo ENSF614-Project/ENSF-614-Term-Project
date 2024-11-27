@@ -21,8 +21,11 @@ public class Coupon {
     @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 
-    @Column(name = "value", nullable = false)
-    private Double value;
+    @Column(name = "original_value", nullable = false)
+    private Double originalValue;
+
+    @Column(name = "remaining_value", nullable = false)
+    private Double remainingValue;
 
     @Column(name = "email", nullable = false)
     private String email;

@@ -41,7 +41,7 @@ public class Ticket {
     @Column(name = "refund", nullable = false)
     private Double refund;
 
-    @Column(name = "Status", nullable = false)
+    @Column(name = "status", nullable = false)
     private String status;
 
     @Column(name = "email", nullable = false)

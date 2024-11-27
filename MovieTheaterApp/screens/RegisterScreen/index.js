@@ -9,14 +9,13 @@ import {
 } from 'react-native';
 import { styles } from './styles';
 import CreditCardForm from '../../components/CreditCardForm';
+import RegisteredUserForm from '../../components/RegisteredUserForm';
 
 const RegisterScreen = ({ navigation }) => {
-    const [username, setUsername] = useState(''); //remove if not using username (taken from login page)
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [name, setName] = useState('');
-    const [address, setAddress] = useState(''); //Can maybe change out to multiple fields, depends how we are storing address in DB
+
+    const [userValues, setUserValues] = useState({});
+    const [userErrors, setUserErrors] = useState({});
+    const [isUserFormValid, setIsUserFormValid] = useState(false);
 
     const [formValues, setFormValues] = useState({});
     const [formErrors, setFormErrors] = useState({});
@@ -24,40 +23,18 @@ const RegisterScreen = ({ navigation }) => {
 
 
     const handleRegister = () => {
-        //TODO: Add logic for registration
-
-        //Needs to ensure all fields are filled and shows which aren't
-
-        //Needs to check if passwords are the same
-
-        //Needs to check if email is valid and filled
-
-        //Needs to check if address is valid
-
-        /*console.log('Registration attempted:', {
-            username,
-            email,
-            password,
-            name,
-            address,
-            billingAddress,
-            cardDetails: { cardNumber, expiryDate, cvv },
-        });
         
-        navigation.navigate('Login');*/
         // Construct user data
-        const userData = {
-            username,
-            email,
-            password,
-            name,
-            address,
-            paymentInfo: formValues
-        };
+        const userData = { Userinfo: userValues, paymentInfo: formValues };
 
         console.log('Registration data:', userData);
 
         //Right now takes you to login, but should take you to payment?
+
+        if (!isUserFormValid) {
+            alert('Please fix the errors in the user details');
+            return;
+        }
         if (!isFormValid) {
             console.log('Form is not valid:', formErrors);
             alert('Error', 'Please check all card details are correct');
@@ -77,55 +54,19 @@ const RegisterScreen = ({ navigation }) => {
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.formContainer}>
                 <Text style={styles.title}>Create an Account</Text>
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Name"
-                    value={name}
-                    onChangeText={setName}
-                    autoCapitalize="words"
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Username"
-                    value={username}
-                    onChangeText={setUsername}
-                    autoCapitalize="none"
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize="none"
-                    keyboardType="email-address"
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Address"
-                    value={address}
-                    onChangeText={setAddress}
-                    autoCapitalize="words"
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Confirm Password"
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    secureTextEntry
-                />
+                
+                
+                
+                <View style={styles.section}>
+                    <RegisteredUserForm
+                        onValuesChange={setUserValues}
+                        onValidationChange={(isValid, errors) => {
+                            setIsUserFormValid(isValid);
+                            setUserErrors(errors);
+                        }}
+                        errors={userErrors}
+                    />
+                </View>
 
                 <View style={styles.section}>
                     <View style={styles.membershipContainer}>
@@ -145,13 +86,14 @@ const RegisterScreen = ({ navigation }) => {
                             setFormErrors(errors);
                         }}
                         errors={formErrors}
-                        includeBillingAddress={false}
+                        includeBillingAddress={true} //Required for registering
                     />
                 </View>
 
                 <TouchableOpacity
-                    style={styles.registerButton}
+                    style={[styles.registerButton, (!isUserFormValid || !isFormValid) && styles.registerButtonDisabled]}
                     onPress={handleRegister}
+                    disabled={!isUserFormValid || !isFormValid}  // Disable button if any form is invalid
                 >
                     <Text style={styles.registerButtonText}>Register & Pay $20.00</Text>
                 </TouchableOpacity>

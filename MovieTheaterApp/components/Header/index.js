@@ -18,7 +18,7 @@ const Header = () => {
         setIsMenuOpen(false);
         navigation.navigate(route);
     };
-
+            //Get rid of the view account in the hamburger menu later, this is only for testing.
     return (
         <>
             <View style={styles.container}>
@@ -54,6 +54,20 @@ const Header = () => {
                     >
                         <Text style={styles.menuItemText}>View News</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => handleMenuItemPress('Coupon')}
+                    >
+                        <Text style={styles.menuItemText}>View Coupon</Text>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => handleMenuItemPress('Account')}
+                    >
+                        <Text style={styles.menuItemText}>View Account</Text>
+                    </TouchableOpacity> 
                 </View>
             )}
         </>

@@ -11,7 +11,9 @@ import LoginScreen from '../screens/LoginScreen';
 import SeatSelectionScreen from '../screens/SeatSelectionScreen';
 import NewsScreen from '../screens/NewsScreen';
 import CancelTicketScreen from '../screens/CancelTicketScreen';
+import CouponScreen from '../screens/CouponScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import AccountScreen from '../screens/AccountScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import TicketConfirmationScreen from '../screens/TicketConfirmationScreen';
 import Header from '../components/Header';
@@ -102,10 +104,24 @@ const screens = [
         }
     },
     {
+        name: 'Coupon',
+        component: CouponScreen,
+        options: {
+            headerTitle: 'Coupon',
+        }
+    },
+    {
         name: 'Register',
         component: RegisterScreen,
         options: {
             headerTitle: 'Registration',
+        }
+    },
+    {
+        name: 'Account',
+        component: AccountScreen,
+        options: {
+            headerTitle: 'Account',
         }
     },
     {

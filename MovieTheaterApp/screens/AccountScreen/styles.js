@@ -29,6 +29,14 @@ export const styles = StyleSheet.create({
         borderColor: COLORS.border,
         padding: SPACING.lg,
     },
+    paymentSection: {
+        marginBottom: SPACING.xl,
+        backgroundColor: COLORS.background,
+        borderRadius: SPACING.sm,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        padding: SPACING.lg,
+    },
     sectionHeader: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -57,26 +65,6 @@ export const styles = StyleSheet.create({
         marginBottom: SPACING.sm,
         marginLeft: SPACING.xs,
     },
-    membershipContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: SPACING.md,
-    },
-    membershipTitle: {
-        ...TYPOGRAPHY.title,
-        fontSize: 18,
-    },
-    membershipAmount: {
-        ...TYPOGRAPHY.title,
-        fontSize: 20,
-        color: COLORS.RED,
-    },
-    membershipInfo: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.text.secondary,
-        fontStyle: 'italic',
-    },
     registerButton: {
         backgroundColor: COLORS.RED,
         padding: SPACING.md,
@@ -100,5 +88,50 @@ export const styles = StyleSheet.create({
     loginButtonText: {
         color: COLORS.text.secondary,
         textAlign: 'center',
+    },
+
+    paymentMethodContainer: {
+        padding: SPACING.lg,
+    },
+    savedCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: SPACING.md,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        borderRadius: SPACING.sm,
+        marginBottom: SPACING.md,
+    },
+    selectedCard: {
+        borderColor: COLORS.RED,
+        backgroundColor: COLORS.secondaryBackground,
+    },
+    savedCardInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: SPACING.md,
+    },
+    savedCardText: {
+        ...TYPOGRAPHY.body,
+    },
+    navigationButtonsContainer: {
+        marginTop: SPACING.lg,
+        width: '100%',
+        alignItems: 'center',
+    },
+    navigationButton: {
+        backgroundColor: COLORS.RED,
+        paddingVertical: SPACING.md,
+        paddingHorizontal: SPACING.xl,
+        borderRadius: SPACING.sm,
+        marginBottom: SPACING.md,
+        width: '80%',
+        alignItems: 'center',
+    },
+    navigationButtonText: {
+        color: COLORS.background,
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });

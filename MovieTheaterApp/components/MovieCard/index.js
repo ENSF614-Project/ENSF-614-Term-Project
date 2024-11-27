@@ -1,13 +1,30 @@
 // components/MovieCard/index.js
-import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, Platform } from 'react-native';
 import { styles } from './styles';
 
 const MovieCard = ({ movie, onPress }) => {
+    const [isHovered, setIsHovered] = useState(false);
+
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(dateString).toLocaleDateString('en-US', options);
     };
+
+    const webProps = Platform.select({
+        web: {
+            onMouseEnter: () => setIsHovered(true),
+            onMouseLeave: () => setIsHovered(false),
+            style: [
+                styles.container,
+                isHovered && styles.containerHovered,
+                { transition: 'all 0.2s ease-in-out' }
+            ]
+        },
+        default: {
+            style: styles.container
+        }
+    });
 
     const handlePress = () => {
         console.log('Card pressed');
@@ -16,7 +33,7 @@ const MovieCard = ({ movie, onPress }) => {
 
     return (
         <TouchableOpacity
-            style={styles.container}
+            {...webProps}
             activeOpacity={0.7}
             onPress={handlePress}
         >

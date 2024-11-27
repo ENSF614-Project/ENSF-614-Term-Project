@@ -23,64 +23,81 @@ export const styles = StyleSheet.create({
     },
     screen: {
         height: 40,
-        marginVertical: SPACING.xl,
         backgroundColor: COLORS.background.secondary,
         justifyContent: 'center',
         alignItems: 'center',
+        marginVertical: SPACING.xl,
         marginHorizontal: SPACING.xl,
+        borderRadius: SPACING.sm,
     },
     screenText: {
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
     },
     seatingContainer: {
-        padding: SPACING.lg,
         alignItems: 'center',
+        padding: SPACING.lg,
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: SPACING.md,
+        marginBottom: SPACING.sm,
+    },
+    seatRow: {
+        flexDirection: 'row',
+        gap: SPACING.xs,
     },
     rowLabel: {
         width: 30,
         ...TYPOGRAPHY.body,
         textAlign: 'center',
         color: COLORS.text.primary,
+        marginRight: SPACING.sm,
     },
     seat: {
         width: 35,
         height: 35,
-        margin: 3,
-        borderRadius: 6,
-        backgroundColor: COLORS.background.primary,
-        borderWidth: 1,
-        borderColor: COLORS.button.primary.background,
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: SPACING.xs,
+        borderWidth: 1,
+        backgroundColor: COLORS.background.primary,
+        borderColor: COLORS.button.primary.background,
+    },
+    availableSeat: {
+        backgroundColor: COLORS.background.primary,
+        borderColor: COLORS.button.primary.background,
+    },
+    occupiedSeat: {
+        backgroundColor: COLORS.status.inactive,
+        borderColor: COLORS.status.inactive,
     },
     selectedSeat: {
         backgroundColor: COLORS.button.primary.background,
+        borderColor: COLORS.button.primary.background,
     },
-    occupiedSeat: {
-        backgroundColor: COLORS.background.secondary,
-        borderColor: COLORS.border.default,
+    hoveredSeat: {
+        backgroundColor: COLORS.text.primary,
+        borderColor: COLORS.button.primary.background,
     },
     seatText: {
         fontSize: 12,
         color: COLORS.button.primary.background,
     },
+    occupiedSeatText: {
+        color: COLORS.text.inverse,
+    },
     selectedSeatText: {
         color: COLORS.text.inverse,
     },
-    occupiedSeatText: {
-        color: COLORS.text.secondary,
+    hoveredSeatText: {
+        color: COLORS.button.primary.background,
     },
     legend: {
         flexDirection: 'row',
         justifyContent: 'center',
-        padding: SPACING.lg,
         gap: SPACING.xl,
+        marginVertical: SPACING.xl,
     },
     legendItem: {
         flexDirection: 'row',
@@ -90,10 +107,8 @@ export const styles = StyleSheet.create({
     legendSeat: {
         width: 20,
         height: 20,
-        borderRadius: 4,
-        backgroundColor: COLORS.background.primary,
+        borderRadius: SPACING.xs,
         borderWidth: 1,
-        borderColor: COLORS.button.primary.background,
     },
     legendText: {
         ...TYPOGRAPHY.body,
@@ -120,16 +135,16 @@ export const styles = StyleSheet.create({
     },
     confirmButton: {
         backgroundColor: COLORS.button.primary.background,
-        margin: SPACING.lg,
         padding: SPACING.md,
+        margin: SPACING.lg,
         borderRadius: SPACING.sm,
         alignItems: 'center',
     },
-    disabledButton: {
+    confirmButtonDisabled: {
         opacity: 0.5,
     },
     confirmButtonText: {
-        color: COLORS.button.primary.text,
+        color: COLORS.text.inverse,
         ...TYPOGRAPHY.title,
     },
 });

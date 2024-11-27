@@ -15,6 +15,17 @@ export const styles = StyleSheet.create({
         margin: SPACING.xs,
         width: SPACING.cardPoster.width,
         overflow: 'hidden',
+        borderWidth: 5,
+        borderColor: 'transparent',
+    },
+    containerHovered: {
+        shadowOffset: {
+            width: 2,
+            height: 4,
+        },
+        shadowOpacity: 0.6,
+        shadowRadius: 5,
+        borderColor: COLORS.button.primary.background,
     },
     poster: {
         width: SPACING.cardPoster.width,

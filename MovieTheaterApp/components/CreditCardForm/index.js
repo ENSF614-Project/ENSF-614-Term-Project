@@ -67,16 +67,22 @@ const CreditCardForm = ({
     const validateFields = () => {
         const newErrors = {};
 
-        if (!cardNumber || cardNumber.replace(/\s/g, '').length !== 16) {
-            newErrors.cardNumber = 'Card number must be 16 digits';
+        if (!cardNumber || cardNumber.replace(/\s/g, '').length !== 16 || !/^\d+$/.test(cardNumber.replace(/\s/g, ''))) {
+            newErrors.cardNumber = 'Card number must be 16 digits and contain only numbers';
         }
 
-        if (!expiryDate || !/^\d{2}\/\d{2}$/.test(expiryDate)) {
-            newErrors.expiryDate = 'Invalid expiry date';
+        if (!expiryDate || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
+            newErrors.expiryDate = 'Invalid expiry date (month should be between 01 and 12)';
         } else {
             const [month, year] = expiryDate.split('/');
             const now = new Date();
-            const cardDate = new Date(2000 + parseInt(year), parseInt(month) - 1);
+            const cardMonth = parseInt(month);
+            const cardYear = 2000 + parseInt(year); // Convert to full year (e.g., '24' -> '2024')
+            // Check if the card has expired
+            const cardDate = new Date(cardYear, cardMonth - 1); // Set the expiry date to the last day of the month
+            // Adjust to the end of the expiry month
+            cardDate.setMonth(cardDate.getMonth() + 1);
+            cardDate.setDate(0); // Get the last day of the expiry month
             if (cardDate < now) {
                 newErrors.expiryDate = 'Card has expired';
             }
@@ -86,8 +92,11 @@ const CreditCardForm = ({
             newErrors.cvv = 'CVV must be 3 or 4 digits';
         }
 
-        if (!cardHolderName || !cardHolderName.trim()) {
+
+        if (!cardHolderName.trim()) {
             newErrors.cardHolderName = 'Cardholder name is required';
+        } else if (!/^[a-zA-Z'][a-zA-Z' ]*[a-zA-Z']$/.test(cardHolderName.trim())) {
+            newErrors.cardHolderName = 'Cardholder name can only contain letters, spaces, and apostrophes, must not start or end with a space, and must contain at least one letter.';
         }
 
         if (includeBillingAddress && (!billingAddress || !billingAddress.trim())) {
@@ -166,7 +175,7 @@ const CreditCardForm = ({
                         style={[styles.input, touched.cvv && errors.cvv && styles.inputError]}
                         placeholder="CVV"
                         value={cvv}
-                        onChangeText={setCvv}
+                        onChangeText={(text) => setCvv(text.replace(/\D/g, ''))}
                         onBlur={() => handleBlur('cvv')}
                         keyboardType="numeric"
                         maxLength={4}

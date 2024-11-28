@@ -11,27 +11,29 @@ public class Coupon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "couponID", nullable = false)
-    private Integer couponID;
+    private Long couponID;
 
-    @Column(name = "expiryDate", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "ticket_id", nullable = false)
+    private Ticket ticket;
+
+    @Column(name = "original_value", nullable = false)
+    private Double originalValue;
+
+    @Column(name = "remaining_value", nullable = false)
+    private Double remainingValue;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
     @Temporal(TemporalType.DATE)
+    @Column(name = "expiry_date", nullable = false)
     private Date expiryDate;
-
-    @Column(name = "amount", nullable = false)
-    private Double amount;
 
     @Column(name = "status", nullable = false, length = 50)
     private String status;
-
-    @Column(name = "email", nullable = false, length = 100)
-    private String email;
-
-    @ManyToOne
-    @JoinColumn(name = "ticketID", nullable = false)
-    private Ticket ticket;
-
-    @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
-    private User user;
 }

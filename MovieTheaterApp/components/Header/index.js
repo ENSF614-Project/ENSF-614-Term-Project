@@ -4,20 +4,27 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { User, Menu } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
+import { COLORS } from '../../styles';
 
 const Header = () => {
     const navigation = useNavigation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(true); // Replace with actual login logic
 
     const handleLoginPress = () => {
-        navigation.navigate('Login');
+        if (!isUserLoggedIn) {
+            navigation.navigate('Login');
+        }
+        else {
+            navigation.navigate('Account');
+        }
     };
 
     const handleMenuItemPress = (route) => {
         setIsMenuOpen(false);
         navigation.navigate(route);
     };
-
+    //Get rid of the view account in the hamburger menu later, this is only for testing.
     return (
         <>
             <View style={styles.container}>
@@ -26,7 +33,7 @@ const Header = () => {
                         style={styles.iconButton}
                         onPress={() => setIsMenuOpen(!isMenuOpen)}
                     >
-                        <Menu size={24} color={styles.iconButton.color} />
+                        <Menu size={24} color={COLORS.text.primary} />
                     </TouchableOpacity>
                     <Text style={styles.logo}>AcmePlex</Text>
                 </View>
@@ -35,7 +42,7 @@ const Header = () => {
                     style={styles.iconButton}
                     onPress={handleLoginPress}
                 >
-                    <User size={24} color={styles.iconButton.color} />
+                    <User size={24} color={COLORS.text.primary} />
                 </TouchableOpacity>
             </View>
 
@@ -53,6 +60,20 @@ const Header = () => {
                     >
                         <Text style={styles.menuItemText}>View News</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => handleMenuItemPress('Coupon')}
+                    >
+                        <Text style={styles.menuItemText}>View Coupon</Text>
+                    </TouchableOpacity>
+
+                    {/* <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => handleMenuItemPress('Account')}
+                    >
+                        <Text style={styles.menuItemText}>View Account</Text>
+                    </TouchableOpacity>  */}
                 </View>
             )}
         </>

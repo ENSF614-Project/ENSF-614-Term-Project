@@ -1,15 +1,13 @@
-//RegisteredUserRepository.java
+//UserRepository.java
 package org.example.acmeplex.repository;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.example.acmeplex.model.RegisteredUser;
+import org.example.acmeplex.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface RegisteredUserRepository extends JpaRepository<RegisteredUser, Integer> {
-    RegisteredUser findByUsername(String username);
-    boolean existsByUsername(String username);
+public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsByEmail(String email);
 }

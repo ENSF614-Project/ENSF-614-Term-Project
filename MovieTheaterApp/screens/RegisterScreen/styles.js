@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
         width: '100%',
         maxWidth: 400,
         alignSelf: 'center',
+        marginBottom: SPACING.xl,
     },
     title: {
         ...TYPOGRAPHY.title,
@@ -88,6 +89,11 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+
+    registerButtonDisabled: {
+        opacity: 0.6,
+    },
+
     loginButton: {
         padding: SPACING.sm,
     },

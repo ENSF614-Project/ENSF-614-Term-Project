@@ -29,6 +29,6 @@ public class Showtime {
     @JoinColumn(name = "theatreId", nullable = false)
     private Theatre theatre;
 
-    //Question: about availableSeats
+    //Question: about Seats
 
 }

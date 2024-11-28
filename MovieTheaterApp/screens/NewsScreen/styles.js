@@ -5,83 +5,57 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
-    },
-    centered: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
+        padding: SPACING.lg,
     },
     title: {
         ...TYPOGRAPHY.title,
         fontSize: 24,
-        margin: SPACING.lg,
+        color: COLORS.text.primary,
+        marginBottom: SPACING.md,
+        textAlign: 'center',
     },
-    subtitle: {
+    newsContainer: {
+        marginTop: SPACING.sm,
+    },
+    newsItem: {
+        borderWidth: 1,
+        borderColor: COLORS.border.default,
+        borderRadius: SPACING.sm,
+        padding: SPACING.md,
+        marginBottom: SPACING.md,
+        backgroundColor: COLORS.background.primary,
+    },
+    newsType: {
+        ...TYPOGRAPHY.title,
+        fontSize: 18,
+        color: COLORS.text.primary,
+        marginBottom: SPACING.xs,
+    },
+    newsText: {
         ...TYPOGRAPHY.body,
         fontSize: 16,
-        margin: SPACING.md,
         color: COLORS.text.secondary,
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: SPACING.xl,
+    },
+    emptyText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        textAlign: 'center',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     loadingText: {
         ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
         marginTop: SPACING.md,
-        color: COLORS.text.secondary,
-    },
-    messageContainer: {
-        padding: SPACING.lg,
-        margin: SPACING.lg,
-        borderRadius: SPACING.sm,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        alignItems: 'center',
-    },
-    errorText: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.RED,
-        textAlign: 'center',
-        marginBottom: SPACING.lg,
-    },
-    retryButton: {
-        backgroundColor: COLORS.RED,
-        padding: SPACING.md,
-        borderRadius: SPACING.sm,
-    },
-    retryButtonText: {
-        color: COLORS.background,
-        ...TYPOGRAPHY.body,
-        fontWeight: 'bold',
-    },
-    userCard: {
-        margin: SPACING.md,
-        padding: SPACING.md,
-        borderRadius: SPACING.sm,
-        backgroundColor: COLORS.background,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-    },
-    userText: {
-        ...TYPOGRAPHY.body,
-        marginBottom: SPACING.xs,
-    },
-    debugContainer: {
-        margin: SPACING.lg,
-        padding: SPACING.md,
-        backgroundColor: COLORS.greyDEBUG,
-        borderRadius: SPACING.sm,
-    },
-    debugTitle: {
-        ...TYPOGRAPHY.title,
-        marginBottom: SPACING.sm,
-        color: COLORS.text.secondary,
-    },
-    debugText: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.text.secondary,
-        fontFamily: 'monospace',
-    },
-    activity: {
-        color: "#0000FF",
     }
 });

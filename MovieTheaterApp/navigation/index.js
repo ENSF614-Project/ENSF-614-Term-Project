@@ -11,17 +11,19 @@ import LoginScreen from '../screens/LoginScreen';
 import SeatSelectionScreen from '../screens/SeatSelectionScreen';
 import NewsScreen from '../screens/NewsScreen';
 import TicketScreen from '../screens/TicketScreen';
+import CouponScreen from '../screens/CouponScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import AccountScreen from '../screens/AccountScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import TicketConfirmationScreen from '../screens/TicketConfirmationScreen';
 import Header from '../components/Header';
-import { styles } from './styles';
+import { COLORS } from '../styles';
 
 const Stack = createNativeStackNavigator();
 
 const HeaderRight = ({ navigation }) => {
     const handleLoginPress = () => {
-        navigation.navigate('Login');
+        navigation.navigate('Login'); //Need log in validation to ensure logged in users get taken to account instead of login
     };
 
     return (
@@ -29,7 +31,7 @@ const HeaderRight = ({ navigation }) => {
             onPress={handleLoginPress}
             style={{ padding: 8, marginRight: 8 }}
         >
-            <User size={24} color={styles.icon.color} />
+            <User size={24} color={COLORS.text.primary} />
         </TouchableOpacity>
     );
 };
@@ -37,16 +39,16 @@ const HeaderRight = ({ navigation }) => {
 // Default screen options that apply to all screens
 const screenOptions = ({ navigation }) => ({
     headerRight: () => <HeaderRight navigation={navigation} />,
-    headerTintColor: styles.header.tintColor,
+    headerTintColor: COLORS.text.primary,
     headerStyle: {
-        backgroundColor: styles.header.backgroundColor,
+        backgroundColor: COLORS.background,
         height: 64,
     },
     headerTitleStyle: {
         fontSize: 20,
     },
     contentStyle: {
-        backgroundColor: styles.header.backgroundColor,
+        backgroundColor: COLORS.background,
     }
 });
 
@@ -102,10 +104,24 @@ const screens = [
         }
     },
     {
+        name: 'Coupon',
+        component: CouponScreen,
+        options: {
+            headerTitle: 'Coupon',
+        }
+    },
+    {
         name: 'Register',
         component: RegisterScreen,
         options: {
             headerTitle: 'Registration',
+        }
+    },
+    {
+        name: 'Account',
+        component: AccountScreen,
+        options: {
+            headerTitle: 'Account',
         }
     },
     {

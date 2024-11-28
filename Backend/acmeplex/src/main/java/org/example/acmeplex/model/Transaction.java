@@ -2,9 +2,7 @@ package org.example.acmeplex.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Data
@@ -13,30 +11,26 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transactionID", nullable = false)
-    private Integer transactionID;
-
-    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Ticket> tickets = new ArrayList<>();
+    private Long transactionID;
 
     @ManyToOne
-    @JoinColumn(name = "couponId", nullable = false)
-    private Coupon coupon;
-
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToOne
+    @JoinColumn(name = "coupon_id", nullable = true)
+    private Coupon coupon;
 
     @Column(name = "total", nullable = false)
     private Double total;
 
-    @Column(name = "paymentMethod", nullable = false)
+    @Column(name = "payment_method", nullable = false)
     private String paymentMethod;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "transactionDate", nullable = false)
+    @Column(name = "transaction_date", nullable = false)
     private Date transactionDate;
 
-    @Column(name = "transactionSuccessful", nullable = false)
-    private Boolean successful;
+    @Column(name = "transaction_successful", nullable = false)
+    private Boolean transactionSuccessful;
 }

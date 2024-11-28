@@ -23,7 +23,7 @@ const Stack = createNativeStackNavigator();
 
 const HeaderRight = ({ navigation }) => {
     const handleLoginPress = () => {
-        navigation.navigate('Login');
+        navigation.navigate('Login'); //Need log in validation to ensure logged in users get taken to account instead of login
     };
 
     return (

@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
         width: '100%',
     },
     couponItem: {
-        width: '50%', // Reduces the width of each coupon item
+        width: '30%', // Reduces the width of each coupon item
         borderWidth: 1,
         borderColor: COLORS.border,
         borderRadius: SPACING.sm,

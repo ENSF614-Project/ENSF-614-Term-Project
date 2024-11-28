@@ -2,11 +2,11 @@
 package org.example.acmeplex.controller;
 
 import org.example.acmeplex.model.User;
-import org.example.acmeplex.repository.UserRepository;
 import org.example.acmeplex.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.example.acmeplex.dto.LoginRequest;
 
 import java.util.List;
 
@@ -16,6 +16,16 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            User user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+            return ResponseEntity.ok(user);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @GetMapping
     public List<User> getAllUsers() {

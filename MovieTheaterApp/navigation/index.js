@@ -122,6 +122,7 @@ const screens = [
         component: AccountScreen,
         options: {
             headerTitle: 'Account',
+            headerRight: null,
         }
     },
     {

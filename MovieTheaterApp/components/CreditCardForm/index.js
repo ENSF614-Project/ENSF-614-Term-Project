@@ -7,7 +7,6 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { CreditCard } from 'lucide-react-native';
-import { COLORS } from '../../styles';
 import { styles } from './styles';
 
 const CreditCardForm = ({
@@ -142,7 +141,7 @@ const CreditCardForm = ({
     return (
         <View style={[styles.container, containerStyle]}>
             <View style={styles.cardIconContainer}>
-                <CreditCard size={24} color={COLORS.text.primary} />
+                <CreditCard size={24} color={styles.cardIcon.color} />
                 <Text style={styles.cardIconText}>Credit Card Details</Text>
             </View>
 

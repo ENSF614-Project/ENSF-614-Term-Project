@@ -4,7 +4,6 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { User, Menu } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
-import { COLORS } from '../../styles';
 
 const Header = () => {
     const navigation = useNavigation();
@@ -33,7 +32,7 @@ const Header = () => {
                         style={styles.iconButton}
                         onPress={() => setIsMenuOpen(!isMenuOpen)}
                     >
-                        <Menu size={24} color={COLORS.text.primary} />
+                        <Menu size={24} color={styles.iconButton.color} />
                     </TouchableOpacity>
                     <Text style={styles.logo}>AcmePlex</Text>
                 </View>
@@ -42,7 +41,7 @@ const Header = () => {
                     style={styles.iconButton}
                     onPress={handleLoginPress}
                 >
-                    <User size={24} color={COLORS.text.primary} />
+                    <User size={24} color={styles.iconButton.color} />
                 </TouchableOpacity>
             </View>
 
@@ -50,9 +49,9 @@ const Header = () => {
                 <View style={styles.menuContainer}>
                     <TouchableOpacity
                         style={styles.menuItem}
-                        onPress={() => handleMenuItemPress('CancelTicket')}
+                        onPress={() => handleMenuItemPress('Ticket')}
                     >
-                        <Text style={styles.menuItemText}>Cancel Ticket</Text>
+                        <Text style={styles.menuItemText}>View and Cancel Tickets</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.menuItem}

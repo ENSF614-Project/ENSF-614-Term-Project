@@ -5,30 +5,67 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
     },
     movieInfo: {
         padding: SPACING.lg,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.border.default,
     },
     movieTitle: {
         ...TYPOGRAPHY.title,
         fontSize: 20,
         marginBottom: SPACING.xs,
+        color: COLORS.text.primary,
     },
     movieDetails: {
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
     },
-    dateSelector: {
+    datePickerContainer: {
         padding: SPACING.lg,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.border.default,
     },
-    dateTitle: {
-        ...TYPOGRAPHY.title,
-        marginBottom: SPACING.md,
+    dateButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: SPACING.md,
+        padding: SPACING.md,
+        borderWidth: 1,
+        borderColor: COLORS.border.default,
+        borderRadius: SPACING.sm,
+        iconColor: COLORS.icon.primary,
+    },
+    dateText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+    },
+    calendarContainer: {
+        marginTop: SPACING.md,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: SPACING.sm,
+    },
+    calendarDate: {
+        padding: SPACING.md,
+        borderRadius: SPACING.sm,
+        borderWidth: 1,
+        borderColor: COLORS.border.default,
+        minWidth: 100,
+        alignItems: 'center',
+        backgroundColor: COLORS.background.primary,
+    },
+    selectedDate: {
+        backgroundColor: COLORS.button.primary.background,
+        borderColor: COLORS.button.primary.background,
+    },
+    calendarDateText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+    },
+    selectedDateText: {
+        color: COLORS.text.inverse,
     },
     showtimesContainer: {
         padding: SPACING.lg,
@@ -36,24 +73,23 @@ export const styles = StyleSheet.create({
     sectionTitle: {
         ...TYPOGRAPHY.title,
         marginBottom: SPACING.lg,
+        color: COLORS.text.primary,
     },
     showtimeCard: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: SPACING.md,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         borderRadius: SPACING.sm,
         marginBottom: SPACING.md,
         borderWidth: 1,
-        borderColor: COLORS.border,
-    },
-    showtimeInfo: {
-        flex: 1,
+        borderColor: COLORS.border.default,
     },
     time: {
         ...TYPOGRAPHY.title,
         marginBottom: SPACING.xs,
+        color: COLORS.text.primary,
     },
     theatre: {
         ...TYPOGRAPHY.body,
@@ -61,6 +97,12 @@ export const styles = StyleSheet.create({
     },
     price: {
         ...TYPOGRAPHY.title,
-        color: COLORS.RED,
+        color: COLORS.button.primary.background,
+    },
+    noShowtimesText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        textAlign: 'center',
+        padding: SPACING.xl,
     },
 });

@@ -1,4 +1,4 @@
-// components\CreditCardForm\styles.js
+// components/CreditCardForm/styles.js
 import { StyleSheet } from 'react-native';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 
@@ -16,16 +16,20 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.title,
         fontSize: 18,
     },
+    cardIcon: {
+        color: COLORS.icon.primary,
+    },
     input: {
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.input.border,
         borderRadius: SPACING.sm,
         padding: SPACING.md,
         marginBottom: SPACING.xs,
         fontSize: 16,
+        backgroundColor: COLORS.input.background,
     },
     inputError: {
-        borderColor: COLORS.RED,
+        borderColor: COLORS.input.borderError,
     },
     row: {
         flexDirection: 'row',
@@ -37,7 +41,7 @@ export const styles = StyleSheet.create({
     },
     errorText: {
         ...TYPOGRAPHY.body,
-        color: COLORS.RED,
+        color: COLORS.text.error,
         fontSize: 12,
         marginBottom: SPACING.sm,
         marginLeft: SPACING.xs,
@@ -52,14 +56,16 @@ export const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderWidth: 2,
-        borderColor: COLORS.border,
+        borderColor: COLORS.input.border,
         borderRadius: 4,
+        backgroundColor: COLORS.background.primary,
     },
     checkboxChecked: {
-        backgroundColor: COLORS.RED,
-        borderColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
+        borderColor: COLORS.button.primary.background,
     },
     saveCardText: {
         ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
     },
 });

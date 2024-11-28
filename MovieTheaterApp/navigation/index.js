@@ -10,7 +10,7 @@ import ShowtimeScreen from '../screens/ShowtimeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SeatSelectionScreen from '../screens/SeatSelectionScreen';
 import NewsScreen from '../screens/NewsScreen';
-import CancelTicketScreen from '../screens/CancelTicketScreen';
+import TicketScreen from '../screens/TicketScreen';
 import CouponScreen from '../screens/CouponScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import AccountScreen from '../screens/AccountScreen';
@@ -97,10 +97,10 @@ const screens = [
         }
     },
     {
-        name: 'CancelTicket',
-        component: CancelTicketScreen,
+        name: 'Ticket',
+        component: TicketScreen,
         options: {
-            headerTitle: 'Cancel Ticket',
+            headerTitle: 'Tickets',
         }
     },
     {

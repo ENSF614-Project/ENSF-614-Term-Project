@@ -7,7 +7,6 @@ import {
     ScrollView
 } from 'react-native';
 import { CreditCard, Trash2 } from 'lucide-react-native';
-import { COLORS } from '../../styles';
 import CreditCardForm from '../../components/CreditCardForm';
 import { styles } from './styles';
 
@@ -23,6 +22,15 @@ const PaymentScreen = ({ route, navigation }) => {
         { id: 1, last4: '4242', expiryDate: '12/25', cardHolderName: 'Test User' },
         { id: 2, last4: '1234', expiryDate: '10/25', cardHolderName: 'Test User' }
     ]);
+
+    const formatDate = (date) => {
+        return date.toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
 
     const handlePayment = () => {
         if (selectedPaymentMethod === 'new' && !isFormValid) {
@@ -61,8 +69,16 @@ const PaymentScreen = ({ route, navigation }) => {
                     <Text style={styles.summaryText}>{movie.title}</Text>
                 </View>
                 <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Showtime:</Text>
+                    <Text style={styles.summaryLabel}>Date:</Text>
+                    <Text style={styles.summaryText}>{formatDate(showtime.date)}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Time:</Text>
                     <Text style={styles.summaryText}>{showtime.time}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Theatre:</Text>
+                    <Text style={styles.summaryText}>{showtime.theatre}</Text>
                 </View>
                 <View style={styles.summaryRow}>
                     <Text style={styles.summaryLabel}>Seats:</Text>
@@ -87,7 +103,7 @@ const PaymentScreen = ({ route, navigation }) => {
                         onPress={() => setSelectedPaymentMethod(card.id)}
                     >
                         <View style={styles.savedCardInfo}>
-                            <CreditCard size={24} color={COLORS.text.primary} />
+                            <CreditCard size={24} color={styles.savedCardInfo.cardColor} />
                             <Text style={styles.savedCardText}>
                                 **** {card.last4} | {card.expiryDate}
                             </Text>
@@ -100,7 +116,7 @@ const PaymentScreen = ({ route, navigation }) => {
                         >
                             <Trash2
                                 size={20}
-                                color={COLORS.text.secondary}
+                                color={styles.trashIcon.color}
                             />
                         </TouchableOpacity>
                     </TouchableOpacity>
@@ -113,7 +129,7 @@ const PaymentScreen = ({ route, navigation }) => {
                     onPress={() => setSelectedPaymentMethod('new')}
                 >
                     <View style={styles.savedCardInfo}>
-                        <CreditCard size={24} color={COLORS.text.primary} />
+                        <CreditCard size={24} color={styles.savedCardInfo.cardColor} />
                         <Text style={styles.savedCardText}>Add New Card</Text>
                     </View>
                 </TouchableOpacity>

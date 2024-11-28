@@ -28,6 +28,14 @@ const Header = () => {
 
     const handleMenuItemPress = (route) => {
         setIsMenuOpen(false);
+
+        // Allow access to Ticket and Coupon without authentication
+        if (route === 'Ticket' || route === 'Coupon') {
+            navigation.navigate(route);
+            return;
+        }
+
+        // Keep other routes behind authentication if in header
         if (!user) {
             navigation.navigate('Login');
             return;
@@ -81,7 +89,7 @@ const Header = () => {
                             style={styles.menuItem}
                             onPress={handleLogout}
                         >
-                            <Text style={styles.menuItemText}>Logout</Text>
+                            <Text style={styles.menuItemTextLogout}>Logout</Text>
                         </TouchableOpacity>
                     )}
                 </View>

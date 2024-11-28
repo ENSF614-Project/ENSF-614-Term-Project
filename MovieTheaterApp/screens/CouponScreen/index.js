@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { styles } from './styles';
+import { useAuth } from '../../context/AuthContext';
 
 const CouponScreen = () => {
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(true); // Replace with actual login logic
-    const [userID, setUserID] = useState(1); // Mock logged-in user ID
+    const { user } = useAuth();
     const [couponInput, setCouponInput] = useState('');
     const [filteredCoupons, setFilteredCoupons] = useState([]); //Dont necessarily need when getting real data
     const [errorMessage, setErrorMessage] = useState('');
@@ -39,10 +39,7 @@ const CouponScreen = () => {
 
         if (isEmail) {
             const emailCoupons = allCoupons.filter(
-                (coupon) =>
-                    coupon.email === couponInput &&
-                    (!coupon.isRegistered || isUserLoggedIn) &&
-                    coupon.Status === 'Valid'
+                coupon => coupon.email === couponInput && coupon.Status === 'Valid'
             );
 
             if (emailCoupons.length > 0) {
@@ -52,15 +49,13 @@ const CouponScreen = () => {
                 setErrorMessage('Invalid email or no valid coupons found.');
             }
         } else {
-            const newCoupon = allCoupons.find(
-                (coupon) =>
-                    coupon.CouponCode === couponInput &&
-                    (!coupon.isRegistered || isUserLoggedIn)
+            const coupon = allCoupons.find(
+                coupon => coupon.CouponCode === couponInput && coupon.Status === 'Valid'
             );
 
-            if (newCoupon) {
-                if (!filteredCoupons.some((c) => c.CouponCode === newCoupon.CouponCode)) {
-                    setFilteredCoupons(sortCouponsByExpiry([...filteredCoupons, newCoupon]));
+            if (coupon) {
+                if (!filteredCoupons.some(c => c.CouponCode === coupon.CouponCode)) {
+                    setFilteredCoupons(sortCouponsByExpiry([...filteredCoupons, coupon]));
                 }
                 setErrorMessage('');
             } else {
@@ -71,20 +66,23 @@ const CouponScreen = () => {
         setCouponInput(''); // Clear the input field
     };
 
+    // Load user's coupons when logged in
     useEffect(() => {
-        if (isUserLoggedIn) {
+        if (user) {
             const userCoupons = allCoupons.filter(
-                (coupon) => coupon.userID === userID &&
-                    coupon.Status === 'Valid'
+                coupon => coupon.userID === user.userId && coupon.Status === 'Valid'
             );
             setFilteredCoupons(sortCouponsByExpiry(userCoupons));
+        } else {
+            setFilteredCoupons([]);
         }
-    }, [isUserLoggedIn, userID]);
+    }, [user]);
 
     //Maybe shoould add like a picture or something accompyniing the Coupon/Credits
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Coupon/Credits</Text>
+            {/* Search Section - Available to all users */}
             <View style={styles.inputContainer}>
                 <TextInput
                     style={[
@@ -103,16 +101,27 @@ const CouponScreen = () => {
                 </TouchableOpacity>
             </View>
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+            {/* Coupons List */}
             <ScrollView style={styles.couponList}>
                 <View style={styles.couponListWrapper}>
+                    {user && (
+                        <Text style={styles.sectionTitle}>Your Coupons</Text>
+                    )}
                     {filteredCoupons.map((coupon, index) => (
                         <View key={index} style={styles.couponItem}>
                             <Text style={styles.couponCode}>Code: {coupon.CouponCode}</Text>
-                            <Text>Value: ${coupon.Value.toFixed(2)}</Text>
-                            {coupon.Status === 'Valid' && coupon.Expiry && <Text>Expiry: {coupon.Expiry}</Text>}
-                            <Text>Status: {coupon.Status}</Text>
+                            <Text style={styles.couponValue}>Value: ${coupon.Value.toFixed(2)}</Text>
+                            <Text style={styles.couponExpiry}>Expiry: {coupon.Expiry}</Text>
+                            <Text style={styles.couponStatus}>Status: {coupon.Status}</Text>
                         </View>
                     ))}
+                    {filteredCoupons.length === 0 && (
+                        <View style={styles.emptyState}>
+                            <Text style={styles.emptyStateText}>
+                                {user ? 'No coupons found' : 'Search for coupons using code or email'}
+                            </Text>
+                        </View>
+                    )}
                 </View>
             </ScrollView>
         </View>

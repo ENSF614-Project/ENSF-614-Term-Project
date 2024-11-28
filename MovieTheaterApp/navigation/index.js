@@ -21,24 +21,8 @@ import { COLORS } from '../styles';
 
 const Stack = createNativeStackNavigator();
 
-const HeaderRight = ({ navigation }) => {
-    const handleLoginPress = () => {
-        navigation.navigate('Login'); //Need log in validation to ensure logged in users get taken to account instead of login
-    };
-
-    return (
-        <TouchableOpacity
-            onPress={handleLoginPress}
-            style={{ padding: 8, marginRight: 8 }}
-        >
-            <User size={24} color={COLORS.text.primary} />
-        </TouchableOpacity>
-    );
-};
-
-// Default screen options that apply to all screens
-const screenOptions = ({ navigation }) => ({
-    headerRight: () => <HeaderRight navigation={navigation} />,
+// Remove the HeaderRight component and update screenOptions
+const screenOptions = {
     headerTintColor: COLORS.text.primary,
     headerStyle: {
         backgroundColor: COLORS.background,
@@ -50,7 +34,7 @@ const screenOptions = ({ navigation }) => ({
     contentStyle: {
         backgroundColor: COLORS.background,
     }
-});
+};
 
 const screens = [
     {
@@ -64,7 +48,6 @@ const screens = [
         name: 'Login',
         component: LoginScreen,
         options: {
-            headerRight: null,
             headerTitle: 'Login',
         }
     },
@@ -73,6 +56,7 @@ const screens = [
         component: MovieDetailsScreen,
         options: {
             headerTitle: 'Movie Details',
+            header: () => <Header />
         }
     },
     {
@@ -80,6 +64,7 @@ const screens = [
         component: ShowtimeScreen,
         options: {
             headerTitle: 'Select Showtime',
+            header: () => <Header />
         }
     },
     {
@@ -87,6 +72,7 @@ const screens = [
         component: SeatSelectionScreen,
         options: {
             headerTitle: 'Select Seats',
+            header: () => <Header />
         }
     },
     {
@@ -94,6 +80,7 @@ const screens = [
         component: NewsScreen,
         options: {
             headerTitle: 'Movie News',
+            header: () => <Header />
         }
     },
     {
@@ -101,6 +88,7 @@ const screens = [
         component: TicketScreen,
         options: {
             headerTitle: 'Tickets',
+            header: () => <Header />
         }
     },
     {
@@ -108,6 +96,7 @@ const screens = [
         component: CouponScreen,
         options: {
             headerTitle: 'Coupon',
+            header: () => <Header />
         }
     },
     {
@@ -122,7 +111,6 @@ const screens = [
         component: AccountScreen,
         options: {
             headerTitle: 'Account',
-            headerRight: null,
         }
     },
     {
@@ -130,6 +118,7 @@ const screens = [
         component: PaymentScreen,
         options: {
             headerTitle: 'Payment',
+            header: () => <Header />
         }
     },
     {

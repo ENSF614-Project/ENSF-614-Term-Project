@@ -11,40 +11,39 @@ public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ticketID", nullable = false)
-    private Integer ticketID;
+    private Long ticketID;
 
-    @Column(name = "showtimeID", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "transaction_id", nullable = false)
+    private Transaction transaction;
+
+    @Column(name = "showtime_id", nullable = false)
     private Integer showtimeID;
 
-    @Column(name = "seatID", nullable = false)
+    @Column(name = "seat_id", nullable = false, length = 10)
     private Integer seatID;
 
-    @Column(name = "purchasedDate", nullable = false)
     @Temporal(TemporalType.DATE)
+    @Column(name = "purchased_date", nullable = false)
     private Date purchasedDate;
 
-    @Column(name = "cancellationDeadline", nullable = false)
     @Temporal(TemporalType.DATE)
+    @Column(name = "cancellation_deadline", nullable = false)
     private Date cancellationDeadline;
-
-    @Column(name = "status", nullable = false, length = 50)
-    private String status;
 
     @Column(name = "price", nullable = false)
     private Double price;
 
     @Column(name = "refund", nullable = false)
-    private Double refund = 0.0;
+    private Double refund;
 
-    @Column(name = "cancellationFee", nullable = false)
-    private Double cancellationFee;
+    @Column(name = "status", nullable = false)
+    private String status;
 
-    @ManyToOne
-    @JoinColumn(name = "userID", insertable = false, updatable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "transactionID", insertable = false, updatable = false)
-    private Transaction transaction;
+    @Column(name = "email", nullable = false)
+    private String email;
 }

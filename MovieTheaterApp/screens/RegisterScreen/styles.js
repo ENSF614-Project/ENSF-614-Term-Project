@@ -13,12 +13,31 @@ export const styles = StyleSheet.create({
         width: '100%',
         maxWidth: 400,
         alignSelf: 'center',
+        marginBottom: SPACING.xl,
     },
     title: {
         ...TYPOGRAPHY.title,
         fontSize: 24,
         marginBottom: SPACING.xl,
         textAlign: 'center',
+    },
+    section: {
+        marginBottom: SPACING.xl,
+        backgroundColor: COLORS.background,
+        borderRadius: SPACING.sm,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        padding: SPACING.lg,
+    },
+    sectionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: SPACING.lg,
+        gap: SPACING.sm,
+    },
+    sectionTitle: {
+        ...TYPOGRAPHY.title,
+        fontSize: 18,
     },
     input: {
         borderWidth: 1,
@@ -28,23 +47,35 @@ export const styles = StyleSheet.create({
         marginBottom: SPACING.lg,
         fontSize: 16,
     },
-    sectionTitle: {
-        ...TYPOGRAPHY.title,
-        fontSize: 18,
-        marginVertical: SPACING.md,
+    inputError: {
+        borderColor: COLORS.RED,
     },
-    cardDetailsContainer: {
+    errorText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.RED,
+        fontSize: 12,
+        marginBottom: SPACING.sm,
+        marginLeft: SPACING.xs,
+    },
+    membershipContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: SPACING.md,
     },
-    cardExpiryInput: {
-        //flex: 1,
-        width: '48%',
-        marginRight: SPACING.sm,
+    membershipTitle: {
+        ...TYPOGRAPHY.title,
+        fontSize: 18,
     },
-    cardCvvInput: {
-        //flex: 1,
-        width: '48%',
+    membershipAmount: {
+        ...TYPOGRAPHY.title,
+        fontSize: 20,
+        color: COLORS.RED,
+    },
+    membershipInfo: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        fontStyle: 'italic',
     },
     registerButton: {
         backgroundColor: COLORS.RED,
@@ -58,6 +89,11 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+
+    registerButtonDisabled: {
+        opacity: 0.6,
+    },
+
     loginButton: {
         padding: SPACING.sm,
     },

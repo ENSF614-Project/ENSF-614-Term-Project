@@ -3,7 +3,6 @@ import React from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Calendar, Clock, Star } from 'lucide-react-native';
 import { styles } from './styles';
-import { COLORS } from '../../styles';
 
 const MovieDetailsScreen = ({ route, navigation }) => {
     const { movie } = route.params;
@@ -26,21 +25,21 @@ const MovieDetailsScreen = ({ route, navigation }) => {
 
                 <View style={styles.infoContainer}>
                     <View style={styles.infoItem}>
-                        <Calendar size={20} color={COLORS.RED} />
+                        <Calendar size={20} color={styles.infoItem.calendarColor} />
                         <Text style={styles.infoText}>
                             {formatDate(movie.releaseDate)} (Release Date)
                         </Text>
                     </View>
 
                     <View style={styles.infoItem}>
-                        <Clock size={20} color={COLORS.RED} />
+                        <Clock size={20} color={styles.infoItem.clockColor} />
                         <Text style={styles.infoText}>
                             {movie.duration} minutes
                         </Text>
                     </View>
 
                     <View style={styles.infoItem}>
-                        <Star size={20} color={COLORS.RED} />
+                        <Star size={20} color={styles.infoItem.starColor} />
                         <Text style={styles.infoText}>
                             {movie.rating}/10
                         </Text>

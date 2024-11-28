@@ -31,7 +31,7 @@ const AccountScreen = ({ navigation }) => {
     ]);
 
     const handleRegister = () => {
-        
+
         // Construct user data
         const userData = { Userinfo: userValues, paymentInfo: formValues };
 
@@ -59,7 +59,7 @@ const AccountScreen = ({ navigation }) => {
         // TODO: Add card removal logic here
     };
 
-//Ideally payment should be its own component and not defined here or in the payment screen. It should also have toggle buttons.
+    //Ideally payment should be its own component and not defined here or in the payment screen. It should also have toggle buttons.
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.formContainer}>
@@ -77,66 +77,66 @@ const AccountScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.paymentSection}>
-                <View style={styles.paymentMethodContainer}>
-                <Text style={styles.sectionTitle}>Payment Method</Text>
-                {savedCards.map(card => (
-                    <TouchableOpacity
-                        key={card.id}
-                        style={[
-                            styles.savedCard,
-                            selectedPaymentMethod === card.id && styles.selectedCard
-                        ]}
-                        onPress={() => setSelectedPaymentMethod(card.id)}
-                    >
-                        <View style={styles.savedCardInfo}>
-                            <CreditCard size={24} color={COLORS.text.primary} />
-                            <Text style={styles.savedCardText}>
-                                **** {card.last4} | {card.expiryDate}
-                            </Text>
-                        </View>
+                    <View style={styles.paymentMethodContainer}>
+                        <Text style={styles.sectionTitle}>Payment Method</Text>
+                        {savedCards.map(card => (
+                            <TouchableOpacity
+                                key={card.id}
+                                style={[
+                                    styles.savedCard,
+                                    selectedPaymentMethod === card.id && styles.selectedCard
+                                ]}
+                                onPress={() => setSelectedPaymentMethod(card.id)}
+                            >
+                                <View style={styles.savedCardInfo}>
+                                    <CreditCard size={24} color={COLORS.text.primary} />
+                                    <Text style={styles.savedCardText}>
+                                        **** {card.last4} | {card.expiryDate}
+                                    </Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={(e) => {
+                                        e.stopPropagation();
+                                        handleRemoveCard(card.id);
+                                    }}
+                                >
+                                    <Trash2
+                                        size={20}
+                                        color={COLORS.text.secondary}
+                                    />
+                                </TouchableOpacity>
+                            </TouchableOpacity>
+                        ))}
                         <TouchableOpacity
-                            onPress={(e) => {
-                                e.stopPropagation();
-                                handleRemoveCard(card.id);
-                            }}
+                            style={[
+                                styles.savedCard,
+                                selectedPaymentMethod === 'new' && styles.selectedCard
+                            ]}
+                            onPress={() => setSelectedPaymentMethod('new')}
                         >
-                            <Trash2
-                                size={20}
-                                color={COLORS.text.secondary}
-                            />
+                            <View style={styles.savedCardInfo}>
+                                <CreditCard size={24} color={COLORS.text.primary} />
+                                <Text style={styles.savedCardText}>Add New Card</Text>
+                            </View>
                         </TouchableOpacity>
-                    </TouchableOpacity>
-                ))}
-                <TouchableOpacity
-                    style={[
-                        styles.savedCard,
-                        selectedPaymentMethod === 'new' && styles.selectedCard
-                    ]}
-                    onPress={() => setSelectedPaymentMethod('new')}
-                >
-                    <View style={styles.savedCardInfo}>
-                        <CreditCard size={24} color={COLORS.text.primary} />
-                        <Text style={styles.savedCardText}>Add New Card</Text>
                     </View>
-                </TouchableOpacity>
-            </View>
-            {selectedPaymentMethod === 'new' && (
-                <CreditCardForm
-                    onValuesChange={setFormValues}
-                    onValidationChange={(isValid, errors) => {
-                        setIsFormValid(isValid);
-                        setFormErrors(errors);
-                    }}
-                    errors={formErrors}
-                    showSaveCard={false}
-                />
-            )}
-            </View>
+                    {selectedPaymentMethod === 'new' && (
+                        <CreditCardForm
+                            onValuesChange={setFormValues}
+                            onValidationChange={(isValid, errors) => {
+                                setIsFormValid(isValid);
+                                setFormErrors(errors);
+                            }}
+                            errors={formErrors}
+                            showSaveCard={false}
+                        />
+                    )}
+                </View>
                 {/* Buttons for navigation */}
                 <View style={styles.navigationButtonsContainer}>
                     <TouchableOpacity
                         style={styles.navigationButton}
-                        onPress={() => navigation.navigate('CancelTicket')}
+                        onPress={() => navigation.navigate('Ticket')}
                     >
                         <Text style={styles.navigationButtonText}>View/Cancel Tickets</Text>
                     </TouchableOpacity>

@@ -1,0 +1,61 @@
+package org.example.acmeplex.service;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.example.acmeplex.model.Coupon;
+import org.example.acmeplex.model.Transaction;
+import org.example.acmeplex.model.User;
+import org.example.acmeplex.repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.Date;
+import java.util.List;
+
+@Service
+public class TransactionService {
+    private final CouponService couponService;
+    private final TransactionRepository transactionRepository;
+
+    @Autowired
+    public TransactionService(CouponService couponService, TransactionRepository transactionRepository) {
+        this.couponService = couponService;
+        this.transactionRepository = transactionRepository;
+    }
+
+    @Transactional
+    public Transaction createTransaction(User user, Double amount, Long couponID) {
+        Coupon coupon = null;
+        double finalAmount = amount;
+
+        if (couponID != null) {
+            coupon = couponService.applyCoupon(couponID, amount);
+
+            if (coupon.getRemainingValue() > 0) {
+                double discount = Math.min(amount, coupon.getRemainingValue());
+                finalAmount -= discount;
+            }
+        }
+
+        // Create and save the transaction
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.setTotal(finalAmount);
+        transaction.setCoupon(coupon);
+        transaction.setTransactionDate(new Date());
+        transaction.setTransactionSuccessful(true); // Assume success for now
+        transactionRepository.save(transaction);
+
+        return transaction;
+    }
+
+    public List<Transaction> getTransactionsByUser(User user) {
+        return transactionRepository.findByUser(user);
+    }
+
+    public void updateTransactionStatus(Long transactionID, boolean successful) {
+        Transaction transaction = transactionRepository.findById(transactionID)
+                .orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
+        transaction.setTransactionSuccessful(successful);
+        transactionRepository.save(transaction);
+    }
+}

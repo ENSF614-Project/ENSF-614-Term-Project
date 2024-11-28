@@ -100,7 +100,7 @@ const TicketScreen = () => {
                         isActive ? styles.activeBadge : styles.pastBadge
                     ]}>
                         <Text style={styles.statusText}>
-                            {isActive ? 'Active' : 'Past'}
+                            {isActive ? 'Complete' : 'Cancelled'}
                         </Text>
                     </View>
                 </View>

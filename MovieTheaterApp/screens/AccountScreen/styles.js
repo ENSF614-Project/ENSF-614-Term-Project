@@ -1,13 +1,11 @@
-// screens/RegisterScreen/styles.js
+// screens/AccountScreen/styles.js
 import { StyleSheet } from 'react-native';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 
 export const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
-        backgroundColor: COLORS.background,
-        justifyContent: 'center',
-        padding: SPACING.xl,
+        flex: 1,
+        backgroundColor: COLORS.background.primary,
     },
     formContainer: {
         width: '100%',
@@ -20,21 +18,22 @@ export const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: SPACING.xl,
         textAlign: 'center',
+        color: COLORS.text.primary,
     },
     section: {
         marginBottom: SPACING.xl,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         borderRadius: SPACING.sm,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         padding: SPACING.lg,
     },
     paymentSection: {
         marginBottom: SPACING.xl,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         borderRadius: SPACING.sm,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         padding: SPACING.lg,
     },
     sectionHeader: {
@@ -46,50 +45,28 @@ export const styles = StyleSheet.create({
     sectionTitle: {
         ...TYPOGRAPHY.title,
         fontSize: 18,
+        color: COLORS.text.primary,
     },
     input: {
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         borderRadius: SPACING.sm,
         padding: SPACING.md,
         marginBottom: SPACING.lg,
         fontSize: 16,
+        backgroundColor: COLORS.input.background,
+        color: COLORS.text.primary,
     },
     inputError: {
-        borderColor: COLORS.RED,
+        borderColor: COLORS.text.error,
     },
     errorText: {
         ...TYPOGRAPHY.body,
-        color: COLORS.RED,
+        color: COLORS.text.error,
         fontSize: 12,
         marginBottom: SPACING.sm,
         marginLeft: SPACING.xs,
     },
-    registerButton: {
-        backgroundColor: COLORS.RED,
-        padding: SPACING.md,
-        borderRadius: SPACING.sm,
-        marginBottom: SPACING.md,
-    },
-    registerButtonText: {
-        color: COLORS.background,
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-
-    registerButtonDisabled: {
-        opacity: 0.6,
-    },
-
-    loginButton: {
-        padding: SPACING.sm,
-    },
-    loginButtonText: {
-        color: COLORS.text.secondary,
-        textAlign: 'center',
-    },
-
     paymentMethodContainer: {
         padding: SPACING.lg,
     },
@@ -99,13 +76,14 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: SPACING.md,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         borderRadius: SPACING.sm,
         marginBottom: SPACING.md,
+        backgroundColor: COLORS.background.primary,
     },
     selectedCard: {
-        borderColor: COLORS.RED,
-        backgroundColor: COLORS.secondaryBackground,
+        borderColor: COLORS.button.primary.background,
+        backgroundColor: COLORS.background.secondary,
     },
     savedCardInfo: {
         flexDirection: 'row',
@@ -114,6 +92,29 @@ export const styles = StyleSheet.create({
     },
     savedCardText: {
         ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+    },
+    registerButton: {
+        backgroundColor: COLORS.button.primary.background,
+        padding: SPACING.md,
+        borderRadius: SPACING.sm,
+        marginBottom: SPACING.md,
+    },
+    registerButtonText: {
+        color: COLORS.button.primary.text,
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    registerButtonDisabled: {
+        opacity: 0.6,
+    },
+    loginButton: {
+        padding: SPACING.sm,
+    },
+    loginButtonText: {
+        color: COLORS.text.secondary,
+        textAlign: 'center',
     },
     navigationButtonsContainer: {
         marginTop: SPACING.lg,
@@ -121,7 +122,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     navigationButton: {
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
         paddingVertical: SPACING.md,
         paddingHorizontal: SPACING.xl,
         borderRadius: SPACING.sm,
@@ -130,8 +131,29 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     navigationButtonText: {
-        color: COLORS.background,
+        color: COLORS.button.primary.text,
         fontSize: 16,
         fontWeight: 'bold',
     },
+    membershipContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: SPACING.md,
+    },
+    membershipTitle: {
+        ...TYPOGRAPHY.title,
+        fontSize: 18,
+        color: COLORS.text.primary,
+    },
+    membershipAmount: {
+        ...TYPOGRAPHY.title,
+        fontSize: 20,
+        color: COLORS.button.primary.background,
+    },
+    membershipInfo: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        fontStyle: 'italic',
+    }
 });

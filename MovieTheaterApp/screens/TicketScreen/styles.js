@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: COLORS.input.border,
+        borderColor: COLORS.border.default,
         borderRadius: SPACING.sm,
         padding: SPACING.md,
         marginBottom: SPACING.md,
@@ -84,6 +84,18 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.border.default,
     },
+    ticketHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: SPACING.md,
+    },
+    movieTitle: {
+        ...TYPOGRAPHY.title,
+        fontSize: 18,
+        color: COLORS.text.primary,
+        flex: 1,
+    },
     statusBadge: {
         paddingVertical: SPACING.xs,
         paddingHorizontal: SPACING.sm,
@@ -99,6 +111,25 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.body,
         fontSize: 12,
         color: COLORS.text.primary,
+    },
+    ticketInfo: {
+        gap: SPACING.xs,
+    },
+    infoRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: SPACING.xs,
+    },
+    infoLabel: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        width: '30%',
+    },
+    infoValue: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+        flex: 1,
+        textAlign: 'right',
     },
     cancelButton: {
         backgroundColor: COLORS.button.danger.background,
@@ -118,11 +149,24 @@ export const styles = StyleSheet.create({
         borderRadius: SPACING.sm,
         borderWidth: 1,
         borderColor: COLORS.border.default,
+        textColor: COLORS.text.secondary,
     },
     emptyText: {
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
         marginTop: SPACING.md,
+    },
+    toggleButton: {
+        backgroundColor: COLORS.button.secondary.background,
+        padding: SPACING.md,
+        borderRadius: SPACING.sm,
+        marginVertical: SPACING.md,
+        marginHorizontal: SPACING.lg,
+        alignItems: 'center',
+    },
+    toggleButtonText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
     },
     spinner: {
         color: COLORS.icon.primary,

@@ -5,15 +5,15 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: SPACING.xl,
-        backgroundColor: COLORS.background,
-        alignItems: 'center', // Centers the main content horizontally
+        backgroundColor: COLORS.background.primary,
     },
     title: {
+        ...TYPOGRAPHY.title,
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: SPACING.xl,
         textAlign: 'center',
+        color: COLORS.text.primary,
     },
     inputContainer: {
         alignItems: 'center',
@@ -22,50 +22,92 @@ export const styles = StyleSheet.create({
     input: {
         width: '80%',
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         borderRadius: SPACING.sm,
         padding: SPACING.lg,
         textAlign: 'center',
+        backgroundColor: COLORS.input.background,
+        color: COLORS.text.primary,
     },
     inputError: {
-        borderColor: COLORS.RED,
+        borderColor: COLORS.text.error,
     },
     button: {
         marginTop: SPACING.lg,
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
         padding: SPACING.lg,
         borderRadius: SPACING.sm,
     },
     buttonText: {
-        color: COLORS.background,
-        fontWeight: 'bold',
+        color: COLORS.button.primary.text,
+        ...TYPOGRAPHY.title,
     },
     errorText: {
-        color: COLORS.RED,
+        color: COLORS.text.error,
         marginTop: SPACING.sm,
         marginBottom: SPACING.lg,
         textAlign: 'center',
+        ...TYPOGRAPHY.body,
     },
     couponListWrapper: {
         width: '100%',
-        alignItems: 'center', // Centers the list items horizontally
+        alignItems: 'center',
     },
     couponList: {
         marginTop: SPACING.xl,
         width: '100%',
     },
     couponItem: {
-        width: '30%', // Reduces the width of each coupon item
+        width: '80%',
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         borderRadius: SPACING.sm,
         padding: SPACING.lg,
         marginBottom: SPACING.lg,
-        alignItems: 'center', // Centers the content within each coupon item
+        alignItems: 'center',
+        backgroundColor: COLORS.background.primary,
     },
     couponCode: {
-        fontWeight: 'bold',
-        textAlign: 'center',
+        ...TYPOGRAPHY.title,
+        color: COLORS.text.primary,
+        marginBottom: SPACING.xs,
     },
+    statusBadge: {
+        paddingVertical: SPACING.xs,
+        paddingHorizontal: SPACING.sm,
+        borderRadius: SPACING.lg,
+        marginTop: SPACING.sm,
+    },
+    validBadge: {
+        backgroundColor: COLORS.status.active,
+    },
+    expiredBadge: {
+        backgroundColor: COLORS.status.inactive,
+    },
+    badgeText: {
+        ...TYPOGRAPHY.body,
+        fontSize: 12,
+        color: COLORS.text.primary,
+    },
+    couponValue: {
+        ...TYPOGRAPHY.title,
+        color: COLORS.button.primary.background,
+        marginVertical: SPACING.xs,
+    },
+    couponExpiry: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+    },
+    emptyState: {
+        alignItems: 'center',
+        padding: SPACING.xl,
+        backgroundColor: COLORS.background.secondary,
+        borderRadius: SPACING.sm,
+        margin: SPACING.lg,
+    },
+    emptyStateText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        textAlign: 'center',
+    }
 });
-

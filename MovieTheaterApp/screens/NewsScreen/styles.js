@@ -1,15 +1,17 @@
 // screens/NewsScreen/styles.js
 import { StyleSheet } from 'react-native';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
+
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: COLORS.background.primary,
         padding: SPACING.lg,
-        backgroundColor: COLORS.background,
     },
     title: {
+        ...TYPOGRAPHY.title,
         fontSize: 24,
-        fontWeight: 'bold',
+        color: COLORS.text.primary,
         marginBottom: SPACING.md,
         textAlign: 'center',
     },
@@ -18,20 +20,42 @@ export const styles = StyleSheet.create({
     },
     newsItem: {
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         borderRadius: SPACING.sm,
         padding: SPACING.md,
-        marginBottom: SPACING.xs,
-        backgroundColor: COLORS.background,
+        marginBottom: SPACING.md,
+        backgroundColor: COLORS.background.primary,
     },
     newsType: {
+        ...TYPOGRAPHY.title,
         fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: SPACING.xs,
         color: COLORS.text.primary,
+        marginBottom: SPACING.xs,
     },
     newsText: {
+        ...TYPOGRAPHY.body,
         fontSize: 16,
         color: COLORS.text.secondary,
     },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: SPACING.xl,
+    },
+    emptyText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        textAlign: 'center',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        marginTop: SPACING.md,
+    }
 });

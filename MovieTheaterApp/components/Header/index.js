@@ -9,9 +9,15 @@ import { COLORS } from '../../styles';
 const Header = () => {
     const navigation = useNavigation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(true); // Replace with actual login logic
 
     const handleLoginPress = () => {
-        navigation.navigate('Login');
+        if (!isUserLoggedIn) {
+            navigation.navigate('Login');
+        }
+        else{
+            navigation.navigate('Account');
+        }
     };
 
     const handleMenuItemPress = (route) => {
@@ -62,12 +68,12 @@ const Header = () => {
                         <Text style={styles.menuItemText}>View Coupon</Text>
                     </TouchableOpacity> 
 
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         style={styles.menuItem}
                         onPress={() => handleMenuItemPress('Account')}
                     >
                         <Text style={styles.menuItemText}>View Account</Text>
-                    </TouchableOpacity> 
+                    </TouchableOpacity>  */}
                 </View>
             )}
         </>

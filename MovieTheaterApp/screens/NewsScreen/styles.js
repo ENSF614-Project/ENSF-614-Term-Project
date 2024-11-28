@@ -1,84 +1,37 @@
 // screens/NewsScreen/styles.js
 import { StyleSheet } from 'react-native';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
-
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
-    },
-    centered: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        padding: SPACING.lg,
         backgroundColor: COLORS.background,
     },
     title: {
-        ...TYPOGRAPHY.title,
         fontSize: 24,
-        margin: SPACING.lg,
-    },
-    subtitle: {
-        ...TYPOGRAPHY.body,
-        fontSize: 16,
-        margin: SPACING.md,
-        color: COLORS.text.secondary,
-    },
-    loadingText: {
-        ...TYPOGRAPHY.body,
-        marginTop: SPACING.md,
-        color: COLORS.text.secondary,
-    },
-    messageContainer: {
-        padding: SPACING.lg,
-        margin: SPACING.lg,
-        borderRadius: SPACING.sm,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        alignItems: 'center',
-    },
-    errorText: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.RED,
-        textAlign: 'center',
-        marginBottom: SPACING.lg,
-    },
-    retryButton: {
-        backgroundColor: COLORS.RED,
-        padding: SPACING.md,
-        borderRadius: SPACING.sm,
-    },
-    retryButtonText: {
-        color: COLORS.background,
-        ...TYPOGRAPHY.body,
         fontWeight: 'bold',
+        marginBottom: SPACING.md,
+        textAlign: 'center',
     },
-    userCard: {
-        margin: SPACING.md,
-        padding: SPACING.md,
-        borderRadius: SPACING.sm,
-        backgroundColor: COLORS.background,
+    newsContainer: {
+        marginTop: SPACING.sm,
+    },
+    newsItem: {
         borderWidth: 1,
         borderColor: COLORS.border,
-    },
-    userText: {
-        ...TYPOGRAPHY.body,
-        marginBottom: SPACING.xs,
-    },
-    debugContainer: {
-        margin: SPACING.lg,
-        padding: SPACING.md,
-        backgroundColor: '#f0f0f0',
         borderRadius: SPACING.sm,
+        padding: SPACING.md,
+        marginBottom: SPACING.xs,
+        backgroundColor: COLORS.background,
     },
-    debugTitle: {
-        ...TYPOGRAPHY.title,
-        marginBottom: SPACING.sm,
+    newsType: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: SPACING.xs,
+        color: COLORS.text.primary,
+    },
+    newsText: {
+        fontSize: 16,
         color: COLORS.text.secondary,
     },
-    debugText: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.text.secondary,
-        fontFamily: 'monospace',
-    }
 });

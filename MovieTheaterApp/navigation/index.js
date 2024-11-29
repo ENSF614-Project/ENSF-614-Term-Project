@@ -10,8 +10,12 @@ import ShowtimeScreen from '../screens/ShowtimeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SeatSelectionScreen from '../screens/SeatSelectionScreen';
 import NewsScreen from '../screens/NewsScreen';
-import CancelTicketScreen from '../screens/CancelTicketScreen';
+import TicketScreen from '../screens/TicketScreen';
+import CouponScreen from '../screens/CouponScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import AccountScreen from '../screens/AccountScreen';
+import PaymentScreen from '../screens/PaymentScreen';
+import TicketConfirmationScreen from '../screens/TicketConfirmationScreen';
 import Header from '../components/Header';
 import { COLORS } from '../styles';
 
@@ -19,7 +23,7 @@ const Stack = createNativeStackNavigator();
 
 const HeaderRight = ({ navigation }) => {
     const handleLoginPress = () => {
-        navigation.navigate('Login');
+        navigation.navigate('Login'); //Need log in validation to ensure logged in users get taken to account instead of login
     };
 
     return (
@@ -93,10 +97,17 @@ const screens = [
         }
     },
     {
-        name: 'CancelTicket',
-        component: CancelTicketScreen,
+        name: 'Ticket',
+        component: TicketScreen,
         options: {
-            headerTitle: 'Cancel Ticket',
+            headerTitle: 'Tickets',
+        }
+    },
+    {
+        name: 'Coupon',
+        component: CouponScreen,
+        options: {
+            headerTitle: 'Coupon',
         }
     },
     {
@@ -104,6 +115,30 @@ const screens = [
         component: RegisterScreen,
         options: {
             headerTitle: 'Registration',
+        }
+    },
+    {
+        name: 'Account',
+        component: AccountScreen,
+        options: {
+            headerTitle: 'Account',
+        }
+    },
+    {
+        name: 'Payment',
+        component: PaymentScreen,
+        options: {
+            headerTitle: 'Payment',
+        }
+    },
+    {
+        name: 'TicketConfirmation',
+        component: TicketConfirmationScreen,
+        options: {
+            headerTitle: 'Confirmation',
+            // Prevent going back to payment screen after confirmation
+            headerLeft: () => null,
+            gestureEnabled: false
         }
     }
 ];

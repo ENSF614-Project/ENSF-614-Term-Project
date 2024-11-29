@@ -24,7 +24,6 @@ public class Movie {
     @Column(nullable = false)
     private String description;
 
-    //Question: do we need rating?
     @Column(nullable = false)
     private Double rating;
 

@@ -4,24 +4,33 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 
 export const styles = StyleSheet.create({
     container: {
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.card.background,
         borderRadius: SPACING.sm,
-        elevation: 3,
-        shadowColor: COLORS.shadow,
         shadowOffset: {
-            width: 0,
+            width: 1,
             height: 2,
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 10,
+        shadowOpacity: 0.5,
+        shadowRadius: 3.84,
         margin: SPACING.xs,
         width: SPACING.cardPoster.width,
         overflow: 'hidden',
+        borderWidth: 5,
+        borderColor: 'transparent',
+    },
+    containerHovered: {
+        shadowOffset: {
+            width: 2,
+            height: 4,
+        },
+        shadowOpacity: 0.6,
+        shadowRadius: 5,
+        borderColor: COLORS.button.primary.background,
     },
     poster: {
         width: SPACING.cardPoster.width,
         height: SPACING.cardPoster.height,
-        backgroundColor: COLORS.border,
+        backgroundColor: COLORS.background.secondary,
     },
     infoContainer: {
         padding: SPACING.sm,
@@ -53,7 +62,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: SPACING.xs,
         borderTopWidth: 1,
-        borderTopColor: COLORS.border,
+        borderTopColor: COLORS.border.default,
     },
     releaseDate: {
         ...TYPOGRAPHY.body,
@@ -62,7 +71,7 @@ export const styles = StyleSheet.create({
     },
     rating: {
         ...TYPOGRAPHY.body,
-        color: COLORS.RED,
+        color: COLORS.button.primary.background,
         fontSize: 12,
         fontWeight: 'bold',
     }

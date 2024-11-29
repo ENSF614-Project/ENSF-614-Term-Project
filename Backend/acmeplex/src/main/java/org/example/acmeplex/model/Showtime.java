@@ -15,11 +15,13 @@ public class Showtime {
     @Column(nullable = false)
     private LocalDateTime showtime;
 
-    @Column(nullable = false)
-    private Double price;
+    //@Column(nullable = false)
+    //private Boolean earlyAccessOnly = false;
 
-    @Column(nullable = false)
-    private Boolean earlyAccessOnly = false;
+    @Transient
+    public Boolean isEarlyAccessOnly() {
+        return movie.isEarlyAccessOnly();
+    }
 
     @ManyToOne
     @JoinColumn(name = "movieId", nullable = false)
@@ -28,7 +30,5 @@ public class Showtime {
     @ManyToOne
     @JoinColumn(name = "theatreId", nullable = false)
     private Theatre theatre;
-
-    //Question: about Seats
 
 }

@@ -1,3 +1,4 @@
+//ShowtimeRepository.java
 package org.example.acmeplex.repository;
 
 import org.example.acmeplex.model.Showtime;
@@ -13,4 +14,7 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Integer> {
 
     List<Showtime> findByTheatre_TheatreId(Integer theatreId);
 
+    //List<Showtime> findByEarlyAccessOnlyTrue();
+
+    List<Showtime> findByMovie_MovieIdAndTheatre_TheatreId(Integer movieId, Integer theatreId);
 }

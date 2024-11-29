@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/movie")
+@RequestMapping("/api/movies")
 @CrossOrigin(origins = "*")
 public class MovieController {
 
@@ -25,10 +25,28 @@ public class MovieController {
     public List<Movie> getAllMovies() {
         return movieService.getAllMovies();
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Movie> getMovieById(@PathVariable int id) {
         return movieService.getMovieById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
+    @GetMapping("early-access")
+    public ResponseEntity<List<Movie>> getEarlyAccessMovies() {
+        List<Movie> earlyAccessMovies = movieService.getEarlyAccessMovies();
+        return ResponseEntity.ok(earlyAccessMovies);
+    }
+
+    @PostMapping
+    public ResponseEntity<Movie> createMovie(@RequestBody Movie movie) {
+        try {
+            Movie createdMovie = movieService.createMovie(movie);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdMovie);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
 }

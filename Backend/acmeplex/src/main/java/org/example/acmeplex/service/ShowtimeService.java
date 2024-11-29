@@ -1,3 +1,4 @@
+//ShowtimeService.java
 package org.example.acmeplex.service;
 
 import org.example.acmeplex.model.Showtime;
@@ -17,7 +18,7 @@ public class ShowtimeService {
         this.showtimeRepository = showtimeRepository;
     }
 
-    public List<Showtime> getAllShowtimes(){
+    public List<Showtime> getAllShowtime(){
         return showtimeRepository.findAll();
     }
 
@@ -25,12 +26,22 @@ public class ShowtimeService {
         return showtimeRepository.findById(id);
     }
 
-    public List<Showtime> getShowtimesByMovie(Integer movieId) {
+    public List<Showtime> getShowtimeByMovie(Integer movieId) {
         return showtimeRepository.findByMovie_MovieId(movieId);
     }
 
-    public List<Showtime> getShowtimesByTheater(Integer theaterId) {
+    public List<Showtime> getShowtimeByTheater(Integer theaterId) {
         return showtimeRepository.findByTheatre_TheatreId(theaterId);
     }
+
+    public List<Showtime> getByMovieAndTheatre(Integer movieId, Integer theaterId) {
+        return showtimeRepository.findByMovie_MovieIdAndTheatre_TheatreId(movieId, theaterId);
+    }
+
+    public List<Showtime> getEarlyAccessShowtimeForMovieAndTheatre(Integer movieId, Integer theaterId) {
+        List<Showtime> showtime = showtimeRepository.findByMovie_MovieIdAndTheatre_TheatreId(movieId, theaterId);
+
+        return showtime.stream().filter(Showtime::isEarlyAccessOnly).toList();
+     }
 
 }

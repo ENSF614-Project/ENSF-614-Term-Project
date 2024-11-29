@@ -1,5 +1,7 @@
+//Movie.java
 package org.example.acmeplex.model;
 import java.sql.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,5 +30,15 @@ public class Movie {
     private Double rating;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date releaseDate;
+
+    @Column(nullable = false)
+    private String posterUrl;
+
+    @Transient
+    public boolean isEarlyAccessOnly() {
+        return releaseDate != null &&
+                releaseDate.toLocalDate().isAfter(LocalDate.now());
+    }
 }

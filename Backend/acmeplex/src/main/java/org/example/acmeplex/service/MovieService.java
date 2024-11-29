@@ -27,5 +27,14 @@ public class MovieService {
         return movieRepository.findById(id);
     }
 
-    public Movie createMovie(Movie movie) {return movieRepository.save(movie);}
+    public List<Movie> getEarlyAccessMovies() {
+        return movieRepository.findAll().stream()
+                .filter(Movie::isEarlyAccessOnly)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    public Movie createMovie(Movie movie) {
+        return movieRepository.save(movie);
+    }
+
 }

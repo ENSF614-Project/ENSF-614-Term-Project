@@ -1,3 +1,4 @@
+//MovieRepository.java
 package org.example.acmeplex.repository;
 
 import org.example.acmeplex.model.Movie;
@@ -8,4 +9,5 @@ import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie, Integer> {
     List<Movie> findByGenre(String genre);
+
 }

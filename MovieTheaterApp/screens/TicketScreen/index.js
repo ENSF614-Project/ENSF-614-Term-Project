@@ -11,34 +11,26 @@ import {
 import { Ticket, AlertCircle } from 'lucide-react-native';
 import { styles } from './styles';
 import { getUserTickets, getTicketById } from '../../MockData';
+import { useAuth } from '../../context/AuthContext';
 
 const TicketScreen = () => {
-    // need to connect to API
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userId, setUserId] = useState(null);
+    const { user } = useAuth();
     const [ticketNumber, setTicketNumber] = useState('');
     const [searchedTicket, setSearchedTicket] = useState(null);
     const [userTickets, setUserTickets] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // use this toggle to test different user states
-    const toggleLogin = () => {
-        setIsLoggedIn(!isLoggedIn);
-        setUserId(isLoggedIn ? null : 1); // set to user 1 (with tickets) when logging in
-    };
-
     useEffect(() => {
-        if (isLoggedIn && userId) {
+        if (user) {
             fetchUserTickets();
         }
-    }, [isLoggedIn, userId]);
+    }, [user]);
 
     const fetchUserTickets = async () => {
         setLoading(true);
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            const tickets = getUserTickets(userId);
+            const tickets = getUserTickets(user.userId);
             setUserTickets(tickets);
             setError(null);
         } catch (err) {
@@ -56,7 +48,6 @@ const TicketScreen = () => {
 
         setLoading(true);
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
             const ticket = getTicketById(ticketNumber);
             if (ticket) {
                 setSearchedTicket(ticket);
@@ -100,7 +91,7 @@ const TicketScreen = () => {
                         isActive ? styles.activeBadge : styles.pastBadge
                     ]}>
                         <Text style={styles.statusText}>
-                            {isActive ? 'Complete' : 'Cancelled'}
+                            {isActive ? 'Active' : 'Past'}
                         </Text>
                     </View>
                 </View>
@@ -116,6 +107,7 @@ const TicketScreen = () => {
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Showtime:</Text>
+
                         <Text style={styles.infoValue}>{formatDate(ticket.showtime)}</Text>
                     </View>
                     <View style={styles.infoRow}>
@@ -125,12 +117,14 @@ const TicketScreen = () => {
                     {canCancel && (
                         <View style={styles.infoRow}>
                             <Text style={styles.infoLabel}>Cancel By:</Text>
-                            <Text style={styles.infoValue}>{formatDate(ticket.cancellationDeadline)}</Text>
+                            <Text style={styles.infoValue}>
+                                {formatDate(ticket.cancellationDeadline)}
+                            </Text>
                         </View>
                     )}
                 </View>
 
-                {canCancel && isActive && (
+                {canCancel && isActive && user && (
                     <TouchableOpacity
                         style={styles.cancelButton}
                         onPress={() => handleCancelTicket(ticket.ticketID)}
@@ -153,57 +147,47 @@ const TicketScreen = () => {
 
     return (
         <ScrollView style={styles.container}>
-            {/* Demo login toggle */}
-            <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={toggleLogin}
-            >
-                <Text style={styles.toggleButtonText}>
-                    {isLoggedIn ? 'Logout (Demo)' : 'Login (Demo)'}
-                </Text>
-            </TouchableOpacity>
-
-            {!isLoggedIn ? (
-                <View style={styles.searchContainer}>
-                    <View style={styles.searchHeader}>
-                        <Ticket color={styles.searchHeader.iconColor} size={24} />
-                        <Text style={styles.searchTitle}>Find Your Ticket</Text>
-                    </View>
-
-                    {error && (
-                        <View style={styles.errorContainer}>
-                            <AlertCircle color={styles.errorContainer.iconColor} size={20} />
-                            <Text style={styles.errorText}>{error}</Text>
-                        </View>
-                    )}
-
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            value={ticketNumber}
-                            onChangeText={setTicketNumber}
-                            placeholder="Enter ticket number"
-                            placeholderTextColor={styles.input.placeholderTextColor}
-                            keyboardType="numeric"
-                        />
-                        <TouchableOpacity
-                            style={styles.searchButton}
-                            onPress={handleTicketSearch}
-                        >
-                            <Text style={styles.buttonText}>Search</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {searchedTicket && renderTicketCard(searchedTicket)}
+            <View style={styles.searchContainer}>
+                <View style={styles.searchHeader}>
+                    <Ticket color={styles.searchHeader.iconColor} size={24} />
+                    <Text style={styles.searchTitle}>Find Ticket by ID</Text>
                 </View>
-            ) : (
+
+                {error && (
+                    <View style={styles.errorContainer}>
+                        <AlertCircle color={styles.errorContainer.iconColor} size={20} />
+                        <Text style={styles.errorText}>{error}</Text>
+                    </View>
+                )}
+
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        value={ticketNumber}
+                        onChangeText={setTicketNumber}
+                        placeholder="Enter ticket number"
+                        placeholderTextColor={styles.input.placeholderTextColor}
+                        keyboardType="numeric"
+                    />
+                    <TouchableOpacity
+                        style={styles.searchButton}
+                        onPress={handleTicketSearch}
+                    >
+                        <Text style={styles.buttonText}>Search</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {searchedTicket && renderTicketCard(searchedTicket)}
+            </View>
+
+            {user && (
                 <View style={styles.ticketsContainer}>
-                    <Text style={styles.screenTitle}>Your Tickets</Text>
+                    <Text style={styles.sectionTitle}>Your Tickets</Text>
                     {userTickets.length > 0 ? (
                         userTickets.map(renderTicketCard)
                     ) : (
                         <View style={styles.emptyContainer}>
-                            <Ticket size={48} color={styles.emptyContainer.textColor} />
+                            <Ticket size={48} color={styles.emptyContainer.iconColor} />
                             <Text style={styles.emptyText}>No tickets found</Text>
                         </View>
                     )}

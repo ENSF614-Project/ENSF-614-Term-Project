@@ -43,6 +43,11 @@ export const styles = StyleSheet.create({
         color: COLORS.text.primary,
         fontSize: 16,
     },
+    menuItemTextLogout: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.error,
+        fontSize: 16,
+    },
     iconColor: {
         color: COLORS.icon.primary,
     },

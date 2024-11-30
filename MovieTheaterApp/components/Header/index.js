@@ -5,26 +5,44 @@ import { User, Menu } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 import { COLORS } from '../../styles';
+import { useAuth } from '../../context/AuthContext';
 
 const Header = () => {
     const navigation = useNavigation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(true); // Replace with actual login logic
+    const { user, logout } = useAuth();
 
     const handleLoginPress = () => {
-        if (!isUserLoggedIn) {
+        if (!user) {
             navigation.navigate('Login');
-        }
-        else {
+        } else {
             navigation.navigate('Account');
         }
     };
 
+    const handleLogout = () => {
+        logout();
+        setIsMenuOpen(false);
+        navigation.navigate('Home');
+    };
+
     const handleMenuItemPress = (route) => {
         setIsMenuOpen(false);
+
+        // Allow access to Ticket and Coupon without authentication
+        if (route === 'Ticket' || route === 'Coupon') {
+            navigation.navigate(route);
+            return;
+        }
+
+        // Keep other routes behind authentication if in header
+        if (!user) {
+            navigation.navigate('Login');
+            return;
+        }
         navigation.navigate(route);
     };
-    //Get rid of the view account in the hamburger menu later, this is only for testing.
+
     return (
         <>
             <View style={styles.container}>
@@ -60,20 +78,20 @@ const Header = () => {
                     >
                         <Text style={styles.menuItemText}>View News</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity
                         style={styles.menuItem}
                         onPress={() => handleMenuItemPress('Coupon')}
                     >
                         <Text style={styles.menuItemText}>View Coupon</Text>
                     </TouchableOpacity>
-
-                    {/* <TouchableOpacity
-                        style={styles.menuItem}
-                        onPress={() => handleMenuItemPress('Account')}
-                    >
-                        <Text style={styles.menuItemText}>View Account</Text>
-                    </TouchableOpacity>  */}
+                    {user && (
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={handleLogout}
+                        >
+                            <Text style={styles.menuItemTextLogout}>Logout</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
             )}
         </>

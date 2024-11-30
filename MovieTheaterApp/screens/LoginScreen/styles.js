@@ -50,4 +50,7 @@ export const styles = StyleSheet.create({
         color: COLORS.text.secondary,
         textAlign: 'center',
     },
+    loading: {
+        color: COLORS.background.primary,
+    },
 });

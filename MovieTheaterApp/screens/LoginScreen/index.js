@@ -1,22 +1,27 @@
 // screens/LoginScreen/index.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { styles } from './styles';
+import { useAuth } from '../../context/AuthContext';
 
 const LoginScreen = ({ navigation }) => {
-    const [username, setUsername] = useState(''); //Change to email?
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const { login, loading, error } = useAuth();
 
-    const handleLogin = () => {
-        // TODO: Add login logic here
-        console.log('Login attempted:', { username, password });
-        // For now, just navigate to Home
-        navigation.navigate('Home');
+    const handleLogin = async () => {
+        if (!username || !password) {
+            alert('Please enter both username and password');
+            return;
+        }
+
+        const success = await login(username, password);
+        if (success) {
+            navigation.replace('Account');
+        }
     };
 
     const handleRegister = () => {
-        // TODO: Navigate to Register screen 
-        console.log('Navigate to Register');
         navigation.navigate('Register');
     };
 
@@ -24,6 +29,10 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.container}>
             <View style={styles.formContainer}>
                 <Text style={styles.title}>Welcome Back</Text>
+
+                {error && (
+                    <Text style={styles.errorText}>{error}</Text>
+                )}
 
                 <TextInput
                     style={styles.input}
@@ -44,8 +53,13 @@ const LoginScreen = ({ navigation }) => {
                 <TouchableOpacity
                     style={styles.loginButton}
                     onPress={handleLogin}
+                    disabled={loading}
                 >
-                    <Text style={styles.loginButtonText}>Login</Text>
+                    {loading ? (
+                        <ActivityIndicator color={styles.loading.color} />
+                    ) : (
+                        <Text style={styles.loginButtonText}>Login</Text>
+                    )}
                 </TouchableOpacity>
 
                 <TouchableOpacity

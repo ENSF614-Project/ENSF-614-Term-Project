@@ -76,7 +76,7 @@ const HomeScreen = () => {
 
     const handleMoviePress = (movie) => {
         navigation.navigate('MovieDetails', {
-            movie: movie
+            movieId: movie.movieId
         });
     };
 

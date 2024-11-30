@@ -1,22 +1,28 @@
 package org.example.acmeplex.config;
 
-import org.example.acmeplex.model.Movie;
-import org.example.acmeplex.model.RegisteredUser;
-import org.example.acmeplex.model.Theatre;
+import org.example.acmeplex.model.*;
+import org.example.acmeplex.repository.SeatRepository;
+import org.example.acmeplex.repository.ShowtimeRepository;
 import org.example.acmeplex.service.MovieService;
 import org.example.acmeplex.service.RegisteredUserService;
+import org.example.acmeplex.service.ShowtimeService;
 import org.example.acmeplex.service.TheatreService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Configuration
 public class DataSeeder {
 
     @Bean
-    public CommandLineRunner demo(RegisteredUserService userService, MovieService movieService, TheatreService theatreService) {
+    public CommandLineRunner demo(RegisteredUserService userService, MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository, ShowtimeService showtimeService, SeatRepository seatRepository) {
         return (args) -> {
             //Create users:
             RegisteredUser user1 = new RegisteredUser();
@@ -84,14 +90,63 @@ public class DataSeeder {
             theatre2.setTheatreName("Theatre 2");
             theatre2.setTheatreAddress("456 Ave NW");
 
-            Theatre theatre3 = new Theatre();
-            theatre3.setTheatreName("Theatre 3");
-            theatre3.setTheatreAddress("789 Ave NW");
-
             theatreService.createTheatre(theatre1);
             theatreService.createTheatre(theatre2);
-            theatreService.createTheatre(theatre3);
-        };
 
+            // Generate Showtime
+            // Times for showtime
+            List<String> times = List.of("10:00:00", "14:00:00", "19:00:00");
+            // Dates for showtime
+            List<LocalDate> dates = List.of(
+                    LocalDate.parse("2024-12-25"),
+                    LocalDate.parse("2024-12-26")
+            );
+            // Movies
+            List<Movie> movies = List.of(movie1, movie2, movie3);
+            // Theatres
+            List<Theatre> theatres = List.of(theatre1, theatre2);
+
+            // Create Showtime
+            int counter = 1;
+            List<Showtime> allShowtime = new ArrayList<>();
+
+            for (Movie movie : movies) {
+                for (Theatre theatre : theatres) {
+                    for (LocalDate date : dates) {
+                        for (String time : times) {
+                            Showtime showtime = new Showtime();
+                            showtime.setMovie(movie);
+                            showtime.setTheatre(theatre);
+                            showtime.setStartTime(LocalDateTime.parse(date + "T" + time));
+
+                            allShowtime.add(showtime);
+                            System.out.println("Created showtime" + counter + ": " +
+                                    movie.getTitle() + ", " + theatre.getTheatreName() + ", " +
+                                    date + " " + time);
+                            counter++;
+                        }
+                    }
+                }
+            }
+            // Persisting showtime to database
+            showtimeRepository.saveAll(allShowtime);
+
+            // Generate seats for each showtime
+            List<Seat> allSeats = new ArrayList<>();
+            for (Showtime showtime : allShowtime) {
+                for (char row = 'A'; row <= 'J'; row++) {
+                    for (int seatNum = 1; seatNum <= 10; seatNum++) {
+                        Seat seat = new Seat();
+                        seat.setShowtime(showtime);
+                        seat.setSeatRow(row);
+                        seat.setSeatNum(seatNum);
+                        seat.setIsAvailable(true);
+                        allSeats.add(seat);
+                    }
+                }
+            }
+            seatRepository.saveAll(allSeats);
+            System.out.println("Seeded seats successfully for each showtime.");
+        };
     }
 }

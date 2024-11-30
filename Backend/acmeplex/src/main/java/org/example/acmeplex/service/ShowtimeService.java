@@ -22,7 +22,7 @@ public class ShowtimeService {
         return showtimeRepository.findAll();
     }
 
-    public Optional<Showtime> getShowtimeById(int id) {
+    public Optional<Showtime> getShowtimeById(Integer id) {
         return showtimeRepository.findById(id);
     }
 
@@ -40,8 +40,14 @@ public class ShowtimeService {
 
     public List<Showtime> getEarlyAccessShowtimeForMovieAndTheatre(Integer movieId, Integer theaterId) {
         List<Showtime> showtime = showtimeRepository.findByMovie_MovieIdAndTheatre_TheatreId(movieId, theaterId);
-
         return showtime.stream().filter(Showtime::isEarlyAccessOnly).toList();
-     }
+    }
 
+    public Showtime createShowtime(Showtime newShowtime) {
+        if (newShowtime.getMovie() == null || newShowtime.getTheatre() == null || newShowtime.getStartTime() == null) {
+            throw new IllegalArgumentException("Invalid showtime data. Movie, theatre, and start time must be provided.");
+        }
+
+        return showtimeRepository.save(newShowtime);
+    }
 }

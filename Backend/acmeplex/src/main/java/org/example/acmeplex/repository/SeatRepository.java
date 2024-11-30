@@ -11,5 +11,5 @@ import java.util.List;
 public interface SeatRepository extends JpaRepository<Seat, Integer> {
 
     List<Seat> findByShowtime_ShowtimeId(Integer showtimeID);
-
+    List<Seat> findByShowtime_ShowtimeIdAndIsAvailableTrue(Integer showtimeId);
 }

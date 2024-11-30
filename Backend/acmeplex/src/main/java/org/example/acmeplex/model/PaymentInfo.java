@@ -1,5 +1,12 @@
+//paymentInfo.java
+
 package org.example.acmeplex.model;
 
+//import java.sql.Date;
+//import java.time.LocalDate;
+
+import jakarta.persistence.*;
+import lombok.Data;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,10 +15,42 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 
 @Entity
+@Data
+@Table(name = "PAYMENTINFO")
 public class PaymentInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer paymentInfoID;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(nullable = false)
+    private String cardType;
+
+    @Column(nullable = false)
+    private String cardNumber;
+
+    @Column(nullable = false)
+    private Integer expiryMonth;
+
+    @Column(nullable = false)
+    private Integer expiryYear;
+
+    @Column(nullable = false)
+    private Integer cw;
+
+    @Column(nullable = false)
+    private String cardHolderName;
+
+    @Column(nullable = false)
+    private String billingAddress;
+
+
+
+    /*
     private int paymentInfoID;
     private int userID;
     private String cardType;
@@ -21,7 +60,9 @@ public class PaymentInfo {
     private int cw;
     private String cardHolderName;
     private String billingAddress;
+    */
 
+    /*
     // Getters and Setters
     public int getPaymentInfoID() {
         return paymentInfoID;
@@ -94,4 +135,5 @@ public class PaymentInfo {
     public void setBillingAddress(String billingAddress) {
         this.billingAddress = billingAddress;
     }
+    */
 }

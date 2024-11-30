@@ -127,7 +127,7 @@ export const mockTickets = [
         showtimeID: 1,
         seatID: 1,
         purchasedDate: "2024-11-15",
-        cancellationDeadline: "2024-11-28",
+        cancellationDeadline: "2024-12-28",
         status: "complete",
         price: 15.00,
         refund: 0.0,

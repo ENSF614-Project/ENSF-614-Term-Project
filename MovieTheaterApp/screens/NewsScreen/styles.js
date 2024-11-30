@@ -37,25 +37,4 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         color: COLORS.text.secondary,
     },
-    emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: SPACING.xl,
-    },
-    emptyText: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.text.secondary,
-        textAlign: 'center',
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    loadingText: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.text.secondary,
-        marginTop: SPACING.md,
-    }
 });

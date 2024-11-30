@@ -1,3 +1,4 @@
+//Showtime.java
 package org.example.acmeplex.model;
 
 import java.time.*;
@@ -13,7 +14,7 @@ public class Showtime {
     private Integer showtimeId;
 
     @Column(nullable = false)
-    private LocalDateTime showtime;
+    private LocalDateTime startTime;
 
     //@Column(nullable = false)
     //private Boolean earlyAccessOnly = false;

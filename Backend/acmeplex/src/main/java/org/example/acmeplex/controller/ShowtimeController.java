@@ -50,4 +50,14 @@ public class ShowtimeController {
         }
         return ResponseEntity.ok(showtime);
     }
+
+    @PostMapping
+    public ResponseEntity<Showtime> createShowtime(@RequestBody Showtime newShowtime) {
+        try {
+            Showtime createdShowtime = showtimeService.createShowtime(newShowtime);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdShowtime);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "SEAT", uniqueConstraints = {@UniqueConstraint(columnNames = {"showtimeId", "seatRow", "seatNum"})})
+@Table(name = "SEAT")
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class Seat {
     private Showtime showtime;
 
     @Column(nullable = false)
-    private Integer seatRow;
+    private Character seatRow;
 
     @Column(nullable = false)
     private Integer seatNum;

@@ -1,18 +1,39 @@
 // screens\HomeScreen\index.js
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, FlatList, TextInput, TouchableOpacity, Text, useWindowDimensions, ScrollView } from 'react-native';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { View, FlatList, TextInput, TouchableOpacity, Text, useWindowDimensions, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Search, X } from 'lucide-react-native';
 import MovieCard from '../../components/MovieCard';
 import { styles } from './styles';
 import { SPACING } from '../../styles';
-import { movies } from '../../MockData';
+import { movieService } from '../../services/movieService';
 
 const HomeScreen = () => {
     const navigation = useNavigation();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedGenres, setSelectedGenres] = useState([]);
+    const [movies, setMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const { width } = useWindowDimensions();
+
+    useEffect(() => {
+        fetchMovies();
+    }, []);
+
+    const fetchMovies = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await movieService.getAllMovies();
+            setMovies(data);
+        } catch (error) {
+            setError('Failed to fetch movies. Please try again later.');
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Extract unique genres from movies
     const allGenres = useMemo(() => {
@@ -23,7 +44,7 @@ const HomeScreen = () => {
             });
         });
         return Array.from(genreSet).sort();
-    }, []);
+    }, [movies]);
 
     // Filter movies based on search query and selected genres
     const filteredMovies = useMemo(() => {
@@ -51,7 +72,7 @@ const HomeScreen = () => {
         }
 
         return filtered;
-    }, [searchQuery, selectedGenres]);
+    }, [movies, searchQuery, selectedGenres]);
 
     const handleMoviePress = (movie) => {
         navigation.navigate('MovieDetails', {
@@ -195,6 +216,25 @@ const HomeScreen = () => {
             )}
         </View>
     );
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={styles.loadingSpinner.color} />
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+                <TouchableOpacity style={styles.retryButton} onPress={fetchMovies}>
+                    <Text style={styles.retryButtonText}>Retry</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>

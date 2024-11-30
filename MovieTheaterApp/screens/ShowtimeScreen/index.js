@@ -4,80 +4,73 @@ import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'rea
 import { Calendar } from 'lucide-react-native';
 import { styles } from './styles';
 import { showtimeService } from '../../services/showtimeService';
+import { movieService } from '../../services/movieService';
 import { useAuth } from '../../context/AuthContext';
-import { dateUtils } from '../../utils/dateUtils';
+import { toLocalTime, toLocalDate, getLocalDateString, toShortLocalDate } from '../../utils/dateUtils';
 
 const ShowtimeScreen = ({ route, navigation }) => {
     const { movieId } = route.params;
     const { user } = useAuth();
-    const [showtimes, setShowtimes] = useState([]);
+    const [showtimeData, setShowtimeData] = useState([]);
+    const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [showCalendar, setShowCalendar] = useState(false);
 
+    // Fetch both movie and showtime data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const [movieData, showtimes] = await Promise.all([
+                    movieService.getMovieById(movieId),
+                    showtimeService.getShowtimesByMovie(movieId)
+                ]);
+                setMovie(movieData);
+                setShowtimeData(showtimes);
+            } catch (err) {
+                setError('Failed to load showtime data. Please try again later.');
+                console.error('Error fetching data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [movieId]);
+
     const availableDates = useMemo(() => {
+        if (!showtimeData.length) return [];
+
         const dates = new Set();
-        showtimes.forEach(showtime => {
-            const localDate = dateUtils.getLocalDateString(showtime.startTime);
+        showtimeData.forEach(showtime => {
+            const localDate = getLocalDateString(showtime.startTime);
             dates.add(localDate);
         });
-        return Array.from(dates)
+
+        const sortedDates = Array.from(dates)
             .map(date => new Date(date))
             .sort((a, b) => a - b);
-    }, [showtimes]);
+
+        // Set initial selected date if not already set
+        if (sortedDates.length > 0 && !selectedDate) {
+            setSelectedDate(sortedDates[0]);
+        }
+
+        return sortedDates;
+    }, [showtimeData]);
 
     const filteredShowtimes = useMemo(() => {
-        if (!selectedDate) return [];
-        const selectedDateStr = dateUtils.getLocalDateString(selectedDate);
+        if (!selectedDate || !showtimeData.length) return [];
 
-        return showtimes.filter(showtime => {
-            const showtimeDateStr = dateUtils.getLocalDateString(showtime.startTime);
+        const selectedDateStr = getLocalDateString(selectedDate);
+        return showtimeData.filter(showtime => {
+            const showtimeDateStr = getLocalDateString(showtime.startTime);
             return showtimeDateStr === selectedDateStr;
         });
-    }, [showtimes, selectedDate]);
-
-    useEffect(() => {
-        fetchShowtimes();
-    }, [movieId]);
-
-    useEffect(() => {
-        if (availableDates.length > 0 && !selectedDate) {
-            setSelectedDate(availableDates[0]);
-        }
-    }, [availableDates]);
-
-    const fetchShowtimes = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const data = await showtimeService.getShowtimesByMovie(movieId);
-            setShowtimes(data);
-        } catch (err) {
-            setError('Failed to load showtimes. Please try again later.');
-            console.error('Error fetching showtimes:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-    // Need to use useEffect to fetch showtimes
-    useEffect(() => {
-        fetchShowtimes();
-    }, [movieId]);
-
-    // This will set the initial date after availableDates is populated
-    useEffect(() => {
-        if (availableDates.length > 0 && !selectedDate) {
-            setSelectedDate(availableDates[0]);
-        }
-    }, [availableDates]); //This whole bit of code is redundant since the time zone fix, but it works so I'm leaving it in 
-
-    const formatTime = (dateTimeString) => {
-        return new Date(dateTimeString).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit'
-        });
-    };
+    }, [showtimeData, selectedDate]);
 
     const handleDateSelect = (date) => {
         setSelectedDate(date);
@@ -88,10 +81,9 @@ const ShowtimeScreen = ({ route, navigation }) => {
         navigation.navigate('SeatSelection', {
             showtime: {
                 ...showtime,
-                date: new Date(showtime.startTime),
-                time: formatTime(showtime.startTime)
-            },
-            movieId
+                movie,
+                date: new Date(showtime.startTime)
+            }
         });
     };
 
@@ -109,7 +101,7 @@ const ShowtimeScreen = ({ route, navigation }) => {
                 <Text style={styles.errorText}>{error}</Text>
                 <TouchableOpacity
                     style={styles.retryButton}
-                    onPress={fetchShowtimes}
+                    onPress={() => fetchData()}
                 >
                     <Text style={styles.retryButtonText}>Retry</Text>
                 </TouchableOpacity>
@@ -119,6 +111,15 @@ const ShowtimeScreen = ({ route, navigation }) => {
 
     return (
         <ScrollView style={styles.container}>
+            {movie && (
+                <View style={styles.movieInfo}>
+                    <Text style={styles.movieTitle}>{movie.title}</Text>
+                    <Text style={styles.movieDetails}>
+                        {movie.duration}m - {movie.genre}
+                    </Text>
+                </View>
+            )}
+
             <View style={styles.datePickerContainer}>
                 <TouchableOpacity
                     style={styles.dateButton}
@@ -126,7 +127,7 @@ const ShowtimeScreen = ({ route, navigation }) => {
                 >
                     <Calendar size={24} color={styles.dateButton.iconColor} />
                     <Text style={styles.dateText}>
-                        {selectedDate ? dateUtils.toLocalDate(selectedDate) : 'Select Date'}
+                        {selectedDate ? toLocalDate(selectedDate) : 'Select Date'}
                     </Text>
                 </TouchableOpacity>
 
@@ -138,7 +139,7 @@ const ShowtimeScreen = ({ route, navigation }) => {
                                 style={[
                                     styles.calendarDate,
                                     selectedDate &&
-                                    dateUtils.getLocalDateString(selectedDate) === dateUtils.getLocalDateString(date) &&
+                                    getLocalDateString(selectedDate) === getLocalDateString(date) &&
                                     styles.selectedDate
                                 ]}
                                 onPress={() => handleDateSelect(date)}
@@ -146,10 +147,10 @@ const ShowtimeScreen = ({ route, navigation }) => {
                                 <Text style={[
                                     styles.calendarDateText,
                                     selectedDate &&
-                                    dateUtils.getLocalDateString(selectedDate) === dateUtils.getLocalDateString(date) &&
+                                    getLocalDateString(selectedDate) === getLocalDateString(date) &&
                                     styles.selectedDateText
                                 ]}>
-                                    {dateUtils.toShortLocalDate(date)}
+                                    {toShortLocalDate(date)}
                                 </Text>
                             </TouchableOpacity>
                         ))}
@@ -168,7 +169,7 @@ const ShowtimeScreen = ({ route, navigation }) => {
                         >
                             <View style={styles.showtimeInfo}>
                                 <Text style={styles.time}>
-                                    {dateUtils.toLocalTime(showtime.startTime)}
+                                    {toLocalTime(showtime.startTime)}
                                 </Text>
                                 <Text style={styles.theatre}>
                                     {showtime.theatre.theatreName}

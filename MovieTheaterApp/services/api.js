@@ -37,3 +37,11 @@ export const api = {
         }
     },
 };
+
+export const getEarlyAccessNotifications = async () => {
+  const response = await fetch("http://localhost:8080/api/notifications/early-access");
+  if (!response.ok) {
+    throw new Error("Failed to fetch early access notifications");
+  }
+  return response.json();
+};

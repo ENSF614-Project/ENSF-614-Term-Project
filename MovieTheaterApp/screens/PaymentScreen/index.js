@@ -4,23 +4,37 @@ import {
     View,
     Text,
     TouchableOpacity,
-    ScrollView
+    ScrollView,
+    TextInput
 } from 'react-native';
-import { CreditCard, Trash2 } from 'lucide-react-native';
+import { CreditCard, Trash2, Ticket } from 'lucide-react-native';
 import CreditCardForm from '../../components/CreditCardForm';
 import { styles } from './styles';
+import { useAuth } from '../../context/AuthContext';
 
 const PaymentScreen = ({ route, navigation }) => {
     const { total, selectedSeats, showtime, movie } = route.params;
+    const { user } = useAuth();
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('new');
     const [formValues, setFormValues] = useState({});
     const [formErrors, setFormErrors] = useState({});
     const [isFormValid, setIsFormValid] = useState(false);
+    const [couponCode, setCouponCode] = useState('');
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
+    const [couponError, setCouponError] = useState('');
 
     // Mock data
+    //TODO: replace with an API call
     const [savedCards] = useState([
         { id: 1, last4: '4242', expiryDate: '12/25', cardHolderName: 'Test User' },
         { id: 2, last4: '1234', expiryDate: '10/25', cardHolderName: 'Test User' }
+    ]);
+
+    // Mock user coupons data
+    //TODO: replace with an API call
+    const [userCoupons] = useState([
+        { id: 1, code: 'USER123', value: 10.00, expiryDate: '2024-12-31' },
+        { id: 2, code: 'USER456', value: 15.00, expiryDate: '2024-12-31' }
     ]);
 
     const formatDate = (date) => {
@@ -32,14 +46,52 @@ const PaymentScreen = ({ route, navigation }) => {
         });
     };
 
+    const handleCouponSubmit = () => {
+        // Reset previous errors
+        setCouponError('');
+        setSelectedCoupon(null);
+
+        if (!couponCode.trim()) {
+            setCouponError('Please enter a coupon code');
+            return;
+        }
+
+        //TODO: replace with an API call
+        const foundCoupon = userCoupons.find(c => c.code === couponCode);
+        if (foundCoupon) {
+            setSelectedCoupon(foundCoupon);
+            setCouponCode('');
+        } else {
+            setCouponError('Invalid coupon code');
+        }
+    };
+
+    const handleCouponSelect = (coupon) => {
+        setSelectedCoupon(coupon);
+        setCouponCode('');
+        setCouponError('');
+    };
+
+    const handleRemoveCoupon = () => {
+        setSelectedCoupon(null);
+    };
+
+    const calculateFinalTotal = () => {
+        if (!selectedCoupon) return total;
+        const discountedTotal = total - selectedCoupon.value;
+        return Math.max(0, discountedTotal);
+    };
+
     const handlePayment = () => {
         if (selectedPaymentMethod === 'new' && !isFormValid) {
             alert('Please check all card details are correct');
             return;
         }
 
-        alert('Your payment is being processed...');
-        // Use short delay to simulate payment processing
+        const finalTotal = calculateFinalTotal();
+        alert(`Processing payment of $${finalTotal.toFixed(2)}...`);
+
+        //TODO: replace with an API call
         setTimeout(() => {
             const paymentInfo = selectedPaymentMethod === 'new'
                 ? formValues
@@ -49,8 +101,9 @@ const PaymentScreen = ({ route, navigation }) => {
                 tickets: selectedSeats,
                 movie,
                 showtime,
-                total,
-                paymentInfo
+                total: finalTotal,
+                paymentInfo,
+                appliedCoupon: selectedCoupon
             });
         }, 1000);
     };
@@ -86,9 +139,90 @@ const PaymentScreen = ({ route, navigation }) => {
                         {selectedSeats.map(seat => `${seat.row}${seat.seat}`).join(', ')}
                     </Text>
                 </View>
-                <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Total:</Text>
-                    <Text style={styles.totalText}>${total.toFixed(2)}</Text>
+            </View>
+
+            <View style={styles.couponContainer}>
+                <Text style={styles.sectionTitle}>Apply Coupon</Text>
+                <View style={styles.couponInputContainer}>
+                    <TextInput
+                        style={styles.couponInput}
+                        placeholder="Enter coupon code"
+                        value={couponCode}
+                        onChangeText={setCouponCode}
+                    />
+                    <TouchableOpacity
+                        style={styles.couponButton}
+                        onPress={handleCouponSubmit}
+                    >
+                        <Text style={styles.couponButtonText}>Apply</Text>
+                    </TouchableOpacity>
+                </View>
+                {couponError ? (
+                    <Text style={styles.errorText}>{couponError}</Text>
+                ) : null}
+
+                {user && userCoupons.length > 0 && !selectedCoupon && (
+                    <View style={styles.userCouponsContainer}>
+                        <Text style={styles.subsectionTitle}>Your Coupons</Text>
+                        {userCoupons.map((coupon) => (
+                            <TouchableOpacity
+                                key={coupon.id}
+                                style={styles.userCoupon}
+                                onPress={() => handleCouponSelect(coupon)}
+                            >
+                                <View style={styles.couponInfo}>
+                                    <Ticket size={20} color={styles.couponIcon.color} />
+                                    <View>
+                                        <Text style={styles.couponCode}>{coupon.code}</Text>
+                                        <Text style={styles.couponValue}>
+                                            Value: ${coupon.value.toFixed(2)}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <Text style={styles.couponExpiry}>
+                                    Expires: {coupon.expiryDate}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                )}
+
+                {selectedCoupon && (
+                    <View style={styles.appliedCouponContainer}>
+                        <View style={styles.appliedCouponInfo}>
+                            <Text style={styles.appliedCouponText}>
+                                Applied Coupon: {selectedCoupon.code}
+                            </Text>
+                            <Text style={styles.discountText}>
+                                -${selectedCoupon.value.toFixed(2)}
+                            </Text>
+                        </View>
+                        <TouchableOpacity
+                            style={styles.removeCouponButton}
+                            onPress={handleRemoveCoupon}
+                        >
+                            <Text style={styles.removeCouponText}>Remove</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                <View style={styles.totalContainer}>
+                    <Text style={styles.totalLabel}>Subtotal:</Text>
+                    <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
+                </View>
+                {selectedCoupon && (
+                    <View style={styles.totalContainer}>
+                        <Text style={styles.totalLabel}>Discount:</Text>
+                        <Text style={styles.discountAmount}>
+                            -${selectedCoupon.value.toFixed(2)}
+                        </Text>
+                    </View>
+                )}
+                <View style={styles.totalContainer}>
+                    <Text style={styles.finalTotalLabel}>Final Total:</Text>
+                    <Text style={styles.finalTotalAmount}>
+                        ${calculateFinalTotal().toFixed(2)}
+                    </Text>
                 </View>
             </View>
             <View style={styles.paymentMethodContainer}>
@@ -153,7 +287,7 @@ const PaymentScreen = ({ route, navigation }) => {
                 onPress={handlePayment}
             >
                 <Text style={styles.payButtonText}>
-                    Pay ${total.toFixed(2)}
+                    Pay ${calculateFinalTotal().toFixed(2)}
                 </Text>
             </TouchableOpacity>
         </ScrollView>

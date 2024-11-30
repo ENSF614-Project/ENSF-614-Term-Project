@@ -31,10 +31,135 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.body,
         color: COLORS.text.primary,
     },
-    totalText: {
+    couponContainer: {
+        padding: SPACING.lg,
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.border.default,
+    },
+    couponInputContainer: {
+        flexDirection: 'row',
+        gap: SPACING.sm,
+        marginBottom: SPACING.md,
+    },
+    couponInput: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: COLORS.border.default,
+        borderRadius: SPACING.sm,
+        padding: SPACING.md,
+        color: COLORS.text.primary,
+        backgroundColor: COLORS.input.background,
+    },
+    couponButton: {
+        backgroundColor: COLORS.button.primary.background,
+        padding: SPACING.md,
+        borderRadius: SPACING.sm,
+        justifyContent: 'center',
+    },
+    couponButtonText: {
+        color: COLORS.button.primary.text,
+        ...TYPOGRAPHY.body,
+        fontWeight: 'bold',
+    },
+    errorText: {
+        color: COLORS.text.error,
+        ...TYPOGRAPHY.body,
+        marginBottom: SPACING.md,
+    },
+    userCouponsContainer: {
+        marginTop: SPACING.md,
+    },
+    subsectionTitle: {
+        ...TYPOGRAPHY.title,
+        fontSize: 16,
+        marginBottom: SPACING.sm,
+        color: COLORS.text.primary,
+    },
+    userCoupon: {
+        borderWidth: 1,
+        borderColor: COLORS.border.default,
+        borderRadius: SPACING.sm,
+        padding: SPACING.md,
+        marginBottom: SPACING.sm,
+        backgroundColor: COLORS.background.primary,
+    },
+    couponInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: SPACING.sm,
+    },
+    couponIcon: {
+        color: COLORS.icon.primary,
+    },
+    couponCode: {
+        ...TYPOGRAPHY.body,
+        fontWeight: 'bold',
+        color: COLORS.text.primary,
+    },
+    couponValue: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+    },
+    couponExpiry: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        fontSize: 12,
+        marginTop: SPACING.xs,
+    },
+    appliedCouponContainer: {
+        backgroundColor: COLORS.background.success,
+        borderRadius: SPACING.sm,
+        padding: SPACING.md,
+        marginVertical: SPACING.md,
+    },
+    appliedCouponInfo: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: SPACING.xs,
+    },
+    appliedCouponText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+        fontWeight: 'bold',
+    },
+    discountText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.button.primary.background,
+        fontWeight: 'bold',
+    },
+    removeCouponButton: {
+        alignSelf: 'flex-end',
+    },
+    removeCouponText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.error,
+        fontSize: 12,
+    },
+    totalContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: SPACING.sm,
+    },
+    totalLabel: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+    },
+    totalAmount: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+    },
+    discountAmount: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.button.primary.background,
+    },
+    finalTotalLabel: {
+        ...TYPOGRAPHY.title,
+        color: COLORS.text.primary,
+    },
+    finalTotalAmount: {
         ...TYPOGRAPHY.title,
         color: COLORS.button.primary.background,
-        fontSize: 18,
     },
     paymentMethodContainer: {
         padding: SPACING.lg,

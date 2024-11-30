@@ -26,6 +26,11 @@ const Header = () => {
         navigation.navigate('Home');
     };
 
+    const handleLogoPress = () => {
+        navigation.navigate('Home');
+        setIsMenuOpen(false); // Close menu if it's open
+    };
+
     const handleMenuItemPress = (route) => {
         setIsMenuOpen(false);
 
@@ -53,7 +58,12 @@ const Header = () => {
                     >
                         <Menu size={24} color={COLORS.text.primary} />
                     </TouchableOpacity>
-                    <Text style={styles.logo}>AcmePlex</Text>
+                    <TouchableOpacity
+                        onPress={handleLogoPress}
+                        style={styles.logoButton}
+                    >
+                        <Text style={styles.logo}>AcmePlex</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <TouchableOpacity

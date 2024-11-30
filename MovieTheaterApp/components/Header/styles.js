@@ -17,10 +17,13 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    logoButton: {
+        marginLeft: SPACING.lg,
+        padding: SPACING.xs,
+    },
     logo: {
         ...TYPOGRAPHY.logo,
         color: COLORS.text.primary,
-        marginLeft: SPACING.lg,
         fontSize: 20,
     },
     iconButton: {

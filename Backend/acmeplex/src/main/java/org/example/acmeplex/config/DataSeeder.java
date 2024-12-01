@@ -1,5 +1,6 @@
 package org.example.acmeplex.config;
 
+import org.example.acmeplex.dto.UserDTO;
 import org.example.acmeplex.model.*;
 import org.example.acmeplex.repository.SeatRepository;
 import org.example.acmeplex.repository.ShowtimeRepository;
@@ -155,12 +156,17 @@ public class DataSeeder {
             seatRepository.saveAll(allSeats);
             System.out.println("Seeded seats successfully for each showtime.");
 
+            //Convert to UserDTO
+            UserDTO user1DTO = new UserDTO(user1.getUserId(), user1.getEmail(), user1.getIsRU());
+            UserDTO user2DTO = new UserDTO(user2.getUserId(), user2.getEmail(), user2.getIsRU());
+            UserDTO user3DTO = new UserDTO(user3.getUserId(), user3.getEmail(), user3.getIsRU());
+
             //Create tickets
-            ticketService.purchaseTicket((User)user1, 1, List.of(1,2,3), 14.00, null, user1.getEmail());
-            ticketService.purchaseTicket((User)user2, 2, List.of(101,102,103), 14.00, null, user2.getEmail());
+            ticketService.purchaseTicket(user1DTO, 1, List.of(1,2,3), 14.00, null, user1.getEmail());
+            ticketService.purchaseTicket(user2DTO, 2, List.of(101,102,103), 14.00, null, user2.getEmail());
             ticketService.cancelTicket(6L);
 
-            ticketService.purchaseTicket(user3, 25, List.of(2401,2402,2403), 14.00, null, user3.getEmail());
+            ticketService.purchaseTicket(user3DTO, 25, List.of(2401, 2402, 2403), 14.00, null, user3.getEmail());
         };
     }
 }

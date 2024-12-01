@@ -1,6 +1,7 @@
 //UserController.java
 package org.example.acmeplex.controller;
 
+import org.example.acmeplex.dto.UserDTO;
 import org.example.acmeplex.model.User;
 import org.example.acmeplex.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            User user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
-            return ResponseEntity.ok(user);
+            UserDTO userDTO = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+            return ResponseEntity.ok(userDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -49,15 +50,15 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
-        User user = userService.getUserById(id);
-        if (user != null) {
-            return ResponseEntity.ok(user);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
+        UserDTO userDTO = userService.getUserById(id);
+        if (userDTO != null) {
+            return ResponseEntity.ok(userDTO);
         }
         return ResponseEntity.notFound().build();
     }

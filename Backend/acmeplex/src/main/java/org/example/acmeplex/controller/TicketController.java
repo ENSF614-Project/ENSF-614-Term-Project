@@ -1,6 +1,8 @@
 //TicketController.java
 package org.example.acmeplex.controller;
 
+import org.example.acmeplex.dto.TicketDTO;
+import org.example.acmeplex.dto.UserDTO;
 import org.example.acmeplex.model.Ticket;
 import org.example.acmeplex.model.User;
 import org.example.acmeplex.service.TicketService;
@@ -21,7 +23,7 @@ public class TicketController {
     private UserService userService;
 
     @PostMapping("/purchase")
-    public ResponseEntity<List<Ticket>> purchaseTicket(
+    public ResponseEntity<List<TicketDTO>> purchaseTicket(
             @RequestParam(required = false) Integer userId,
             @RequestParam Integer showtimeID,
             @RequestParam List<Integer> seatIDs,
@@ -29,7 +31,7 @@ public class TicketController {
             @RequestParam(required = false) Long couponId,
             @RequestParam(required = false) String email) {
 
-        User user = null;
+        UserDTO user = null;
         if (userId != null) {
             user = userService.getUserById(userId);
             // If user exists, use their email
@@ -38,13 +40,13 @@ public class TicketController {
             }
         }
 
-        List<Ticket> tickets = ticketService.purchaseTicket(user, showtimeID, seatIDs, price, couponId, email);
+        List<TicketDTO> tickets = ticketService.purchaseTicket(user, showtimeID, seatIDs, price, couponId, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(tickets);
     }
 
     @GetMapping
-    public ResponseEntity<List<Ticket>> getAllTickets() {
-        List<Ticket> tickets = ticketService.getAllTickets();
+    public ResponseEntity<List<TicketDTO>> getAllTickets() {
+        List<TicketDTO> tickets = ticketService.getAllTickets();
         return ResponseEntity.status(HttpStatus.OK).body(tickets);
     }
 
@@ -57,16 +59,17 @@ public class TicketController {
 
     // Get tickets by user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Ticket>> getTicketsByUser(@PathVariable Integer userId) {
+    public ResponseEntity<List<TicketDTO>> getTicketsByUser(@PathVariable Integer userId) {
         User user = new User();
         user.setUserId(userId);
-        List<Ticket> tickets = ticketService.getTicketsByUser(user);
+        List<TicketDTO> tickets = ticketService.getTicketsByUser(user);
         return ResponseEntity.ok(tickets);
     }
 
     @GetMapping("{ticketId}")
-    public ResponseEntity<Ticket> getTicketByTicketId(@PathVariable Integer ticketId) {
-        return ResponseEntity.ok(ticketService.getTicketById(ticketId));
+    public ResponseEntity<TicketDTO> getTicketByTicketId(@PathVariable Long ticketId) {
+        TicketDTO ticket = ticketService.getTicketById(ticketId);
+        return ResponseEntity.ok(ticket);
     }
 
 }

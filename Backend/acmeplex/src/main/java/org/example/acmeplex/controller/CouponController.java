@@ -1,11 +1,11 @@
 //CouponController.java
 package org.example.acmeplex.controller;
 
+import org.example.acmeplex.dto.CouponDTO;
 import org.example.acmeplex.model.Coupon;
 import org.example.acmeplex.model.User;
 import org.example.acmeplex.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -19,22 +19,23 @@ public class CouponController {
     private CouponService couponService;
 
     @GetMapping
-    public ResponseEntity<List<Coupon>> getAllCoupons() {
-        List<Coupon> coupons = couponService.getAllCoupons();
-        return new ResponseEntity<>(coupons, HttpStatus.OK);
+    public ResponseEntity<List<CouponDTO>> getAllCoupons() {
+        List<CouponDTO> coupons = couponService.getAllCoupons();
+        return ResponseEntity.ok(coupons);
     }
+
     @GetMapping("/{couponId}")
-    public ResponseEntity<Coupon> getCouponById(@PathVariable long couponId) {
-        Coupon coupon = couponService.getCouponById(couponId);
-        return new ResponseEntity<>(coupon, HttpStatus.OK);
+    public ResponseEntity<CouponDTO> getCouponById(@PathVariable long couponId) {
+        CouponDTO coupon = couponService.getCouponById(couponId);
+        return ResponseEntity.ok(coupon);
     }
 
     // Get all coupons by user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Coupon>> getCouponsByUser(@PathVariable Integer userId) {
+    public ResponseEntity<List<CouponDTO>> getCouponsByUser(@PathVariable Integer userId) {
         User user = new User();
         user.setUserId(userId);
-        List<Coupon> coupons = couponService.getCouponsByUser(user);
+        List<CouponDTO> coupons = couponService.getCouponsByUser(user);
         return ResponseEntity.ok(coupons);
     }
 
@@ -55,8 +56,10 @@ public class CouponController {
     }
 
     @GetMapping("/email/{email}")
-    public Optional<List<Coupon>> getCouponByEmail(@PathVariable String email) {
-        return couponService.getCouponsByEmail(email);
+    public ResponseEntity<List<CouponDTO>> getCouponByEmail(@PathVariable String email) {
+        Optional<List<CouponDTO>> coupons = couponService.getCouponsByEmail(email);
+        return coupons.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Get remaining value of a coupon

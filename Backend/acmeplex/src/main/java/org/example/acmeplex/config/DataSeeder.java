@@ -3,10 +3,7 @@ package org.example.acmeplex.config;
 import org.example.acmeplex.model.*;
 import org.example.acmeplex.repository.SeatRepository;
 import org.example.acmeplex.repository.ShowtimeRepository;
-import org.example.acmeplex.service.MovieService;
-import org.example.acmeplex.service.RegisteredUserService;
-import org.example.acmeplex.service.ShowtimeService;
-import org.example.acmeplex.service.TheatreService;
+import org.example.acmeplex.service.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +19,7 @@ import java.util.List;
 public class DataSeeder {
 
     @Bean
-    public CommandLineRunner demo(RegisteredUserService userService, MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository, ShowtimeService showtimeService, SeatRepository seatRepository) {
+    public CommandLineRunner demo(UserService userService, RegisteredUserService RegistereduserService, MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository, ShowtimeService showtimeService, SeatRepository seatRepository, TicketService ticketService) {
         return (args) -> {
             //Create users:
             RegisteredUser user1 = new RegisteredUser();
@@ -45,8 +42,8 @@ public class DataSeeder {
             user2.setAnnualFeeDueDate(new Date());
             user2.setIsRU(true);
 
-            userService.createUser(user1);
-            userService.createUser(user2);
+            RegistereduserService.createUser(user1);
+            RegistereduserService.createUser(user2);
 
             // Create movies
             Movie movie1 = new Movie();
@@ -147,6 +144,13 @@ public class DataSeeder {
             }
             seatRepository.saveAll(allSeats);
             System.out.println("Seeded seats successfully for each showtime.");
+
+            //Create tickets
+            ticketService.purchaseTicket((User)user1, 1, List.of(1,2,3), 14.00, null);
+            ticketService.purchaseTicket((User)user2, 2, List.of(101,102,103), 14.00, null);
+
+            ticketService.cancelTicket(6L);
+
         };
     }
 }

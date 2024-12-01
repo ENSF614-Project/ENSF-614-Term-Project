@@ -1,3 +1,4 @@
+//Ticket.java
 package org.example.acmeplex.model;
 
 import jakarta.persistence.*;

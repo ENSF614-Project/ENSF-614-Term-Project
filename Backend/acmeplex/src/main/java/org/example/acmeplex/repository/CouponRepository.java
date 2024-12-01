@@ -1,3 +1,4 @@
+//CouponRepository.java
 package org.example.acmeplex.repository;
 
 import org.example.acmeplex.model.Coupon;
@@ -8,4 +9,6 @@ import java.util.List;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
     List<Coupon> findByUser(User user);
+
+    List<Coupon> findByEmail(String email);
 }

@@ -16,6 +16,12 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
+    @GetMapping
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        List<Transaction> transactions = transactionService.getAllTransactions();
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
+    }
+
     // Create a transaction with optional coupon
     @PostMapping("/create")
     public ResponseEntity<Transaction> createTransaction(

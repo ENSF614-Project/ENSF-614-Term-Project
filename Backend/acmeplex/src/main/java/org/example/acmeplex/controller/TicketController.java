@@ -1,3 +1,4 @@
+//TicketController.java
 package org.example.acmeplex.controller;
 
 import org.example.acmeplex.model.Ticket;
@@ -18,15 +19,22 @@ public class TicketController {
 
     // Purchase a ticket
     @PostMapping("/purchase")
-    public ResponseEntity<Ticket> purchaseTicket(
+    public ResponseEntity<List<Ticket>> purchaseTicket(
             @RequestParam Integer userId,
             @RequestParam Integer showtimeID,
-            @RequestParam Integer seatID,
-            @RequestParam Double price) {
+            @RequestParam List<Integer> seatIDs,
+            @RequestParam Double price,
+            @RequestParam Long couponId) {
         User user = new User();
         user.setUserId(userId);
-        Ticket ticket = ticketService.purchaseTicket(user, showtimeID, seatID, price);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ticket);
+        List<Ticket> tickets = ticketService.purchaseTicket(user,showtimeID, seatIDs, price, couponId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tickets);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Ticket>> getAllTickets() {
+        List<Ticket> tickets = ticketService.getAllTickets();
+        return ResponseEntity.status(HttpStatus.OK).body(tickets);
     }
 
     // Cancel a ticket and generate a coupon

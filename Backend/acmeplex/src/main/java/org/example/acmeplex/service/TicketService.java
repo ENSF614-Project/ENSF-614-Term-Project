@@ -1,12 +1,16 @@
+//TicketService.java
 package org.example.acmeplex.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.example.acmeplex.model.RegisteredUser;
 import org.example.acmeplex.model.Ticket;
+import org.example.acmeplex.model.Transaction;
 import org.example.acmeplex.model.User;
 import org.example.acmeplex.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,19 +22,33 @@ public class TicketService {
 
     @Autowired
     private CouponService couponService;
+    @Autowired
+    private TransactionService transactionService;
 
-    public Ticket purchaseTicket(User user, Integer showtimeID, Integer seatID, Double price) {
-        Ticket ticket = new Ticket();
-        ticket.setUser(user);
-        ticket.setShowtimeID(showtimeID);
-        ticket.setSeatID(seatID);
-        ticket.setPurchasedDate(new Date());
-        ticket.setCancellationDeadline(new Date(System.currentTimeMillis() + (72L * 60 * 60 * 1000))); // 72 hours
-        ticket.setPrice(price);
-        ticket.setRefund(0.0); // Default to no refund
-        ticket.setStatus("BOOKED");
-        ticket.setEmail(user.getEmail());
-        return ticketRepository.save(ticket);
+    public List<Ticket> getAllTickets() {
+        return ticketRepository.findAll();
+    }
+    public List<Ticket> purchaseTicket(User user, Integer showtimeID, List<Integer> seatIDs, Double price, Long couponId) {
+
+        Transaction transaction = transactionService.createTransaction(user, price*seatIDs.size(), couponId);
+
+        List<Ticket> tickets = new ArrayList<>();
+        for(Integer seatID: seatIDs){
+            Ticket ticket = new Ticket();
+            ticket.setUser(user);
+            ticket.setShowtimeID(showtimeID);
+            ticket.setSeatID(seatID);
+            ticket.setPurchasedDate(new Date());
+            ticket.setCancellationDeadline(new Date(System.currentTimeMillis() + (72L * 60 * 60 * 1000))); // 72 hours
+            ticket.setPrice(price);
+            ticket.setRefund(0.0); // Default to no refund
+            ticket.setStatus("BOOKED");
+            ticket.setEmail(user.getEmail());
+            ticket.setTransaction(transaction);
+            tickets.add(ticketRepository.save(ticket));
+        }
+
+        return tickets;
     }
 
     public void cancelTicket(Long ticketID) {

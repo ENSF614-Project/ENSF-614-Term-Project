@@ -23,9 +23,7 @@ const TicketScreen = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log('test use');
         if (user) {
-            console.log('test use in');
             fetchUserTickets();
         }
     }, [user]);
@@ -68,7 +66,7 @@ const TicketScreen = () => {
     };
 
     const handleCancelTicket = async (ticketId) => {
-        //can change to look much nicer if desired
+        //link to cancel button
         Alert.alert(
             'Confirm Cancellation',
             'Are you sure you want to cancel this ticket?',

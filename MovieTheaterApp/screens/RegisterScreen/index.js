@@ -11,8 +11,8 @@ import {
 import { styles } from './styles';
 import CreditCardForm from '../../components/CreditCardForm';
 import RegisteredUserForm from '../../components/RegisteredUserForm';
-import { registerService } from '../../services/registerService'; // Import the service
-
+import { registerService } from '../../services/registerService';
+import { paymentService } from '../../services/paymentService';
 const RegisterScreen = ({ navigation }) => {
     const [userValues, setUserValues] = useState({});
     const [userErrors, setUserErrors] = useState({});
@@ -43,6 +43,18 @@ const RegisterScreen = ({ navigation }) => {
             isRU: true,
         };
 
+        // Construct user data
+        const cardData = {
+            cardHolderName: formValues.cardHolderName,
+            cw: formValues.cvv,
+            cardNumber: formValues.cardNumber,
+            expiryMonth: formValues.expiryDate.slice(0, 2), //check this well year really
+            expiryYear: formValues.expiryDate.slice(2),
+            cardType: 'credit',
+            billingAddress: formValues.billingAddress 
+
+        };
+
         try {
             // Call the API
             const registeredUser = await registerService.createRU(
@@ -56,6 +68,20 @@ const RegisterScreen = ({ navigation }) => {
 
             console.log('Registered user:', registeredUser);
 
+            const payment = await paymentService.savePayment(
+                cardData.cardHolderName,
+                cardData.cw,
+                cardData.cardNumber,
+                cardData.expiryMonth,
+                cardData.expiryYear,
+                cardData.cardType,
+                // {userId: registeredUser.userId}, // Pass the registered user object here
+                registeredUser,
+                cardData.billingAddress
+            );
+
+            console.log('Payment successful:', payment);
+
             // Navigate to payment or login
             Alert.alert(
                 'Success',
@@ -63,8 +89,8 @@ const RegisterScreen = ({ navigation }) => {
                 [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
             );
         } catch (error) {
-            console.error('Error registering user:', error);
-            Alert.alert('Error', 'Failed to create account. Please try again.');
+            console.error('Error registering user or payment:', error);
+            Alert.alert('Error', 'Failed to compelete registration. Please try again.');
         }
     };
 

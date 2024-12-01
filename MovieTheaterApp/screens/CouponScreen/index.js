@@ -84,9 +84,22 @@ const CouponScreen = () => {
                 if (singleCoupon) fetchedCoupons = [singleCoupon];
             }
     
+            // Check if coupons exist and process them
             if (fetchedCoupons.length > 0) {
-                setFilteredCoupons(sortCouponsByExpiry(fetchedCoupons));
-                setErrorMessage('');
+                const filteredCoupons = fetchedCoupons.filter(coupon => {
+                    // If the coupon belongs to a registered user (isRU) and the user is not the signed-in user, exclude it
+                    if (coupon.user.isRU && coupon.userId !== user.userId) {
+                        return false; // Don't include this coupon
+                    }
+                    return true; // Include this coupon
+                });
+    
+                if (filteredCoupons.length > 0) {
+                    setFilteredCoupons(sortCouponsByExpiry(filteredCoupons));
+                    setErrorMessage('');
+                } else {
+                    setErrorMessage('No valid coupons found.');
+                }
             } else {
                 setErrorMessage('No valid coupons found.');
             }

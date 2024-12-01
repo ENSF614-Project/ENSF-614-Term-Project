@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { styles } from './styles';
 import { useAuth } from '../../context/AuthContext';
+import couponService from "../../services/couponService.js";
 
 const CouponScreen = () => {
     const { user } = useAuth();

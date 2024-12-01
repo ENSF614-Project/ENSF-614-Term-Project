@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import { Ticket, AlertCircle } from 'lucide-react-native';
 import { styles } from './styles';
-import { getUserTickets, getTicketById } from '../../MockData';
+//import { getUserTickets, getTicketById } from '../../MockData';
 import { useAuth } from '../../context/AuthContext';
+import ticketService from '../../services/ticketService.js'
 
 const TicketScreen = () => {
     const { user } = useAuth();
@@ -30,7 +31,7 @@ const TicketScreen = () => {
     const fetchUserTickets = async () => {
         setLoading(true);
         try {
-            const tickets = getUserTickets(user.userId);
+            const tickets = ticketService.getUserTickets(user.userId);
             setUserTickets(tickets);
             setError(null);
         } catch (err) {
@@ -48,7 +49,7 @@ const TicketScreen = () => {
 
         setLoading(true);
         try {
-            const ticket = getTicketById(ticketNumber);
+            const ticket = ticketService.getTicketById(ticketNumber);
             if (ticket) {
                 setSearchedTicket(ticket);
                 setError(null);
@@ -64,7 +65,31 @@ const TicketScreen = () => {
     };
 
     const handleCancelTicket = async (ticketId) => {
-        alert('Cancel ticket functionality will be implemented soon.');
+        //can change to look much nicer if desired
+        Alert.alert(
+            'Confirm Cancellation',
+            'Are you sure you want to cancel this ticket?',
+            [
+                { text: 'No', style: 'cancel' },
+                {
+                    text: 'Yes',
+                    onPress: async () => {
+                        setLoading(true);
+                        try {
+                            await ticketService.cancelTicketById(ticketId);
+                            setUserTickets((prev) =>
+                                prev.filter((ticket) => ticket.ticketID !== ticketId)
+                            );
+                            Alert.alert('Success', 'Ticket canceled successfully.');
+                        } catch (err) {
+                            Alert.alert('Error', 'Failed to cancel ticket. Please try again.');
+                        } finally {
+                            setLoading(false);
+                        }
+                    }
+                }
+            ]
+        );
     };
 
     const formatDate = (dateString) => {

@@ -28,6 +28,10 @@ public class TicketService {
     public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
     }
+    public Ticket getTicketById(long id) {
+        return ticketRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
     public List<Ticket> purchaseTicket(User user, Integer showtimeID, List<Integer> seatIDs, Double price, Long couponId) {
 
         Transaction transaction = transactionService.createTransaction(user, price*seatIDs.size(), couponId);

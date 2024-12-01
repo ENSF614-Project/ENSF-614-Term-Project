@@ -103,8 +103,18 @@ const SeatSelectionScreen = ({ route, navigation }) => {
         navigation.navigate('Payment', {
             selectedSeats,
             total: selectedSeats.length * showtime.price,
-            showtime,
-            movieId
+            showtime: {
+                ...showtime,
+                date: toLocalDate(showtime.startTime),
+                time: toLocalTime(showtime.startTime),
+                theatre: showtime.theatre.theatreName
+            },
+            movie: showtime.movie,
+            purchaseData: {
+                showtimeId: showtime.showtimeId,
+                seatIds: selectedSeats.map(seat => seat.seatId),
+                price: showtime.price,
+            }
         });
     };
 

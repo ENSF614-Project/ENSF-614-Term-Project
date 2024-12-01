@@ -26,12 +26,12 @@ public class PaymentInfoService {
     }
 
     // Get a PaymentInfo by ID
-    public Optional<PaymentInfo> getPaymentInfoById(int id) {
+    public Optional<PaymentInfo> getPaymentInfoById(Long id) {
         return paymentInfoRepository.findById(id);
     }
 
     // Delete PaymentInfo by ID
-    public void deletePaymentInfo(int id) {
+    public void deletePaymentInfo(Long id) {
         paymentInfoRepository.deleteById(id);
     }
 

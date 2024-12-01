@@ -153,7 +153,6 @@ const PaymentScreen = ({ route, navigation }) => {
         }
     };
 
-
     const handleCouponSubmit = async () => {
         if (!couponCode.trim()) {
             Alert.alert('Error', 'Please enter a coupon code');
@@ -199,219 +198,207 @@ const PaymentScreen = ({ route, navigation }) => {
                 showtimeId: showtime.showtimeId,
                 selectedSeats,
                 couponId: selectedCoupon?.couponID,
-                finalTotal: discountedTotal // Add this line
+                finalTotal: discountedTotal,
             });
-            pricePerSeat: showtime.price,
-                couponId: appliedCoupon?.couponId
-        });
 
-        // Log the showtime object to see its structure
-        console.log('Showtime object:', showtime);
+            // Format the data for the email
+            const emailData = {
+                templateParams: {
+                    user_email: user?.email || email,
+                    receipt: `Thank you for your purchase!\n\nTotal Paid: $${discountedTotal.toFixed(2)}\n\nPayment Info: **** **** **** ${cardFormValues.cardNumber.slice(-4)}`,
+                    ticket_details: `Tickets:\n${selectedSeats.map(seat =>
+                        `Row: ${seat.row}, Seat: ${seat.seatNum}`
+                    ).join('\n')}`,
+                    movie_info: `Movie: ${movie.title}\nDate: ${showtime.startTime ? new Date(showtime.startTime).toLocaleDateString() : showtime.date}\nTime: ${showtime.startTime ? new Date(showtime.startTime).toLocaleTimeString() : showtime.time}`
+                }
+            };
 
-        // Call backend to send email after successful payment
-        await sendEmail(
-            {
-                ...cardFormValues,
-                last4: cardFormValues.cardNumber.slice(-4)
-            },
-            selectedSeats.map(seat => ({
-                row: seat.row,
-                seatNum: seat.seatNum
-            })),
-            calculateFinalTotal(),
-            user?.email || email,
-            {
-                title: movie.title,
-                date: showtime.startTime
-                    ? new Date(showtime.startTime).toLocaleDateString()
-                    : showtime.date,
-                time: showtime.startTime
-                    ? new Date(showtime.startTime).toLocaleTimeString()
-                    : showtime.time
+            // Send email
+            const emailResponse = await fetch('http://localhost:5000/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(emailData),
+            });
+
+            if (!emailResponse.ok) {
+                console.error('Failed to send confirmation email');
+                // Don't throw error here - we still want to complete the transaction
             }
-        );
+
+            // Navigate to confirmation screen
+            navigation.replace('TicketConfirmation', {
+                tickets: result.tickets,
+                selectedSeats,
+                movie,
+                showtime: {
+                    date: showtime.startTime ? new Date(showtime.startTime).toLocaleDateString() : showtime.date,
+                    time: showtime.startTime ? new Date(showtime.startTime).toLocaleTimeString() : showtime.time,
+                    theatre: showtime.theatre.theatreName
+                },
+                total: discountedTotal,
+                paymentInfo: {
+                    ...cardFormValues,
+                    last4: cardFormValues.cardNumber.slice(-4)
+                }
+            });
+        } catch (error) {
+            console.error('Payment error:', error);
+            Alert.alert('Error', 'Payment failed: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
-
-        // Create a formatted showtime object for the confirmation screen
-        const formattedShowtime = {
-            date: showtime.startTime ? new Date(showtime.startTime).toLocaleDateString() : showtime.date,
-            time: showtime.startTime ? new Date(showtime.startTime).toLocaleTimeString() : showtime.time,
-            // Handle different possible theater data structures
-            theatre: typeof showtime.theatre === 'object'
-                ? showtime.theatre.theatreName
-                : (showtime.theatre || showtime.theatreName || 'Theater information unavailable')
-        };
-
-        navigation.replace('TicketConfirmation', {
-            tickets: result.tickets,
-            selectedSeats,
-            movie,
-            showtime: {
-                date: showtime.startTime ? new Date(showtime.startTime).toLocaleDateString() : showtime.date,
-                time: showtime.startTime ? new Date(showtime.startTime).toLocaleTimeString() : showtime.time,
-                theatre: showtime.theatre.theatreName
-            },
-            total: discountedTotal,
-            paymentInfo: {
-                ...cardFormValues,
-                last4: cardFormValues.cardNumber.slice(-4)
-            }
-        });
-    } catch (error) {
-        console.error('Payment error:', error);
-        Alert.alert('Error', 'Payment failed: ' + error.message);
-    } finally {
-        setLoading(false);
-    }
-};
-
-return (
-    <ScrollView style={styles.container}>
-        {/* Order Summary Section */}
-        <View style={styles.summaryContainer}>
-            <Text style={styles.sectionTitle}>Order Summary</Text>
-            <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Movie:</Text>
-                <Text style={styles.summaryText}>{movie.title}</Text>
-            </View>
-            <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Date:</Text>
-                <Text style={styles.summaryText}>{showtime.date}</Text>
-            </View>
-            <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Time:</Text>
-                <Text style={styles.summaryText}>{showtime.time}</Text>
-            </View>
-            <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Seats:</Text>
-                <Text style={styles.summaryText}>
-                    {selectedSeats.map(seat => `${seat.row}${seat.seatNum}`).join(', ')}
-                </Text>
-            </View>
-        </View>
-
-        {/* Guest Email Section */}
-        {!user && (
-            <View style={styles.emailContainer}>
-                <Text style={styles.sectionTitle}>Guest Checkout</Text>
-                <TextInput
-                    style={[styles.input, emailError && styles.inputError]}
-                    placeholder="Email Address"
-                    value={email}
-                    onChangeText={(text) => {
-                        setEmail(text);
-                        setEmailError('');
-                    }}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-                {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-            </View>
-        )}
-
-        {/* Coupon Section */}
-        <View style={styles.couponContainer}>
-            <Text style={styles.sectionTitle}>Apply Coupon</Text>
-            <View style={styles.couponInputContainer}>
-                <TextInput
-                    style={styles.couponInput}
-                    placeholder="Enter coupon code"
-                    value={couponCode}
-                    onChangeText={setCouponCode}
-                />
-                <TouchableOpacity
-                    style={styles.couponButton}
-                    onPress={handleCouponSubmit}
-                    disabled={loading}
-                >
-                    <Text style={styles.couponButtonText}>Apply</Text>
-                </TouchableOpacity>
+    return (
+        <ScrollView style={styles.container}>
+            {/* Order Summary Section */}
+            <View style={styles.summaryContainer}>
+                <Text style={styles.sectionTitle}>Order Summary</Text>
+                <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Movie:</Text>
+                    <Text style={styles.summaryText}>{movie.title}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Date:</Text>
+                    <Text style={styles.summaryText}>{showtime.date}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Time:</Text>
+                    <Text style={styles.summaryText}>{showtime.time}</Text>
+                </View>
+                <View style={styles.summaryRow}>
+                    <Text style={styles.summaryLabel}>Seats:</Text>
+                    <Text style={styles.summaryText}>
+                        {selectedSeats.map(seat => `${seat.row}${seat.seatNum}`).join(', ')}
+                    </Text>
+                </View>
             </View>
 
-            {user && userCoupons?.length > 0 && (
-                <View style={styles.userCouponsContainer}>
-                    <Text style={styles.subsectionTitle}>Your Available Coupons</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {userCoupons.map((coupon) => (
-                            <TouchableOpacity
-                                key={coupon.couponID}
-                                style={[
-                                    styles.userCoupon,
-                                    selectedCoupon?.couponID === coupon.couponID && styles.selectedCoupon
-                                ]}
-                                onPress={() => handleCouponSelect(coupon)}
-                            >
-                                <View style={styles.couponInfo}>
-                                    <Ticket size={20} color={styles.couponIcon.color} />
-                                    <View>
-                                        <Text style={styles.couponCode}>Coupon #{coupon.couponID}</Text>
-                                        <Text style={styles.couponValue}>
-                                            Value: ${coupon.value.toFixed(2)}
-                                        </Text>
-                                        <Text style={styles.couponExpiry}>
-                                            Expires: {new Date(coupon.expiryDate).toLocaleDateString()}
-                                        </Text>
+            {/* Guest Email Section */}
+            {!user && (
+                <View style={styles.emailContainer}>
+                    <Text style={styles.sectionTitle}>Guest Checkout</Text>
+                    <TextInput
+                        style={[styles.input, emailError && styles.inputError]}
+                        placeholder="Email Address"
+                        value={email}
+                        onChangeText={(text) => {
+                            setEmail(text);
+                            setEmailError('');
+                        }}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                    {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+                </View>
+            )}
+
+            {/* Coupon Section */}
+            <View style={styles.couponContainer}>
+                <Text style={styles.sectionTitle}>Apply Coupon</Text>
+                <View style={styles.couponInputContainer}>
+                    <TextInput
+                        style={styles.couponInput}
+                        placeholder="Enter coupon code"
+                        value={couponCode}
+                        onChangeText={setCouponCode}
+                    />
+                    <TouchableOpacity
+                        style={styles.couponButton}
+                        onPress={handleCouponSubmit}
+                        disabled={loading}
+                    >
+                        <Text style={styles.couponButtonText}>Apply</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {user && userCoupons?.length > 0 && (
+                    <View style={styles.userCouponsContainer}>
+                        <Text style={styles.subsectionTitle}>Your Available Coupons</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {userCoupons.map((coupon) => (
+                                <TouchableOpacity
+                                    key={coupon.couponID}
+                                    style={[
+                                        styles.userCoupon,
+                                        selectedCoupon?.couponID === coupon.couponID && styles.selectedCoupon
+                                    ]}
+                                    onPress={() => handleCouponSelect(coupon)}
+                                >
+                                    <View style={styles.couponInfo}>
+                                        <Ticket size={20} color={styles.couponIcon.color} />
+                                        <View>
+                                            <Text style={styles.couponCode}>Coupon #{coupon.couponID}</Text>
+                                            <Text style={styles.couponValue}>
+                                                Value: ${coupon.value.toFixed(2)}
+                                            </Text>
+                                            <Text style={styles.couponExpiry}>
+                                                Expires: {new Date(coupon.expiryDate).toLocaleDateString()}
+                                            </Text>
+                                        </View>
                                     </View>
-                                </View>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                </View>
-            )}
-
-            {selectedCoupon && (
-                <View style={styles.discountSummary}>
-                    <View style={styles.summaryRow}>
-                        <Text style={styles.summaryLabel}>Original Total:</Text>
-                        <Text style={styles.summaryValue}>${originalTotal.toFixed(2)}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
                     </View>
-                    <View style={styles.summaryRow}>
-                        <Text style={styles.summaryLabel}>Coupon Discount:</Text>
-                        <Text style={styles.discountValue}>
-                            -${selectedCouponOriginalValue.toFixed(2)}
-                        </Text>
-                    </View>
-                    <View style={styles.summaryRow}>
-                        <Text style={styles.finalTotalLabel}>Final Total:</Text>
-                        <Text style={styles.finalTotalAmount}>
-                            ${discountedTotal.toFixed(2)}
-                        </Text>
-                    </View>
-                </View>
-            )}
-        </View>
+                )}
 
-        {/* Payment Section */}
-        <View style={styles.paymentSection}>
-            <Text style={styles.sectionTitle}>Payment Details</Text>
-            <CreditCardForm
-                onValuesChange={setCardFormValues}
-                onValidationChange={(isValid, errors) => {
-                    setIsCardFormValid(isValid);
-                    setCardFormErrors(errors);
-                }}
-                errors={cardFormErrors}
-                showSaveCard={!!user}
-            />
-        </View>
+                {selectedCoupon && (
+                    <View style={styles.discountSummary}>
+                        <View style={styles.summaryRow}>
+                            <Text style={styles.summaryLabel}>Original Total:</Text>
+                            <Text style={styles.summaryValue}>${originalTotal.toFixed(2)}</Text>
+                        </View>
+                        <View style={styles.summaryRow}>
+                            <Text style={styles.summaryLabel}>Coupon Discount:</Text>
+                            <Text style={styles.discountValue}>
+                                -${selectedCouponOriginalValue.toFixed(2)}
+                            </Text>
+                        </View>
+                        <View style={styles.summaryRow}>
+                            <Text style={styles.finalTotalLabel}>Final Total:</Text>
+                            <Text style={styles.finalTotalAmount}>
+                                ${discountedTotal.toFixed(2)}
+                            </Text>
+                        </View>
+                    </View>
+                )}
+            </View>
 
-        {/* Payment Button */}
-        <TouchableOpacity
-            style={[styles.payButton, (!isCardFormValid || loading) && styles.payButtonDisabled]}
-            onPress={handlePayment}
-            disabled={!isCardFormValid || loading}
-        >
-            {loading ? (
-                <ActivityIndicator color={styles.spinner.color} />
-            ) : (
-                <Text style={styles.payButtonText}>
-                    Pay ${discountedTotal.toFixed(2)}
-                </Text>
-            )}
-        </TouchableOpacity>
-    </ScrollView>
-);
+            {/* Payment Section */}
+            <View style={styles.paymentSection}>
+                <Text style={styles.sectionTitle}>Payment Details</Text>
+                <CreditCardForm
+                    onValuesChange={setCardFormValues}
+                    onValidationChange={(isValid, errors) => {
+                        setIsCardFormValid(isValid);
+                        setCardFormErrors(errors);
+                    }}
+                    errors={cardFormErrors}
+                    showSaveCard={!!user}
+                />
+            </View>
+
+            {/* Payment Button */}
+            <TouchableOpacity
+                style={[styles.payButton, (!isCardFormValid || loading) && styles.payButtonDisabled]}
+                onPress={handlePayment}
+                disabled={!isCardFormValid || loading}
+            >
+                {loading ? (
+                    <ActivityIndicator color={styles.spinner.color} />
+                ) : (
+                    <Text style={styles.payButtonText}>
+                        Pay ${discountedTotal.toFixed(2)}
+                    </Text>
+                )}
+            </TouchableOpacity>
+        </ScrollView>
+    );
 };
+
 
 export default PaymentScreen;

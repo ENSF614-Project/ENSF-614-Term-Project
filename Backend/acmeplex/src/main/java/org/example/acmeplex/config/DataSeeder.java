@@ -23,7 +23,7 @@ public class DataSeeder {
             //Create registered users:
             RegisteredUser user1 = new RegisteredUser();
             user1.setUsername("testuser1");
-            user1.setEmail("mkasgpacc@gmail.com");
+            user1.setEmail("test1@example.com");
             user1.setPassword("password123");
             user1.setName("Test User 1");
             user1.setAddress("123 Test St");

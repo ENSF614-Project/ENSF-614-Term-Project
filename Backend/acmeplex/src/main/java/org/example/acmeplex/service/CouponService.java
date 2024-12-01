@@ -9,6 +9,8 @@ import org.example.acmeplex.model.User;
 import org.example.acmeplex.repository.CouponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -27,18 +29,21 @@ public class CouponService {
         return couponRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    public Coupon createCoupon(User user, Ticket ticket, Double refundAmount) {
+    @Transactional
+    public Coupon createCoupon(User user, Ticket ticket, Double value) {
         Coupon coupon = new Coupon();
         coupon.setUser(user);
         coupon.setTicket(ticket);
-        coupon.setValue(refundAmount);
-        //coupon.setRemainingValue(refundAmount);
+        coupon.setValue(value);
         coupon.setEmail(user.getEmail());
-        coupon.setExpiryDate(new Date(System.currentTimeMillis() + (365L * 24 * 60 * 60 * 1000))); // One year
+        // Set expiry date to one year from now
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, 1);
+        coupon.setExpiryDate(calendar.getTime());
         coupon.setStatus("ACTIVE");
+
         return couponRepository.save(coupon);
     }
-
     public List<Coupon> getCouponsByUser(User user) {
         return couponRepository.findByUser(user);
     }
@@ -50,42 +55,54 @@ public class CouponService {
         couponRepository.save(coupon);
     }
 
+    @Transactional
     public Coupon applyCoupon(Long couponID, Double amountToDeduct) {
         Coupon coupon = couponRepository.findById(couponID)
                 .orElseThrow(() -> new IllegalArgumentException("Coupon not found"));
 
-        //if (coupon.getRemainingValue() <= 0) {
-        //    throw new IllegalStateException("Coupon has no remaining value");
-        //}
+        // Validate coupon
+        if (!"ACTIVE".equals(coupon.getStatus())) {
+            throw new IllegalStateException("Coupon is not active");
+        }
 
         if (coupon.getExpiryDate().before(new Date())) {
             throw new IllegalStateException("Coupon is expired");
         }
 
-        //double newRemainingValue = coupon.getRemainingValue() - amountToDeduct;
-        //if (newRemainingValue < 0) {
-        //    throw new IllegalArgumentException("Coupon does not have enough value to cover this amount");
-        //}
-
-        double remainingValue = coupon.getValue() - amountToDeduct;
-        if (remainingValue <= 0) {
-            coupon.setStatus("USED");
+        // Always deduct the full amount requested
+        double currentValue = coupon.getValue();
+        if (currentValue <= 0) {
+            throw new IllegalStateException("Coupon has no remaining value");
         }
 
-        coupon.setValue(remainingValue);
-
-        //coupon.setRemainingValue(newRemainingValue);
-
-        // Update the status if the coupon is fully used
-        //if (newRemainingValue == 0) {
-        //    coupon.setStatus("USED");
-        //}
+        // Deduct the full amount
+        coupon.setValue(0.0);
+        coupon.setStatus("USED");
 
         return couponRepository.save(coupon);
     }
 
-    public Optional<List<Coupon>> getCouponsByEmail(String email) {
-        return Optional.ofNullable(couponRepository.findByEmail(email));
+    public Double getRemainingValue(Long couponID) {
+        Coupon coupon = couponRepository.findById(couponID)
+                .orElseThrow(() -> new IllegalArgumentException("Coupon not found"));
+        return coupon.getValue();
+    }
+
+    public boolean isValidForUse(Long couponID, Double amount) {
+        try {
+            Coupon coupon = couponRepository.findById(couponID)
+                    .orElseThrow(() -> new IllegalArgumentException("Coupon not found"));
+
+            return "ACTIVE".equals(coupon.getStatus()) &&
+                    coupon.getExpiryDate().after(new Date()) &&
+                    coupon.getValue() > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public List<Coupon> getCouponsByEmail(String email) {
+        return couponRepository.findByEmailAndStatusOrderByExpiryDateAsc(email, "ACTIVE");
     }
 
     //public Double getRemainingCouponValue(Long couponID) {
@@ -93,6 +110,8 @@ public class CouponService {
     //            .orElseThrow(() -> new IllegalArgumentException("Coupon not found"));
     //    return coupon.getRemainingValue();
     //}
+
+
 }
 
 

@@ -18,9 +18,12 @@ import java.util.List;
 public class DataSeeder {
 
     @Bean
-    public CommandLineRunner demo(UserService userService, RegisteredUserService RegistereduserService, MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository, ShowtimeService showtimeService, SeatRepository seatRepository, TicketService ticketService, CouponService couponService) {
+    public CommandLineRunner demo(UserService userService, RegisteredUserService RegistereduserService,
+            MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository,
+            ShowtimeService showtimeService, SeatRepository seatRepository, TicketService ticketService,
+            CouponService couponService) {
         return (args) -> {
-            //Create registered users:
+            // Create registered users:
             RegisteredUser user1 = new RegisteredUser();
             user1.setUsername("testuser1");
             user1.setEmail("test1@example.com");
@@ -44,7 +47,7 @@ public class DataSeeder {
             RegistereduserService.createRegisteredUser(user1);
             RegistereduserService.createRegisteredUser(user2);
 
-            //Create guest users:
+            // Create guest users:
             User user3 = new User();
             user3.setEmail("test3@example.com");
             user3.setIsRU(false);
@@ -60,7 +63,8 @@ public class DataSeeder {
             movie1.setTitle("Avengers: Endgame");
             movie1.setGenre("Action/Sci-Fi");
             movie1.setDuration(180);
-            movie1.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
+            movie1.setDescription(
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
             movie1.setRating(8.5);
             movie1.setReleaseDate(java.sql.Date.valueOf("2025-04-26"));
             movie1.setPosterUrl("https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg");
@@ -69,7 +73,8 @@ public class DataSeeder {
             movie2.setTitle("Inception");
             movie2.setGenre("Sci-Fi/Thriller");
             movie2.setDuration(148);
-            movie2.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
+            movie2.setDescription(
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
             movie2.setRating(8.8);
             movie2.setReleaseDate(java.sql.Date.valueOf("2010-07-16"));
             movie2.setPosterUrl("https://www.themoviedb.org/t/p/w600_and_h900_bestv2/edv5CZvWj09upOsy2Y6IwDhK8bt.jpg");
@@ -78,7 +83,8 @@ public class DataSeeder {
             movie3.setTitle("The Dark Knight");
             movie3.setGenre("Action/Drama");
             movie3.setDuration(152);
-            movie3.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
+            movie3.setDescription(
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
             movie3.setRating(9.0);
             movie3.setReleaseDate(java.sql.Date.valueOf("2008-07-18"));
             movie3.setPosterUrl("https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg");
@@ -106,8 +112,7 @@ public class DataSeeder {
             // Dates for showtime
             List<LocalDate> dates = List.of(
                     LocalDate.parse("2024-12-25"),
-                    LocalDate.parse("2024-12-26")
-            );
+                    LocalDate.parse("2024-12-26"));
             // Movies
             List<Movie> movies = List.of(movie1, movie2, movie3);
             // Theatres
@@ -155,12 +160,19 @@ public class DataSeeder {
             seatRepository.saveAll(allSeats);
             System.out.println("Seeded seats successfully for each showtime.");
 
-            //Create tickets
-            ticketService.purchaseTicket((User)user1, 1, List.of(1,2,3), 14.00, null, user1.getEmail());
-            ticketService.purchaseTicket((User)user2, 2, List.of(101,102,103), 14.00, null, user2.getEmail());
-            ticketService.cancelTicket(6L);
+            // Create tickets
+            ticketService.purchaseTicket((User) user1, 1, List.of(1, 2, 3), 14.00, null, user1.getEmail());
+            ticketService.purchaseTicket((User) user2, 2, List.of(101, 102, 103), 14.00, null, user2.getEmail());
 
-            ticketService.purchaseTicket(user3, 25, List.of(2401,2402,2403), 14.00, null, user3.getEmail());
+            // Get the created tickets to reference them in coupons
+            List<Ticket> user1Tickets = ticketService.getTicketsByUser((User) user1);
+            List<Ticket> user2Tickets = ticketService.getTicketsByUser((User) user2);
+
+            // Create test coupons
+            couponService.createCoupon(user1, user1Tickets.get(0), 25.00);
+            couponService.createCoupon(user2, user2Tickets.get(0), 15.00);
+
+            ticketService.purchaseTicket(user3, 25, List.of(2401, 2402, 2403), 14.00, null, user3.getEmail());
         };
     }
 }

@@ -1,10 +1,11 @@
 // services/paymentFlowService.js
 const API_URL = 'http://localhost:8080';
 
+// services/paymentFlowService.js
 export const paymentFlowService = {
     async ensureUser(email) {
         try {
-            const response = await fetch(`${API_URL}/api/users`, {
+            const response = await fetch(`http://localhost:8080/api/users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,8 +32,8 @@ export const paymentFlowService = {
         userId,
         showtimeId,
         selectedSeats,
-        pricePerSeat,
-        couponId = null
+        couponId = null,
+        finalTotal
     }) {
         try {
             // If no userId provided, create/get user with email
@@ -42,7 +43,7 @@ export const paymentFlowService = {
                 purchaseUserId = user.userId;
             }
 
-            // Purchase tickets directly - transaction will be created by the backend
+            // Purchase tickets with the final total
             const ticketResponse = await fetch(`${API_URL}/api/tickets/purchase`, {
                 method: 'POST',
                 headers: {
@@ -52,8 +53,9 @@ export const paymentFlowService = {
                     userId: purchaseUserId?.toString(),
                     showtimeID: showtimeId.toString(),
                     seatIDs: selectedSeats.map(seat => seat.seatId).join(','),
-                    price: pricePerSeat.toString(),
-                    ...(couponId && { couponId: couponId.toString() })
+                    price: (finalTotal / selectedSeats.length).toString(), // Calculate per-ticket price
+                    ...(couponId && { couponId: couponId.toString() }),
+                    totalAmount: finalTotal.toString()
                 }).toString()
             });
 

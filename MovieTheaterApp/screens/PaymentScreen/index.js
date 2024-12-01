@@ -1,5 +1,5 @@
 // screens/PaymentScreen/index.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -14,6 +14,7 @@ import CreditCardForm from '../../components/CreditCardForm';
 import { styles } from './styles';
 import { useAuth } from '../../context/AuthContext';
 import { paymentFlowService } from '../../services/paymentFlowService';
+import { couponService } from '../../services/couponService';
 
 const PaymentScreen = ({ route, navigation }) => {
     const { total, selectedSeats, showtime, movie } = route.params;
@@ -27,7 +28,40 @@ const PaymentScreen = ({ route, navigation }) => {
     const [cardFormErrors, setCardFormErrors] = useState({});
     const [isCardFormValid, setIsCardFormValid] = useState(false);
     const [couponCode, setCouponCode] = useState('');
-    const [appliedCoupon, setAppliedCoupon] = useState(null);
+    //const [appliedCoupon, setAppliedCoupon] = useState(null);
+    const [userCoupons, setUserCoupons] = useState([]);
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
+    const [originalTotal] = useState(total);
+    const [discountedTotal, setDiscountedTotal] = useState(total);
+    const [selectedCouponOriginalValue, setSelectedCouponOriginalValue] = useState(null);
+
+    // Fetch user's coupons when component mounts
+    useEffect(() => {
+        const fetchUserCoupons = async () => {
+            if (user?.email) {
+                try {
+                    setLoading(true);
+                    const coupons = await couponService.getCouponsByEmail(user.email);
+                    // Filter out non-active coupons
+                    const activeCoupons = coupons.filter(coupon =>
+                        coupon.status === 'ACTIVE' &&
+                        new Date(coupon.expiryDate) > new Date()
+                    );
+                    setUserCoupons(activeCoupons);
+                } catch (error) {
+                    console.error('Error fetching user coupons:', error);
+                    Alert.alert(
+                        'Error',
+                        'Failed to load your coupons. Please try again later.'
+                    );
+                } finally {
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchUserCoupons();
+    }, [user]);
 
     const validateEmail = () => {
         if (!user && !email) {
@@ -42,6 +76,53 @@ const PaymentScreen = ({ route, navigation }) => {
         return true;
     };
 
+    const handleCouponSelect = async (coupon) => {
+        try {
+            if (!coupon || typeof coupon.value !== 'number') {
+                throw new Error('Invalid coupon data');
+            }
+
+            if (selectedCoupon?.couponID === coupon.couponID) {
+                // Deselect the coupon if it's already selected
+                setSelectedCoupon(null);
+                setSelectedCouponOriginalValue(null);
+                setDiscountedTotal(originalTotal);
+                //setAppliedCoupon(null);
+                return;
+            }
+
+            // Store the original coupon value before applying it
+            const originalCouponValue = coupon.value;
+            setSelectedCouponOriginalValue(originalCouponValue);
+
+            // Apply the coupon
+            const updatedCoupon = await couponService.applyCoupon(
+                coupon.couponID,
+                coupon.value
+            );
+
+            if (!updatedCoupon) {
+                throw new Error('Failed to update coupon');
+            }
+
+            // Calculate new total using the original coupon value
+            const newTotal = Math.max(0, originalTotal - originalCouponValue);
+
+            //setAppliedCoupon(updatedCoupon);
+            setSelectedCoupon({
+                ...updatedCoupon,
+                displayValue: originalCouponValue // Add displayValue property
+            });
+            setDiscountedTotal(newTotal);
+            Alert.alert('Success', 'Coupon applied successfully!');
+
+        } catch (error) {
+            console.error('Error applying coupon:', error);
+            Alert.alert('Error', 'Failed to apply coupon');
+        }
+    };
+
+
     const handleCouponSubmit = async () => {
         if (!couponCode.trim()) {
             Alert.alert('Error', 'Please enter a coupon code');
@@ -50,26 +131,23 @@ const PaymentScreen = ({ route, navigation }) => {
 
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:8080/api/coupons/${couponCode}`);
-            const couponData = await response.json();
-
-            if (couponData && couponData.status === 'ACTIVE') {
-                setAppliedCoupon(couponData);
+            const coupon = await couponService.getCouponById(couponCode);
+            if (coupon) {
+                const newTotal = Math.max(0, originalTotal - coupon.value);
+                //setAppliedCoupon(coupon);
+                setSelectedCoupon(coupon);
+                setDiscountedTotal(newTotal);
                 Alert.alert('Success', 'Coupon applied successfully!');
             } else {
-                Alert.alert('Error', 'Invalid or expired coupon');
+                Alert.alert('Error', 'Invalid coupon code');
             }
         } catch (error) {
             Alert.alert('Error', 'Failed to apply coupon');
+            console.error('Error applying coupon:', error);
         } finally {
             setLoading(false);
+            setCouponCode('');
         }
-    };
-
-    const calculateFinalTotal = () => {
-        if (!appliedCoupon) return total;
-        const discountedTotal = total - appliedCoupon.value;
-        return Math.max(0, discountedTotal);
     };
 
     const handlePayment = async () => {
@@ -89,29 +167,20 @@ const PaymentScreen = ({ route, navigation }) => {
                 userId: user?.userId,
                 showtimeId: showtime.showtimeId,
                 selectedSeats,
-                pricePerSeat: showtime.price,
-                couponId: appliedCoupon?.couponId
+                couponId: selectedCoupon?.couponID,
+                finalTotal: discountedTotal // Add this line
             });
-
-            // Log the showtime object to see its structure
-            console.log('Showtime object:', showtime);
-
-            // Create a formatted showtime object for the confirmation screen
-            const formattedShowtime = {
-                date: showtime.startTime ? new Date(showtime.startTime).toLocaleDateString() : showtime.date,
-                time: showtime.startTime ? new Date(showtime.startTime).toLocaleTimeString() : showtime.time,
-                // Handle different possible theater data structures
-                theatre: typeof showtime.theatre === 'object'
-                    ? showtime.theatre.theatreName
-                    : (showtime.theatre || showtime.theatreName || 'Theater information unavailable')
-            };
 
             navigation.replace('TicketConfirmation', {
                 tickets: result.tickets,
                 selectedSeats,
                 movie,
-                showtime: formattedShowtime,
-                total: calculateFinalTotal(),
+                showtime: {
+                    date: showtime.startTime ? new Date(showtime.startTime).toLocaleDateString() : showtime.date,
+                    time: showtime.startTime ? new Date(showtime.startTime).toLocaleTimeString() : showtime.time,
+                    theatre: showtime.theatre.theatreName
+                },
+                total: discountedTotal,
                 paymentInfo: {
                     ...cardFormValues,
                     last4: cardFormValues.cardNumber.slice(-4)
@@ -188,23 +257,57 @@ const PaymentScreen = ({ route, navigation }) => {
                     </TouchableOpacity>
                 </View>
 
-                {appliedCoupon && (
-                    <View style={styles.appliedCouponContainer}>
-                        <View style={styles.appliedCouponInfo}>
-                            <Ticket size={20} color={styles.couponIcon.color} />
-                            <Text style={styles.appliedCouponText}>
-                                Applied: ${appliedCoupon.value.toFixed(2)} discount
+                {user && userCoupons?.length > 0 && (
+                    <View style={styles.userCouponsContainer}>
+                        <Text style={styles.subsectionTitle}>Your Available Coupons</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {userCoupons.map((coupon) => (
+                                <TouchableOpacity
+                                    key={coupon.couponID}
+                                    style={[
+                                        styles.userCoupon,
+                                        selectedCoupon?.couponID === coupon.couponID && styles.selectedCoupon
+                                    ]}
+                                    onPress={() => handleCouponSelect(coupon)}
+                                >
+                                    <View style={styles.couponInfo}>
+                                        <Ticket size={20} color={styles.couponIcon.color} />
+                                        <View>
+                                            <Text style={styles.couponCode}>Coupon #{coupon.couponID}</Text>
+                                            <Text style={styles.couponValue}>
+                                                Value: ${coupon.value.toFixed(2)}
+                                            </Text>
+                                            <Text style={styles.couponExpiry}>
+                                                Expires: {new Date(coupon.expiryDate).toLocaleDateString()}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    </View>
+                )}
+
+                {selectedCoupon && (
+                    <View style={styles.discountSummary}>
+                        <View style={styles.summaryRow}>
+                            <Text style={styles.summaryLabel}>Original Total:</Text>
+                            <Text style={styles.summaryValue}>${originalTotal.toFixed(2)}</Text>
+                        </View>
+                        <View style={styles.summaryRow}>
+                            <Text style={styles.summaryLabel}>Coupon Discount:</Text>
+                            <Text style={styles.discountValue}>
+                                -${selectedCouponOriginalValue.toFixed(2)}
+                            </Text>
+                        </View>
+                        <View style={styles.summaryRow}>
+                            <Text style={styles.finalTotalLabel}>Final Total:</Text>
+                            <Text style={styles.finalTotalAmount}>
+                                ${discountedTotal.toFixed(2)}
                             </Text>
                         </View>
                     </View>
                 )}
-
-                <View style={styles.totalContainer}>
-                    <Text style={styles.finalTotalLabel}>Total:</Text>
-                    <Text style={styles.finalTotalAmount}>
-                        ${calculateFinalTotal().toFixed(2)}
-                    </Text>
-                </View>
             </View>
 
             {/* Payment Section */}
@@ -231,7 +334,7 @@ const PaymentScreen = ({ route, navigation }) => {
                     <ActivityIndicator color={styles.spinner.color} />
                 ) : (
                     <Text style={styles.payButtonText}>
-                        Pay ${calculateFinalTotal().toFixed(2)}
+                        Pay ${discountedTotal.toFixed(2)}
                     </Text>
                 )}
             </TouchableOpacity>

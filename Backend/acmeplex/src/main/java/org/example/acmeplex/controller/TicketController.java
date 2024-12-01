@@ -25,20 +25,28 @@ public class TicketController {
             @RequestParam(required = false) Integer userId,
             @RequestParam Integer showtimeID,
             @RequestParam List<Integer> seatIDs,
-            @RequestParam Double price,
+            @RequestParam Double price, // This will now be the per-ticket price after discount, to ensure the correct
+                                        // value for ticket cancellations
             @RequestParam(required = false) Long couponId,
-            @RequestParam(required = false) String email) {
+            @RequestParam(required = false) String email,
+            @RequestParam Double totalAmount) {
 
         User user = null;
         if (userId != null) {
             user = userService.getUserById(userId);
-            // If user exists, use their email
             if (user != null) {
                 email = user.getEmail();
             }
         }
 
-        List<Ticket> tickets = ticketService.purchaseTicket(user, showtimeID, seatIDs, price, couponId, email);
+        List<Ticket> tickets = ticketService.purchaseTicket(
+                user,
+                showtimeID,
+                seatIDs,
+                price, // Uses the provided discounted price per ticket
+                couponId,
+                email);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(tickets);
     }
 

@@ -1,138 +1,131 @@
 // screens/AccountScreen/index.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
     TextInput,
     TouchableOpacity,
-    Alert,
-    ScrollView
+    ScrollView,
+    ActivityIndicator,
 } from 'react-native';
-import CreditCardForm from '../../components/CreditCardForm';
-import RegisteredUserForm from '../../components/RegisteredUserForm';
 import { styles } from './styles';
-import { CreditCard, Trash2 } from 'lucide-react-native';
+import { User } from 'lucide-react-native'; // Assuming you want to add an icon
 import { COLORS } from '../../styles';
+import { useAuth } from '../../context/AuthContext';
 
 const AccountScreen = ({ navigation }) => {
-    const [userValues, setUserValues] = useState({});
-    const [userErrors, setUserErrors] = useState({});
-    const [isUserFormValid, setIsUserFormValid] = useState(false);
+    const { user } = useAuth();
+    const [loading, setLoading] = useState(true);
 
-    const [formValues, setFormValues] = useState({});
-    const [formErrors, setFormErrors] = useState({});
-    const [isFormValid, setIsFormValid] = useState(false);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('new');
+    // State to manage input values if we were to implement editing
+    const [name, setName] = useState(user?.name || '');
+    const [username, setUsername] = useState(user?.username || '');
+    const [email, setEmail] = useState(user?.email || '');
+    const [address, setAddress] = useState(user?.address || '');
+    const [registrationDate, setRegistrationDate] = useState(user?.registrationDate || '');
+    const [annualFeeDueDate, setAnnualFeeDueDate] = useState(user?.annualFeeDueDate || '');
 
-    // Mock data
-    const [savedCards] = useState([
-        { id: 1, last4: '4242', expiryDate: '12/25', cardHolderName: 'Test User' },
-        { id: 2, last4: '1234', expiryDate: '10/25', cardHolderName: 'Test User' }
-    ]);
+    useEffect(() => {
+        setLoading(false);
+    }, [user]);
 
-    const handleRegister = () => {
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+                <Text>Loading account information...</Text>
+            </View>
+        );
+    }
 
-        // Construct user data
-        const userData = { Userinfo: userValues, paymentInfo: formValues };
-
-        console.log('Registration data:', userData);
-
-        //Right now takes you to login, but should take you to payment?
-
-        if (!isUserFormValid) {
-            alert('Please fix the errors in the user details');
-            return;
-        }
-        if (!isFormValid) {
-            console.log('Form is not valid:', formErrors);
-            alert('Error', 'Please check all card details are correct');
-            return;
-        } else {
-            console.log('Form is valid:', formValues);
-            navigation.navigate('Login');
-
-        }
-    };
-
-    const handleRemoveCard = (cardId) => {
-        alert('Are you sure you want to remove this card?');
-        // TODO: Add card removal logic here
-    };
-
-    //Ideally payment should be its own component and not defined here or in the payment screen. It should also have toggle buttons.
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.formContainer}>
-                <Text style={styles.title}>My Account</Text>
-
-                <View style={styles.section}>
-                    <RegisteredUserForm
-                        onValuesChange={setUserValues}
-                        onValidationChange={(isValid, errors) => {
-                            setIsUserFormValid(isValid);
-                            setUserErrors(errors);
-                        }}
-                        errors={userErrors}
-                    />
+                {/* User Info Header with Icon */}
+                <View style={styles.userIconContainer}>
+                    <User size={24} color={COLORS.text.primary} />
+                    <Text style={styles.userIconText}>Account Details</Text>
                 </View>
 
-                <View style={styles.paymentSection}>
-                    <View style={styles.paymentMethodContainer}>
-                        <Text style={styles.sectionTitle}>Payment Method</Text>
-                        {savedCards.map(card => (
-                            <TouchableOpacity
-                                key={card.id}
-                                style={[
-                                    styles.savedCard,
-                                    selectedPaymentMethod === card.id && styles.selectedCard
-                                ]}
-                                onPress={() => setSelectedPaymentMethod(card.id)}
-                            >
-                                <View style={styles.savedCardInfo}>
-                                    <CreditCard size={24} color={COLORS.text.primary} />
-                                    <Text style={styles.savedCardText}>
-                                        **** {card.last4} | {card.expiryDate}
-                                    </Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={(e) => {
-                                        e.stopPropagation();
-                                        handleRemoveCard(card.id);
-                                    }}
-                                >
-                                    <Trash2
-                                        size={20}
-                                        color={COLORS.text.secondary}
-                                    />
-                                </TouchableOpacity>
-                            </TouchableOpacity>
-                        ))}
-                        <TouchableOpacity
-                            style={[
-                                styles.savedCard,
-                                selectedPaymentMethod === 'new' && styles.selectedCard
-                            ]}
-                            onPress={() => setSelectedPaymentMethod('new')}
-                        >
-                            <View style={styles.savedCardInfo}>
-                                <CreditCard size={24} color={COLORS.text.primary} />
-                                <Text style={styles.savedCardText}>Add New Card</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    {selectedPaymentMethod === 'new' && (
-                        <CreditCardForm
-                            onValuesChange={setFormValues}
-                            onValidationChange={(isValid, errors) => {
-                                setIsFormValid(isValid);
-                                setFormErrors(errors);
-                            }}
-                            errors={formErrors}
-                            showSaveCard={false}
+                {/* Account Details Section */}
+                <View style={styles.accountDetailsContainer}>
+                    <Text style={styles.sectionTitle}>Account Details</Text>
+
+                    {/* Name Field */}
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>Name:</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={user.name}
+                            value={name}
+                            onChangeText={setName}
+                            editable={false}
                         />
-                    )}
+                    </View>
+
+                    {/* Username Field */}
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>Username:</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={user.username}
+                            value={username}
+                            onChangeText={setUsername}
+                            editable={false}
+                        />
+                    </View>
+
+                    {/* Email Field */}
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>Email:</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={user.email}
+                            value={email}
+                            onChangeText={setEmail}
+                            editable={false}
+                        />
+                    </View>
+
+                    {/* Address Field */}
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>Address:</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={user.address}
+                            value={address}
+                            onChangeText={setAddress}
+                            multiline
+                            editable={false}
+                        />
+                    </View>
+
+                    {/* Registration Date Field */}
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>Registration Date:</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={user.registrationDate}
+                            value={registrationDate}
+                            onChangeText={setRegistrationDate}
+                            editable={false} // Prevent editing this field
+                        />
+                    </View>
+
+                    {/* Annual Fee Due Date Field */}
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputLabel}>Annual Fee Due Date:</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder={user.annualFeeDueDate}
+                            value={annualFeeDueDate}
+                            onChangeText={setAnnualFeeDueDate}
+                            editable={false} // Prevent editing this field
+                        />
+                    </View>
                 </View>
-                {/* Buttons for navigation */}
+
+                {/* Navigation Buttons */}
                 <View style={styles.navigationButtonsContainer}>
                     <TouchableOpacity
                         style={styles.navigationButton}

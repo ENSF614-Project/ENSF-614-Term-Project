@@ -17,9 +17,6 @@ export const paymentService = {
                     expiryYear: parseInt(expiryYear),
                     cardType,
                     billingAddress,
-                    // user: {
-                    //     userId: user.userId
-                    // }
                     user
                 }),
             });
@@ -29,6 +26,28 @@ export const paymentService = {
             return await response.json();
         } catch (error) {
             console.error('Error saving payment:', error);
+            throw error;
+        }
+    },
+
+
+    async payAnnualFee(user, totalAmount) {
+        try {
+            const userId = user.userId;
+            const response = await fetch(`${API_URL}/api/transactions/create?userId=${userId}&totalAmount=${totalAmount}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+            if (!response.ok) {
+                throw new Error(`Failed to pay annual fee: ${response.statusText}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error paying fee:', error);
             throw error;
         }
     },

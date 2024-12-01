@@ -13,6 +13,7 @@ import CreditCardForm from '../../components/CreditCardForm';
 import RegisteredUserForm from '../../components/RegisteredUserForm';
 import { registerService } from '../../services/registerService';
 import { paymentService } from '../../services/paymentService';
+import { useAuth } from '../../context/AuthContext';
 const RegisterScreen = ({ navigation }) => {
     const [userValues, setUserValues] = useState({});
     const [userErrors, setUserErrors] = useState({});
@@ -22,18 +23,23 @@ const RegisterScreen = ({ navigation }) => {
     const [formErrors, setFormErrors] = useState({});
     const [isFormValid, setIsFormValid] = useState(false);
 
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    const { login } = useAuth();
+
     const handleRegister = async () => {
         // Ensure forms are valid
         if (!isUserFormValid) {
-            Alert.alert('Error', 'Please fix the errors in the user details');
+            setErrorMessage('Please fix the errors in the user details.');
             return;
         }
         if (!isFormValid) {
-            Alert.alert('Error', 'Please check all card details are correct');
+            setErrorMessage('Please check all card details are correct.');
             return;
         }
-
+    
         // Construct user data
+        
         const userData = {
             name: userValues.name,
             email: userValues.email,
@@ -42,21 +48,22 @@ const RegisterScreen = ({ navigation }) => {
             address: userValues.address,
             isRU: true,
         };
-
-        // Construct user data
+    
+        // Construct payment data
         const cardData = {
             cardHolderName: formValues.cardHolderName,
             cw: formValues.cvv,
             cardNumber: formValues.cardNumber,
-            expiryMonth: formValues.expiryDate.slice(0, 2), //check this well year really
-            expiryYear: formValues.expiryDate.slice(2),
+            expiryMonth: parseInt(formValues.expiryDate.slice(0, 2), 10),
+            expiryYear: parseInt(formValues.expiryDate.slice(3), 10),
             cardType: 'credit',
-            billingAddress: formValues.billingAddress 
-
+            billingAddress: formValues.billingAddress,
         };
-
+    
         try {
-            // Call the API
+
+            setErrorMessage(null);
+            // Step 1: Register the user
             const registeredUser = await registerService.createRU(
                 userData.name,
                 userData.email,
@@ -65,9 +72,9 @@ const RegisterScreen = ({ navigation }) => {
                 userData.address,
                 userData.isRU
             );
-
             console.log('Registered user:', registeredUser);
-
+    
+            // Step 2: Save the payment information
             const payment = await paymentService.savePayment(
                 cardData.cardHolderName,
                 cardData.cw,
@@ -75,22 +82,26 @@ const RegisterScreen = ({ navigation }) => {
                 cardData.expiryMonth,
                 cardData.expiryYear,
                 cardData.cardType,
-                // {userId: registeredUser.userId}, // Pass the registered user object here
                 registeredUser,
                 cardData.billingAddress
             );
-
-            console.log('Payment successful:', payment);
-
-            // Navigate to payment or login
-            Alert.alert(
-                'Success',
-                'Account created successfully! You can now log in.',
-                [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
-            );
+            console.log('Payment information saved:', payment);
+    
+            // Step 3: Pay the annual fee
+            const feePayment = await paymentService.payAnnualFee(registeredUser, 20);
+            console.log('Annual fee payment successful:', feePayment);
+    
+            // Notify success and navigate to login
+            const isLoggedIn = await login(userData.username, userData.password);
+            if (isLoggedIn) {
+                // Navigate to the home screen
+                navigation.navigate('Home');
+            } else {
+                setErrorMessage('Account created, but login failed. Please log in manually.');
+            }
         } catch (error) {
             console.error('Error registering user or payment:', error);
-            Alert.alert('Error', 'Failed to compelete registration. Please try again.');
+            setErrorMessage('Failed to complete registration. Please try again.');
         }
     };
 
@@ -102,6 +113,12 @@ const RegisterScreen = ({ navigation }) => {
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.formContainer}>
                 <Text style={styles.title}>Create an Account</Text>
+
+                {errorMessage && (
+                <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>{errorMessage}</Text>
+                </View>
+            )}
 
                 <View style={styles.section}>
                     <RegisteredUserForm

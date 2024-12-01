@@ -4,8 +4,10 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 
 export const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         backgroundColor: COLORS.background.primary,
+        justifyContent: 'center',
+        padding: SPACING.xl,
     },
     formContainer: {
         width: '100%',
@@ -13,147 +15,70 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: SPACING.xl,
     },
-    title: {
-        ...TYPOGRAPHY.title,
-        fontSize: 24,
-        marginBottom: SPACING.xl,
-        textAlign: 'center',
-        color: COLORS.text.primary,
-    },
-    section: {
-        marginBottom: SPACING.xl,
-        backgroundColor: COLORS.background.primary,
-        borderRadius: SPACING.sm,
-        borderWidth: 1,
-        borderColor: COLORS.border.default,
-        padding: SPACING.lg,
-    },
-    paymentSection: {
-        marginBottom: SPACING.xl,
-        backgroundColor: COLORS.background.primary,
-        borderRadius: SPACING.sm,
-        borderWidth: 1,
-        borderColor: COLORS.border.default,
-        padding: SPACING.lg,
-    },
-    sectionHeader: {
+    userIconContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: SPACING.lg,
+        marginBottom: SPACING.md,
         gap: SPACING.sm,
     },
-    sectionTitle: {
+    userIconText: {
         ...TYPOGRAPHY.title,
         fontSize: 18,
+    },
+    accountDetailsContainer: {
+        marginBottom: SPACING.xl,
+        backgroundColor: COLORS.background.secondary,
+        borderRadius: SPACING.sm,
+        borderWidth: 1,
+        borderColor: COLORS.border.default,
+        padding: SPACING.lg,
+    },
+    sectionTitle: {
+        ...TYPOGRAPHY.subtitle,
+        fontSize: 20,
+        marginBottom: SPACING.md,
         color: COLORS.text.primary,
     },
     input: {
         borderWidth: 1,
-        borderColor: COLORS.border.default,
+        borderColor: COLORS.input.border,
         borderRadius: SPACING.sm,
         padding: SPACING.md,
-        marginBottom: SPACING.lg,
+        marginBottom: SPACING.sm,
         fontSize: 16,
         backgroundColor: COLORS.input.background,
+    },
+    inputLabel: {
+        ...TYPOGRAPHY.body,
+        fontSize: 14,
+        fontWeight: 'bold',
         color: COLORS.text.primary,
+        marginBottom: SPACING.xs,
     },
     inputError: {
-        borderColor: COLORS.text.error,
-    },
-    errorText: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.text.error,
-        fontSize: 12,
-        marginBottom: SPACING.sm,
-        marginLeft: SPACING.xs,
-    },
-    paymentMethodContainer: {
-        padding: SPACING.lg,
-    },
-    savedCard: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: SPACING.md,
-        borderWidth: 1,
-        borderColor: COLORS.border.default,
-        borderRadius: SPACING.sm,
-        marginBottom: SPACING.md,
-        backgroundColor: COLORS.background.primary,
-    },
-    selectedCard: {
-        borderColor: COLORS.button.primary.background,
-        backgroundColor: COLORS.background.secondary,
-    },
-    savedCardInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: SPACING.md,
-    },
-    savedCardText: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.text.primary,
-    },
-    registerButton: {
-        backgroundColor: COLORS.button.primary.background,
-        padding: SPACING.md,
-        borderRadius: SPACING.sm,
-        marginBottom: SPACING.md,
-    },
-    registerButtonText: {
-        color: COLORS.button.primary.text,
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    registerButtonDisabled: {
-        opacity: 0.6,
-    },
-    loginButton: {
-        padding: SPACING.sm,
-    },
-    loginButtonText: {
-        color: COLORS.text.secondary,
-        textAlign: 'center',
+        borderColor: COLORS.input.borderError,
     },
     navigationButtonsContainer: {
-        marginTop: SPACING.lg,
-        width: '100%',
+        marginTop: SPACING.xl,
+        flexDirection: 'column',
         alignItems: 'center',
     },
     navigationButton: {
         backgroundColor: COLORS.button.primary.background,
-        paddingVertical: SPACING.md,
-        paddingHorizontal: SPACING.xl,
+        padding: SPACING.md,
         borderRadius: SPACING.sm,
         marginBottom: SPACING.md,
         width: '80%',
-        alignItems: 'center',
     },
     navigationButtonText: {
         color: COLORS.button.primary.text,
+        textAlign: 'center',
         fontSize: 16,
         fontWeight: 'bold',
     },
-    membershipContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: SPACING.md,
     },
-    membershipTitle: {
-        ...TYPOGRAPHY.title,
-        fontSize: 18,
-        color: COLORS.text.primary,
-    },
-    membershipAmount: {
-        ...TYPOGRAPHY.title,
-        fontSize: 20,
-        color: COLORS.button.primary.background,
-    },
-    membershipInfo: {
-        ...TYPOGRAPHY.body,
-        color: COLORS.text.secondary,
-        fontStyle: 'italic',
-    }
 });

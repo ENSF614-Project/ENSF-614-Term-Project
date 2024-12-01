@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Ticket, AlertCircle } from 'lucide-react-native';
 import { styles } from './styles';
-//import { getUserTickets, getTicketById } from '../../MockData';
+
 import { useAuth } from '../../context/AuthContext';
 import { ticketService } from '../../services/ticketService'
 

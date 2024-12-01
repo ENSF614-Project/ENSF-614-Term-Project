@@ -38,4 +38,13 @@ public class PaymentInfoController {
         paymentInfoService.deletePaymentInfo(id);
         return "PaymentInfo with ID " + id + " deleted successfully.";
     }
+
+    // Get payment info by user
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PaymentInfo>> getPaymentInfoByUser(@PathVariable Integer userId) {
+        User user = new User();
+        user.setUserId(userId);
+        List<PaymentInfo> paymentInfoList = paymentInfoService.getPaymentInfoByUser(user);
+        return ResponseEntity.ok(paymentInfoList);
+    }
 }

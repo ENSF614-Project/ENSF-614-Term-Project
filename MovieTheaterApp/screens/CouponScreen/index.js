@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { styles } from './styles';
 import { useAuth } from '../../context/AuthContext';
-import couponService from "../../services/couponService.js";
+import { couponService } from '../../services/couponService';
 
 const CouponScreen = () => {
     const { user } = useAuth();
@@ -24,8 +24,8 @@ const CouponScreen = () => {
 
     const sortCouponsByExpiry = (coupons) => {
         return coupons.sort((a, b) => {
-            const dateA = new Date(a.Expiry.split('/').reverse().join('-'));
-            const dateB = new Date(b.Expiry.split('/').reverse().join('-'));
+            const dateA = new Date(a.expiryDate.split('/').reverse().join('-'));
+            const dateB = new Date(b.expiryDate.split('/').reverse().join('-'));
             return dateA - dateB; // Earliest expiry first
         });
     };
@@ -160,10 +160,10 @@ const CouponScreen = () => {
                     )}
                     {filteredCoupons.map((coupon, index) => (
                         <View key={index} style={styles.couponItem}>
-                            <Text style={styles.couponCode}>Code: {coupon.CouponCode}</Text>
-                            <Text style={styles.couponValue}>Value: ${coupon.Value.toFixed(2)}</Text>
-                            <Text style={styles.couponExpiry}>Expiry: {coupon.Expiry}</Text>
-                            <Text style={styles.couponStatus}>Status: {coupon.Status}</Text>
+                            <Text style={styles.couponCode}>Code: {coupon.CouponID}</Text>
+                            <Text style={styles.couponValue}>Value: ${coupon.value.toFixed(2)}</Text>
+                            <Text style={styles.couponExpiry}>Expiry: {coupon.expiryDate}</Text>
+                            <Text style={styles.couponStatus}>Status: {coupon.status}</Text>
                         </View>
                     ))}
                     {filteredCoupons.length === 0 && (

@@ -1,4 +1,4 @@
-// services/movieService.js
+// services/couponService.js
 const API_URL = 'http://localhost:8080';
 
 export const couponService = {

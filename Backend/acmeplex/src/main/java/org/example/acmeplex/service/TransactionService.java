@@ -22,30 +22,28 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
-    @Transactional
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
+    }
     public Transaction createTransaction(User user, Double amount, Long couponID) {
         Coupon coupon = null;
         double finalAmount = amount;
 
         if (couponID != null) {
-            coupon = couponService.applyCoupon(couponID, amount);
-
-            if (coupon.getRemainingValue() > 0) {
-                double discount = Math.min(amount, coupon.getRemainingValue());
-                finalAmount -= discount;
-            }
+            coupon = couponService.getCouponById(couponID);
+            // Apply coupon logic here
         }
 
-        // Create and save the transaction
         Transaction transaction = new Transaction();
-        transaction.setUser(user);
+        if (user != null) {
+            transaction.setUser(user);
+        }
         transaction.setTotal(finalAmount);
         transaction.setCoupon(coupon);
+        transaction.setPaymentMethod("Credit");
         transaction.setTransactionDate(new Date());
         transaction.setTransactionSuccessful(true); // Assume success for now
-        transactionRepository.save(transaction);
-
-        return transaction;
+        return transactionRepository.save(transaction);
     }
 
     public List<Transaction> getTransactionsByUser(User user) {

@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import { Ticket, AlertCircle } from 'lucide-react-native';
 import { styles } from './styles';
-import { getUserTickets, getTicketById } from '../../MockData';
+//import { getUserTickets, getTicketById } from '../../MockData';
 import { useAuth } from '../../context/AuthContext';
+import { ticketService } from '../../services/ticketService'
 
 const TicketScreen = () => {
     const { user } = useAuth();
@@ -22,7 +23,9 @@ const TicketScreen = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        console.log('test use');
         if (user) {
+            console.log('test use in');
             fetchUserTickets();
         }
     }, [user]);
@@ -30,7 +33,8 @@ const TicketScreen = () => {
     const fetchUserTickets = async () => {
         setLoading(true);
         try {
-            const tickets = getUserTickets(user.userId);
+            const tickets = await ticketService.getUserTickets(user.userId);
+            console.log('test');
             setUserTickets(tickets);
             setError(null);
         } catch (err) {
@@ -48,7 +52,7 @@ const TicketScreen = () => {
 
         setLoading(true);
         try {
-            const ticket = getTicketById(ticketNumber);
+            const ticket = await ticketService.getTicketById(ticketNumber);
             if (ticket) {
                 setSearchedTicket(ticket);
                 setError(null);
@@ -64,7 +68,31 @@ const TicketScreen = () => {
     };
 
     const handleCancelTicket = async (ticketId) => {
-        alert('Cancel ticket functionality will be implemented soon.');
+        //can change to look much nicer if desired
+        Alert.alert(
+            'Confirm Cancellation',
+            'Are you sure you want to cancel this ticket?',
+            [
+                { text: 'No', style: 'cancel' },
+                {
+                    text: 'Yes',
+                    onPress: async () => {
+                        setLoading(true);
+                        try {
+                            await ticketService.cancelTicketById(ticketId);
+                            setUserTickets((prev) =>
+                                prev.filter((ticket) => ticket.ticketID !== ticketId)
+                            );
+                            Alert.alert('Success', 'Ticket canceled successfully.');
+                        } catch (err) {
+                            Alert.alert('Error', 'Failed to cancel ticket. Please try again.');
+                        } finally {
+                            setLoading(false);
+                        }
+                    }
+                }
+            ]
+        );
     };
 
     const formatDate = (dateString) => {
@@ -79,7 +107,7 @@ const TicketScreen = () => {
     };
 
     const renderTicketCard = (ticket) => {
-        const isActive = new Date(ticket.showtime) > new Date();
+        const isActive = new Date(ticket.showtimeID.startTime) > new Date(); //Change for showtime need to create api
         const canCancel = new Date(ticket.cancellationDeadline) > new Date();
 
         return (
@@ -99,16 +127,18 @@ const TicketScreen = () => {
                 <View style={styles.ticketInfo}>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Theatre:</Text>
-                        <Text style={styles.infoValue}>{ticket.theatre}</Text>
+                        <Text style={styles.infoValue}>{ticket.showtimeID}</Text>
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Seat:</Text>
-                        <Text style={styles.infoValue}>{ticket.seatInfo}</Text>
+                        <Text style={styles.infoValue}>
+                            {[ticket.seatID.seatRow, ticket.seatID.seatNum].join(' ')}
+                        
+                        </Text>
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Showtime:</Text>
-
-                        <Text style={styles.infoValue}>{formatDate(ticket.showtime)}</Text>
+                        <Text style={styles.infoValue}>{formatDate(ticket.showtimeID.startTime)}</Text>
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Price:</Text>

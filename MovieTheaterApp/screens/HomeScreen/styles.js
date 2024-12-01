@@ -114,5 +114,36 @@ export const styles = StyleSheet.create({
     searchResultsText: {
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
-    }
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.background.primary,
+    },
+    loadingSpinner: {
+        color: COLORS.button.primary.background,
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: SPACING.xl,
+        backgroundColor: COLORS.background.primary,
+    },
+    errorText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.error,
+        textAlign: 'center',
+        marginBottom: SPACING.lg,
+    },
+    retryButton: {
+        backgroundColor: COLORS.button.primary.background,
+        padding: SPACING.md,
+        borderRadius: SPACING.sm,
+    },
+    retryButtonText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.button.primary.text,
+    },
 });

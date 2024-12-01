@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { styles } from './styles';
 import { useAuth } from '../../context/AuthContext';
+import { couponService } from '../../services/couponService';
 
 const CouponScreen = () => {
     const { user } = useAuth();
@@ -11,71 +12,134 @@ const CouponScreen = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     // Mock data
-    const allCoupons = [
-        { isRegistered: 1, CouponCode: 'AZ4g3b3x', Value: 36.0, Expiry: '27/05/2025', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
-        { isRegistered: 1, CouponCode: 'Bg6u90Pc', Value: 12.0, Expiry: '25/12/2024', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
-        { isRegistered: 1, CouponCode: '5Z345tYd', Value: 48.0, Expiry: '13/04/2025', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
-        { isRegistered: 0, CouponCode: '45Ttb3Gj', Value: 10.0, Expiry: '27/05/2025', Status: 'Valid', userID: 2, email: 'biggie@gmail.com' },
-        { isRegistered: 0, CouponCode: '12Qwp05f', Value: 90.0, Expiry: '14/02/2023', Status: 'Expired', userID: 3, email: 'monkeyman@hotmail.com' },
-        { isRegistered: 0, CouponCode: 'FFf3r78p', Value: 5.0, Expiry: '01/01/2025', Status: 'Valid', userID: 4, email: 'datboi@waddup.pizza' },
-        { isRegistered: 1, CouponCode: 'VrtY7e2S', Value: 36.0, Expiry: '27/05/2024', Status: 'Expired', userID: 1, email: 'tony@tony.ca' },
-    ];
+    // const allCoupons = [
+    //     { isRegistered: 1, CouponCode: 'AZ4g3b3x', Value: 36.0, Expiry: '27/05/2025', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
+    //     { isRegistered: 1, CouponCode: 'Bg6u90Pc', Value: 12.0, Expiry: '25/12/2024', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
+    //     { isRegistered: 1, CouponCode: '5Z345tYd', Value: 48.0, Expiry: '13/04/2025', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
+    //     { isRegistered: 0, CouponCode: '45Ttb3Gj', Value: 10.0, Expiry: '27/05/2025', Status: 'Valid', userID: 2, email: 'biggie@gmail.com' },
+    //     { isRegistered: 0, CouponCode: '12Qwp05f', Value: 90.0, Expiry: '14/02/2023', Status: 'Expired', userID: 3, email: 'monkeyman@hotmail.com' },
+    //     { isRegistered: 0, CouponCode: 'FFf3r78p', Value: 5.0, Expiry: '01/01/2025', Status: 'Valid', userID: 4, email: 'datboi@waddup.pizza' },
+    //     { isRegistered: 1, CouponCode: 'VrtY7e2S', Value: 36.0, Expiry: '27/05/2024', Status: 'Expired', userID: 1, email: 'tony@tony.ca' },
+    // ];
 
     const sortCouponsByExpiry = (coupons) => {
         return coupons.sort((a, b) => {
-            const dateA = new Date(a.Expiry.split('/').reverse().join('-'));
-            const dateB = new Date(b.Expiry.split('/').reverse().join('-'));
+            const dateA = new Date(a.expiryDate.split('/').reverse().join('-'));
+            const dateB = new Date(b.expiryDate.split('/').reverse().join('-'));
             return dateA - dateB; // Earliest expiry first
         });
     };
 
-    const handleCouponSubmit = () => {
+    // const handleCouponSubmit = () => {
+    //     if (!couponInput) {
+    //         setErrorMessage('Please enter a coupon code or email.');
+    //         return;
+    //     }
+
+    //     const isEmail = couponInput.includes('@');
+
+    //     if (isEmail) {
+    //         const emailCoupons = allCoupons.filter(
+    //             coupon => coupon.email === couponInput && coupon.Status === 'Valid'
+    //         );
+
+    //         if (emailCoupons.length > 0) {
+    //             setFilteredCoupons(sortCouponsByExpiry(emailCoupons));
+    //             setErrorMessage('');
+    //         } else {
+    //             setErrorMessage('Invalid email or no valid coupons found.');
+    //         }
+    //     } else {
+    //         const coupon = allCoupons.find(
+    //             coupon => coupon.CouponCode === couponInput && coupon.Status === 'Valid'
+    //         );
+
+    //         if (coupon) {
+    //             if (!filteredCoupons.some(c => c.CouponCode === coupon.CouponCode)) {
+    //                 setFilteredCoupons(sortCouponsByExpiry([...filteredCoupons, coupon]));
+    //             }
+    //             setErrorMessage('');
+    //         } else {
+    //             setErrorMessage('Invalid coupon code.');
+    //         }
+    //     }
+
+    //     setCouponInput(''); // Clear the input field
+    // };
+
+    const handleCouponSubmit = async () => {
         if (!couponInput) {
             setErrorMessage('Please enter a coupon code or email.');
             return;
         }
-
-        const isEmail = couponInput.includes('@');
-
-        if (isEmail) {
-            const emailCoupons = allCoupons.filter(
-                coupon => coupon.email === couponInput && coupon.Status === 'Valid'
-            );
-
-            if (emailCoupons.length > 0) {
-                setFilteredCoupons(sortCouponsByExpiry(emailCoupons));
-                setErrorMessage('');
+    
+        try {
+            const isEmail = couponInput.includes('@');
+            let fetchedCoupons = [];
+    
+            if (isEmail) {
+                fetchedCoupons = await couponService.getCouponsByEmail(couponInput);
             } else {
-                setErrorMessage('Invalid email or no valid coupons found.');
+                const singleCoupon = await couponService.getCouponById(couponInput);
+                if (singleCoupon) fetchedCoupons = [singleCoupon];
             }
-        } else {
-            const coupon = allCoupons.find(
-                coupon => coupon.CouponCode === couponInput && coupon.Status === 'Valid'
-            );
-
-            if (coupon) {
-                if (!filteredCoupons.some(c => c.CouponCode === coupon.CouponCode)) {
-                    setFilteredCoupons(sortCouponsByExpiry([...filteredCoupons, coupon]));
+    
+            // Check if coupons exist and process them
+            if (fetchedCoupons.length > 0) {
+                const filteredCoupons = fetchedCoupons.filter(coupon => {
+                    // If the coupon belongs to a registered user (isRU) and the user is not the signed-in user, exclude it
+                    if (coupon.user.isRU && coupon.userId !== user.userId) {
+                        return false; // Don't include this coupon
+                    }
+                    return true; // Include this coupon
+                });
+    
+                if (filteredCoupons.length > 0) {
+                    setFilteredCoupons(sortCouponsByExpiry(filteredCoupons));
+                    setErrorMessage('');
+                } else {
+                    setErrorMessage('No valid coupons found.');
                 }
-                setErrorMessage('');
             } else {
-                setErrorMessage('Invalid coupon code.');
+                setErrorMessage('No valid coupons found.');
             }
+        } catch (error) {
+            setErrorMessage('Error fetching coupons. Please try again.');
         }
-
+    
         setCouponInput(''); // Clear the input field
     };
 
+
     // Load user's coupons when logged in
+    // useEffect(() => {
+    //     if (user) {
+    //         const userCoupons = allCoupons.filter(
+    //             coupon => coupon.userID === user.userId && coupon.Status === 'Valid'
+    //         );
+    //         setFilteredCoupons(sortCouponsByExpiry(userCoupons));
+    //     } else {
+    //         setFilteredCoupons([]);
+    //     }
+    // }, [user]);
+
+
     useEffect(() => {
-        if (user) {
-            const userCoupons = allCoupons.filter(
-                coupon => coupon.userID === user.userId && coupon.Status === 'Valid'
-            );
-            setFilteredCoupons(sortCouponsByExpiry(userCoupons));
-        } else {
-            setFilteredCoupons([]);
-        }
+        const fetchUserCoupons = async () => {
+            if (user) {
+                try {
+                    const userCoupons = await couponService.getCouponsByUserId(user.userId);
+                    setFilteredCoupons(sortCouponsByExpiry(userCoupons));
+                } catch (error) {
+                    console.error('Error fetching user coupons:', error);
+                    setFilteredCoupons([]);
+                }
+            } else {
+                setFilteredCoupons([]);
+            }
+        };
+    
+        fetchUserCoupons();
     }, [user]);
 
     //Maybe shoould add like a picture or something accompyniing the Coupon/Credits
@@ -109,10 +173,10 @@ const CouponScreen = () => {
                     )}
                     {filteredCoupons.map((coupon, index) => (
                         <View key={index} style={styles.couponItem}>
-                            <Text style={styles.couponCode}>Code: {coupon.CouponCode}</Text>
-                            <Text style={styles.couponValue}>Value: ${coupon.Value.toFixed(2)}</Text>
-                            <Text style={styles.couponExpiry}>Expiry: {coupon.Expiry}</Text>
-                            <Text style={styles.couponStatus}>Status: {coupon.Status}</Text>
+                            <Text style={styles.couponCode}>Code: {coupon.CouponID}</Text>
+                            <Text style={styles.couponValue}>Value: ${coupon.value.toFixed(2)}</Text>
+                            <Text style={styles.couponExpiry}>Expiry: {coupon.expiryDate}</Text>
+                            <Text style={styles.couponStatus}>Status: {coupon.status}</Text>
                         </View>
                     ))}
                     {filteredCoupons.length === 0 && (

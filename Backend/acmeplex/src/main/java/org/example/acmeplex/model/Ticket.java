@@ -1,3 +1,4 @@
+//Ticket.java
 package org.example.acmeplex.model;
 
 import jakarta.persistence.*;
@@ -44,6 +45,6 @@ public class Ticket {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = true)
     private String email;
 }

@@ -27,6 +27,27 @@ public class UserController {
         }
     }
 
+    @PostMapping
+    public ResponseEntity<User> createRegularUser(@RequestBody User user) {
+        try {
+            User createdUser = userService.createRegularUser(user);
+            return ResponseEntity.ok(createdUser);
+        } catch (Exception e) {
+            System.err.println("Error creating user: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        User user = userService.getUserByEmail(email);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();

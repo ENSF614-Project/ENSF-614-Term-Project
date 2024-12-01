@@ -1,37 +1,76 @@
 // screens/ShowtimeScreen/index.js
-import React, { useState, useMemo } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Calendar } from 'lucide-react-native';
 import { styles } from './styles';
-import { showtimes } from '../../MockData';
+import { showtimeService } from '../../services/showtimeService';
+import { movieService } from '../../services/movieService';
+import { useAuth } from '../../context/AuthContext';
+import { toLocalTime, toLocalDate, getLocalDateString, toShortLocalDate } from '../../utils/dateUtils';
 
 const ShowtimeScreen = ({ route, navigation }) => {
-    const { movie } = route.params;
-
-    // used to get the available dates for the selected movie
-    const availableDates = useMemo(() => {
-        return Object.keys(showtimes[movie.movieId])
-            .map(date => new Date(date))
-            .sort((a, b) => a - b); // Sort dates in ascending order
-    }, [movie.movieId]);
-
-    // initialize selectedDate with the first available date
-    const [selectedDate, setSelectedDate] = useState(availableDates[0]);
+    const { movieId } = route.params;
+    const { user } = useAuth();
+    const [showtimeData, setShowtimeData] = useState([]);
+    const [movie, setMovie] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(null);
     const [showCalendar, setShowCalendar] = useState(false);
 
-    const currentShowtimes = useMemo(() => {
-        const dateStr = selectedDate.toISOString().split('T')[0];
-        return showtimes[movie.movieId][dateStr] || [];
-    }, [movie.movieId, selectedDate]);
+    // Fetch both movie and showtime data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const [movieData, showtimes] = await Promise.all([
+                    movieService.getMovieById(movieId),
+                    showtimeService.getShowtimesByMovie(movieId)
+                ]);
+                setMovie(movieData);
+                setShowtimeData(showtimes);
+            } catch (err) {
+                setError('Failed to load showtime data. Please try again later.');
+                console.error('Error fetching data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
+        fetchData();
+    }, [movieId]);
+
+    const availableDates = useMemo(() => {
+        if (!showtimeData.length) return [];
+
+        const dates = new Set();
+        showtimeData.forEach(showtime => {
+            const localDate = getLocalDateString(showtime.startTime);
+            dates.add(localDate);
         });
-    };
+
+        const sortedDates = Array.from(dates)
+            .map(date => new Date(date))
+            .sort((a, b) => a - b);
+
+        // Set initial selected date if not already set
+        if (sortedDates.length > 0 && !selectedDate) {
+            setSelectedDate(sortedDates[0]);
+        }
+
+        return sortedDates;
+    }, [showtimeData]);
+
+    const filteredShowtimes = useMemo(() => {
+        if (!selectedDate || !showtimeData.length) return [];
+
+        const selectedDateStr = getLocalDateString(selectedDate);
+        return showtimeData.filter(showtime => {
+            const showtimeDateStr = getLocalDateString(showtime.startTime);
+            return showtimeDateStr === selectedDateStr;
+        });
+    }, [showtimeData, selectedDate]);
 
     const handleDateSelect = (date) => {
         setSelectedDate(date);
@@ -42,77 +81,111 @@ const ShowtimeScreen = ({ route, navigation }) => {
         navigation.navigate('SeatSelection', {
             showtime: {
                 ...showtime,
-                date: selectedDate
-            },
-            movie
+                movie,
+                price: 12.99 // Get this from the backend??
+            }
         });
     };
 
-    const renderDatePicker = () => (
-        <View style={styles.datePickerContainer}>
-            <TouchableOpacity
-                style={styles.dateButton}
-                onPress={() => setShowCalendar(!showCalendar)}
-            >
-                <Calendar size={24} color={styles.dateButton.iconColor} />
-                <Text style={styles.dateText}>{formatDate(selectedDate)}</Text>
-            </TouchableOpacity>
-
-            {showCalendar && (
-                <View style={styles.calendarContainer}>
-                    {availableDates.map((date) => (
-                        <TouchableOpacity
-                            key={date.toISOString()}
-                            style={[
-                                styles.calendarDate,
-                                date.toISOString() === selectedDate.toISOString() && styles.selectedDate
-                            ]}
-                            onPress={() => handleDateSelect(date)}
-                        >
-                            <Text style={[
-                                styles.calendarDateText,
-                                date.toISOString() === selectedDate.toISOString() && styles.selectedDateText
-                            ]}>
-                                {date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            )}
-        </View>
-    );
-
-    const renderShowtime = (showtime) => (
-        <TouchableOpacity
-            key={showtime.id}
-            style={styles.showtimeCard}
-            onPress={() => handleShowtimePress(showtime)}
-        >
-            <View style={styles.showtimeInfo}>
-                <Text style={styles.time}>{showtime.time}</Text>
-                <Text style={styles.theatre}>{showtime.theatre}</Text>
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={styles.loadingSpinner.color} />
             </View>
-            <Text style={styles.price}>${showtime.price.toFixed(2)}</Text>
-        </TouchableOpacity>
-    );
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+                <TouchableOpacity
+                    style={styles.retryButton}
+                    onPress={() => fetchData()}
+                >
+                    <Text style={styles.retryButtonText}>Retry</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
     return (
         <ScrollView style={styles.container}>
-            <View style={styles.movieInfo}>
-                <Text style={styles.movieTitle}>{movie.title}</Text>
-                <Text style={styles.movieDetails}>
-                    {movie.duration}m - {movie.genre}
-                </Text>
-            </View>
+            {movie && (
+                <View style={styles.movieInfo}>
+                    <Text style={styles.movieTitle}>{movie.title}</Text>
+                    <Text style={styles.movieDetails}>
+                        {movie.duration}m - {movie.genre}
+                    </Text>
+                </View>
+            )}
 
-            {renderDatePicker()}
+            <View style={styles.datePickerContainer}>
+                <TouchableOpacity
+                    style={styles.dateButton}
+                    onPress={() => setShowCalendar(!showCalendar)}
+                >
+                    <Calendar size={24} color={styles.dateButton.iconColor} />
+                    <Text style={styles.dateText}>
+                        {selectedDate ? toLocalDate(selectedDate) : 'Select Date'}
+                    </Text>
+                </TouchableOpacity>
+
+                {showCalendar && (
+                    <View style={styles.calendarContainer}>
+                        {availableDates.map((date) => (
+                            <TouchableOpacity
+                                key={date.toISOString()}
+                                style={[
+                                    styles.calendarDate,
+                                    selectedDate &&
+                                    getLocalDateString(selectedDate) === getLocalDateString(date) &&
+                                    styles.selectedDate
+                                ]}
+                                onPress={() => handleDateSelect(date)}
+                            >
+                                <Text style={[
+                                    styles.calendarDateText,
+                                    selectedDate &&
+                                    getLocalDateString(selectedDate) === getLocalDateString(date) &&
+                                    styles.selectedDateText
+                                ]}>
+                                    {toShortLocalDate(date)}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                )}
+            </View>
 
             <View style={styles.showtimesContainer}>
                 <Text style={styles.sectionTitle}>Available Showtimes</Text>
-                {currentShowtimes.length > 0 ? (
-                    currentShowtimes.map(renderShowtime)
+                {filteredShowtimes.length > 0 ? (
+                    filteredShowtimes.map((showtime) => (
+                        <TouchableOpacity
+                            key={showtime.showtimeId}
+                            style={styles.showtimeCard}
+                            onPress={() => handleShowtimePress(showtime)}
+                        >
+                            <View style={styles.showtimeInfo}>
+                                <Text style={styles.time}>
+                                    {toLocalTime(showtime.startTime)}
+                                </Text>
+                                <Text style={styles.theatre}>
+                                    {showtime.theatre.theatreName}
+                                </Text>
+                            </View>
+                            {showtime.isEarlyAccessOnly && !user?.isRU && (
+                                <Text style={styles.earlyAccessText}>
+                                    Early Access Only
+                                </Text>
+                            )}
+                        </TouchableOpacity>
+                    ))
                 ) : (
-                    <Text style={styles.noShowtimesText}>No showtimes available for this date</Text>
+                    <Text style={styles.noShowtimesText}>
+                        No showtimes available for this date
+                    </Text>
                 )}
             </View>
         </ScrollView>

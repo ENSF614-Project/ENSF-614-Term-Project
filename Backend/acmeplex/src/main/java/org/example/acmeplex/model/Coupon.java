@@ -1,3 +1,4 @@
+//Coupon.java
 package org.example.acmeplex.model;
 
 import jakarta.persistence.*;
@@ -14,24 +15,24 @@ public class Coupon {
     private Long couponID;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id", nullable = false)
+    @JoinColumn(name = "ticketId", nullable = false)
     private Ticket ticket;
 
-    @Column(name = "original_value", nullable = false)
-    private Double originalValue;
+    @Column(name = "value", nullable = false)
+    private Double value;
 
-    @Column(name = "remaining_value", nullable = false)
-    private Double remainingValue;
+    //@Column(name = "remainingValue", nullable = false)
+    //private Double remainingValue;
 
     @Column(name = "email", nullable = false)
     private String email;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "expiry_date", nullable = false)
+    @Column(name = "expiryDate", nullable = false)
     private Date expiryDate;
 
     @Column(name = "status", nullable = false, length = 50)

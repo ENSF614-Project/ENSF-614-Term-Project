@@ -61,11 +61,6 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.body,
         fontWeight: 'bold',
     },
-    errorText: {
-        color: COLORS.text.error,
-        ...TYPOGRAPHY.body,
-        marginBottom: SPACING.md,
-    },
     userCouponsContainer: {
         marginTop: SPACING.md,
     },
@@ -205,5 +200,34 @@ export const styles = StyleSheet.create({
     },
     trashIcon: {
         color: COLORS.icon.error,
+    },
+    spinner: {
+        color: COLORS.button.primary.background,
+    },
+    emailContainer: {
+        backgroundColor: COLORS.background.primary,
+        padding: SPACING.lg,
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.border.default,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: COLORS.input.border,
+        borderRadius: SPACING.sm,
+        padding: SPACING.md,
+        backgroundColor: COLORS.input.background,
+        color: COLORS.text.primary,
+        fontSize: 16,
+        marginBottom: SPACING.xs,
+    },
+    inputError: {
+        borderColor: COLORS.text.error,
+    },
+    errorText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.error,
+        fontSize: 12,
+        marginBottom: SPACING.sm,
+        marginLeft: SPACING.xs,
     }
 });

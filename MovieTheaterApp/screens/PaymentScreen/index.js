@@ -3,14 +3,17 @@ import React, { useState } from 'react';
 import {
     View,
     Text,
+    TextInput,
     TouchableOpacity,
     ScrollView,
-    TextInput
+    ActivityIndicator,
+    Alert
 } from 'react-native';
-import { CreditCard, Trash2, Ticket } from 'lucide-react-native';
+import { Ticket } from 'lucide-react-native';
 import CreditCardForm from '../../components/CreditCardForm';
 import { styles } from './styles';
 import { useAuth } from '../../context/AuthContext';
+import { paymentFlowService } from '../../services/paymentFlowService';
 
 const PaymentScreen = ({ route, navigation }) => {
     const { total, selectedSeats, showtime, movie } = route.params;
@@ -56,61 +59,62 @@ const PaymentScreen = ({ route, navigation }) => {
         { id: 2, last4: '1234', expiryDate: '10/25', cardHolderName: 'Test User' }
     ]);
 
-    // Mock user coupons data
-    //TODO: replace with an API call
-    const [userCoupons] = useState([
-        { id: 1, code: 'USER123', value: 10.00, expiryDate: '2024-12-31' },
-        { id: 2, code: 'USER456', value: 15.00, expiryDate: '2024-12-31' }
-    ]);
+    // State management
+    const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [cardFormValues, setCardFormValues] = useState({});
+    const [cardFormErrors, setCardFormErrors] = useState({});
+    const [isCardFormValid, setIsCardFormValid] = useState(false);
+    const [couponCode, setCouponCode] = useState('');
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
 
-    const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-        });
+    const validateEmail = () => {
+        if (!user && !email) {
+            setEmailError('Email is required for guest checkout');
+            return false;
+        }
+        if (!user && !/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+            setEmailError('Please enter a valid email');
+            return false;
+        }
+        setEmailError('');
+        return true;
     };
 
-    const handleCouponSubmit = () => {
-        // Reset previous errors
-        setCouponError('');
-        setSelectedCoupon(null);
-
+    const handleCouponSubmit = async () => {
         if (!couponCode.trim()) {
-            setCouponError('Please enter a coupon code');
+            Alert.alert('Error', 'Please enter a coupon code');
             return;
         }
 
-        //TODO: replace with an API call
-        const foundCoupon = userCoupons.find(c => c.code === couponCode);
-        if (foundCoupon) {
-            setSelectedCoupon(foundCoupon);
-            setCouponCode('');
-        } else {
-            setCouponError('Invalid coupon code');
+        setLoading(true);
+        try {
+            const response = await fetch(`http://localhost:8080/api/coupons/${couponCode}`);
+            const couponData = await response.json();
+
+            if (couponData && couponData.status === 'ACTIVE') {
+                setAppliedCoupon(couponData);
+                Alert.alert('Success', 'Coupon applied successfully!');
+            } else {
+                Alert.alert('Error', 'Invalid or expired coupon');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Failed to apply coupon');
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleCouponSelect = (coupon) => {
-        setSelectedCoupon(coupon);
-        setCouponCode('');
-        setCouponError('');
-    };
-
-    const handleRemoveCoupon = () => {
-        setSelectedCoupon(null);
-    };
-
     const calculateFinalTotal = () => {
-        if (!selectedCoupon) return total;
-        const discountedTotal = total - selectedCoupon.value;
+        if (!appliedCoupon) return total;
+        const discountedTotal = total - appliedCoupon.value;
         return Math.max(0, discountedTotal);
     };
 
-    const handlePayment = () => {
-        if (selectedPaymentMethod === 'new' && !isFormValid) {
-            alert('Please check all card details are correct');
+    const handlePayment = async () => {
+        if (!isCardFormValid) {
+            Alert.alert('Error', 'Please check all card details are correct');
             return;
         }
 
@@ -140,10 +144,56 @@ const PaymentScreen = ({ route, navigation }) => {
     const handleRemoveCard = (cardId) => {
         alert('Are you sure you want to remove this card?');
         // TODO: Add card removal logic here
+        if (!validateEmail()) {
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const result = await paymentFlowService.purchaseTickets({
+                email: user?.email || email,
+                userId: user?.userId,
+                showtimeId: showtime.showtimeId,
+                selectedSeats,
+                pricePerSeat: showtime.price,
+                couponId: appliedCoupon?.couponId
+            });
+
+            // Log the showtime object to see its structure
+            console.log('Showtime object:', showtime);
+
+            // Create a formatted showtime object for the confirmation screen
+            const formattedShowtime = {
+                date: showtime.startTime ? new Date(showtime.startTime).toLocaleDateString() : showtime.date,
+                time: showtime.startTime ? new Date(showtime.startTime).toLocaleTimeString() : showtime.time,
+                // Handle different possible theater data structures
+                theatre: typeof showtime.theatre === 'object'
+                    ? showtime.theatre.theatreName
+                    : (showtime.theatre || showtime.theatreName || 'Theater information unavailable')
+            };
+
+            navigation.replace('TicketConfirmation', {
+                tickets: result.tickets,
+                selectedSeats,
+                movie,
+                showtime: formattedShowtime,
+                total: calculateFinalTotal(),
+                paymentInfo: {
+                    ...cardFormValues,
+                    last4: cardFormValues.cardNumber.slice(-4)
+                }
+            });
+        } catch (error) {
+            console.error('Payment error:', error);
+            Alert.alert('Error', 'Payment failed: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <ScrollView style={styles.container}>
+            {/* Order Summary Section */}
             <View style={styles.summaryContainer}>
                 <Text style={styles.sectionTitle}>Order Summary</Text>
                 <View style={styles.summaryRow}>
@@ -152,24 +202,40 @@ const PaymentScreen = ({ route, navigation }) => {
                 </View>
                 <View style={styles.summaryRow}>
                     <Text style={styles.summaryLabel}>Date:</Text>
-                    <Text style={styles.summaryText}>{formatDate(showtime.date)}</Text>
+                    <Text style={styles.summaryText}>{showtime.date}</Text>
                 </View>
                 <View style={styles.summaryRow}>
                     <Text style={styles.summaryLabel}>Time:</Text>
                     <Text style={styles.summaryText}>{showtime.time}</Text>
                 </View>
                 <View style={styles.summaryRow}>
-                    <Text style={styles.summaryLabel}>Theatre:</Text>
-                    <Text style={styles.summaryText}>{showtime.theatre}</Text>
-                </View>
-                <View style={styles.summaryRow}>
                     <Text style={styles.summaryLabel}>Seats:</Text>
                     <Text style={styles.summaryText}>
-                        {selectedSeats.map(seat => `${seat.row}${seat.seat}`).join(', ')}
+                        {selectedSeats.map(seat => `${seat.row}${seat.seatNum}`).join(', ')}
                     </Text>
                 </View>
             </View>
 
+            {/* Guest Email Section */}
+            {!user && (
+                <View style={styles.emailContainer}>
+                    <Text style={styles.sectionTitle}>Guest Checkout</Text>
+                    <TextInput
+                        style={[styles.input, emailError && styles.inputError]}
+                        placeholder="Email Address"
+                        value={email}
+                        onChangeText={(text) => {
+                            setEmail(text);
+                            setEmailError('');
+                        }}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                    {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+                </View>
+            )}
+
+            {/* Coupon Section */}
             <View style={styles.couponContainer}>
                 <Text style={styles.sectionTitle}>Apply Coupon</Text>
                 <View style={styles.couponInputContainer}>
@@ -182,142 +248,58 @@ const PaymentScreen = ({ route, navigation }) => {
                     <TouchableOpacity
                         style={styles.couponButton}
                         onPress={handleCouponSubmit}
+                        disabled={loading}
                     >
                         <Text style={styles.couponButtonText}>Apply</Text>
                     </TouchableOpacity>
                 </View>
-                {couponError ? (
-                    <Text style={styles.errorText}>{couponError}</Text>
-                ) : null}
 
-                {user && userCoupons.length > 0 && !selectedCoupon && (
-                    <View style={styles.userCouponsContainer}>
-                        <Text style={styles.subsectionTitle}>Your Coupons</Text>
-                        {userCoupons.map((coupon) => (
-                            <TouchableOpacity
-                                key={coupon.id}
-                                style={styles.userCoupon}
-                                onPress={() => handleCouponSelect(coupon)}
-                            >
-                                <View style={styles.couponInfo}>
-                                    <Ticket size={20} color={styles.couponIcon.color} />
-                                    <View>
-                                        <Text style={styles.couponCode}>{coupon.code}</Text>
-                                        <Text style={styles.couponValue}>
-                                            Value: ${coupon.value.toFixed(2)}
-                                        </Text>
-                                    </View>
-                                </View>
-                                <Text style={styles.couponExpiry}>
-                                    Expires: {coupon.expiryDate}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                )}
-
-                {selectedCoupon && (
+                {appliedCoupon && (
                     <View style={styles.appliedCouponContainer}>
                         <View style={styles.appliedCouponInfo}>
+                            <Ticket size={20} color={styles.couponIcon.color} />
                             <Text style={styles.appliedCouponText}>
-                                Applied Coupon: {selectedCoupon.code}
-                            </Text>
-                            <Text style={styles.discountText}>
-                                -${selectedCoupon.value.toFixed(2)}
+                                Applied: ${appliedCoupon.value.toFixed(2)} discount
                             </Text>
                         </View>
-                        <TouchableOpacity
-                            style={styles.removeCouponButton}
-                            onPress={handleRemoveCoupon}
-                        >
-                            <Text style={styles.removeCouponText}>Remove</Text>
-                        </TouchableOpacity>
                     </View>
                 )}
 
                 <View style={styles.totalContainer}>
-                    <Text style={styles.totalLabel}>Subtotal:</Text>
-                    <Text style={styles.totalAmount}>${total.toFixed(2)}</Text>
-                </View>
-                {selectedCoupon && (
-                    <View style={styles.totalContainer}>
-                        <Text style={styles.totalLabel}>Discount:</Text>
-                        <Text style={styles.discountAmount}>
-                            -${selectedCoupon.value.toFixed(2)}
-                        </Text>
-                    </View>
-                )}
-                <View style={styles.totalContainer}>
-                    <Text style={styles.finalTotalLabel}>Final Total:</Text>
+                    <Text style={styles.finalTotalLabel}>Total:</Text>
                     <Text style={styles.finalTotalAmount}>
                         ${calculateFinalTotal().toFixed(2)}
                     </Text>
                 </View>
             </View>
-            <View style={styles.paymentMethodContainer}>
-                <Text style={styles.sectionTitle}>Payment Method</Text>
-                {savedCards.map(card => (
-                    <TouchableOpacity
-                        key={card.id}
-                        style={[
-                            styles.savedCard,
-                            selectedPaymentMethod === card.id && styles.selectedCard
-                        ]}
-                        onPress={() => setSelectedPaymentMethod(card.id)}
-                    >
-                        <View style={styles.savedCardInfo}>
-                            <CreditCard size={24} color={styles.savedCardInfo.cardColor} />
-                            <Text style={styles.savedCardText}>
-                                **** {card.last4} | {card.expiryDate}
-                            </Text>
-                        </View>
-                        <TouchableOpacity
-                            onPress={(e) => {
-                                e.stopPropagation();
-                                handleRemoveCard(card.id);
-                            }}
-                        >
-                            <Trash2
-                                size={20}
-                                color={styles.trashIcon.color}
-                            />
-                        </TouchableOpacity>
-                    </TouchableOpacity>
-                ))}
-                <TouchableOpacity
-                    style={[
-                        styles.savedCard,
-                        selectedPaymentMethod === 'new' && styles.selectedCard
-                    ]}
-                    onPress={() => setSelectedPaymentMethod('new')}
-                >
-                    <View style={styles.savedCardInfo}>
-                        <CreditCard size={24} color={styles.savedCardInfo.cardColor} />
-                        <Text style={styles.savedCardText}>Add New Card</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-            {selectedPaymentMethod === 'new' && (
+
+            {/* Payment Section */}
+            <View style={styles.paymentSection}>
+                <Text style={styles.sectionTitle}>Payment Details</Text>
                 <CreditCardForm
-                    onValuesChange={setFormValues}
+                    onValuesChange={setCardFormValues}
                     onValidationChange={(isValid, errors) => {
-                        setIsFormValid(isValid);
-                        setFormErrors(errors);
+                        setIsCardFormValid(isValid);
+                        setCardFormErrors(errors);
                     }}
-                    errors={formErrors}
-                    showSaveCard={true}
+                    errors={cardFormErrors}
+                    showSaveCard={!!user}
                 />
-            )}
+            </View>
+
+            {/* Payment Button */}
             <TouchableOpacity
-                style={[
-                    styles.payButton,
-                    (!isFormValid && selectedPaymentMethod === 'new') && styles.payButtonDisabled
-                ]}
+                style={[styles.payButton, (!isCardFormValid || loading) && styles.payButtonDisabled]}
                 onPress={handlePayment}
+                disabled={!isCardFormValid || loading}
             >
-                <Text style={styles.payButtonText}>
-                    Pay ${calculateFinalTotal().toFixed(2)}
-                </Text>
+                {loading ? (
+                    <ActivityIndicator color={styles.spinner.color} />
+                ) : (
+                    <Text style={styles.payButtonText}>
+                        Pay ${calculateFinalTotal().toFixed(2)}
+                    </Text>
+                )}
             </TouchableOpacity>
         </ScrollView>
     );

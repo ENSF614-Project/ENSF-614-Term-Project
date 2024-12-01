@@ -16,18 +16,31 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
+    @GetMapping
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        List<Transaction> transactions = transactionService.getAllTransactions();
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
+    }
+
     // Create a transaction with optional coupon
     @PostMapping("/create")
     public ResponseEntity<Transaction> createTransaction(
-            @RequestParam Integer userId,
+            @RequestParam(required = false) Integer userId,
             @RequestParam Double totalAmount,
-            @RequestParam(required = false) Long couponID) {
-        User user = new User();
-        user.setUserId(userId);
-        Transaction transaction = transactionService.createTransaction(user, totalAmount, couponID);
-        return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
+            @RequestParam(required = false) Long couponId) {
+        try {
+            User user = null;
+            if (userId != null) {
+                user = new User();
+                user.setUserId(userId);
+            }
+            Transaction transaction = transactionService.createTransaction(user, totalAmount, couponId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
+        } catch (Exception e) {
+            System.err.println("Error creating transaction: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-
     // Get all transactions by user
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Transaction>> getTransactionsByUser(@PathVariable Integer userId) {

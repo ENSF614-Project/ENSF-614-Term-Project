@@ -27,16 +27,16 @@ public class RegisteredUserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody RegisteredUser user) {
+    public ResponseEntity<?> createRegisteredUser(@RequestBody RegisteredUser user) {
         // Basic validation
         if (registeredUserService.existsByUsername(user.getUsername())) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
-        if (registeredUserService.existsByEmail(user.getEmail())) {
+        if (registeredUserService.existsByEmailAndIsRUTrue(user.getEmail())) {
             return ResponseEntity.badRequest().body("Email already exists");
         }
 
-        RegisteredUser newUser = registeredUserService.createUser(user);
+        RegisteredUser newUser = registeredUserService.createRegisteredUser(user);
         return ResponseEntity.ok(newUser);
     }
 

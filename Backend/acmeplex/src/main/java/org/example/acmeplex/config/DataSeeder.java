@@ -3,17 +3,13 @@ package org.example.acmeplex.config;
 import org.example.acmeplex.model.*;
 import org.example.acmeplex.repository.SeatRepository;
 import org.example.acmeplex.repository.ShowtimeRepository;
-import org.example.acmeplex.service.MovieService;
-import org.example.acmeplex.service.RegisteredUserService;
-import org.example.acmeplex.service.ShowtimeService;
-import org.example.acmeplex.service.TheatreService;
+import org.example.acmeplex.service.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,9 +18,9 @@ import java.util.List;
 public class DataSeeder {
 
     @Bean
-    public CommandLineRunner demo(RegisteredUserService userService, MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository, ShowtimeService showtimeService, SeatRepository seatRepository) {
+    public CommandLineRunner demo(UserService userService, RegisteredUserService RegistereduserService, MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository, ShowtimeService showtimeService, SeatRepository seatRepository, TicketService ticketService, CouponService couponService) {
         return (args) -> {
-            //Create users:
+            //Create registered users:
             RegisteredUser user1 = new RegisteredUser();
             user1.setUsername("testuser1");
             user1.setEmail("mkasgpacc@gmail.com");
@@ -45,8 +41,19 @@ public class DataSeeder {
             user2.setAnnualFeeDueDate(new Date());
             user2.setIsRU(true);
 
-            userService.createUser(user1);
-            userService.createUser(user2);
+            RegistereduserService.createRegisteredUser(user1);
+            RegistereduserService.createRegisteredUser(user2);
+
+            //Create guest users:
+            User user3 = new User();
+            user3.setEmail("test3@example.com");
+            user3.setIsRU(false);
+            userService.createRegularUser(user3);
+
+            User user4 = new User();
+            user4.setEmail("test4@example.com");
+            user4.setIsRU(false);
+            userService.createRegularUser(user4);
 
             // Create movies
             Movie movie1 = new Movie();
@@ -147,6 +154,13 @@ public class DataSeeder {
             }
             seatRepository.saveAll(allSeats);
             System.out.println("Seeded seats successfully for each showtime.");
+
+            //Create tickets
+            ticketService.purchaseTicket((User)user1, 1, List.of(1,2,3), 14.00, null, user1.getEmail());
+            ticketService.purchaseTicket((User)user2, 2, List.of(101,102,103), 14.00, null, user2.getEmail());
+            ticketService.cancelTicket(6L);
+
+            ticketService.purchaseTicket(user3, 25, List.of(2401,2402,2403), 14.00, null, user3.getEmail());
         };
     }
 }

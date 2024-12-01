@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +50,16 @@ public class ShowtimeController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(showtime);
+    }
+
+    @GetMapping("/{showtimeId}/startTime")
+    public ResponseEntity<LocalDateTime> getStartTimeByShowtimeId(@PathVariable Integer showtimeId){
+        try {
+            LocalDateTime startTime = showtimeService.getStartTimeByShowtimeId(showtimeId);
+            return ResponseEntity.ok(startTime);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping

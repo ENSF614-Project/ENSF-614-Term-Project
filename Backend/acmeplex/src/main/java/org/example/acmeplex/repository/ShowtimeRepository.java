@@ -17,4 +17,6 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Integer> {
     //List<Showtime> findByEarlyAccessOnlyTrue();
 
     List<Showtime> findByMovie_MovieIdAndTheatre_TheatreId(Integer movieId, Integer theatreId);
+
+    Showtime findByShowtimeId(Integer showtimeId);
 }

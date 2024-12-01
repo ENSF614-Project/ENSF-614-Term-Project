@@ -18,18 +18,19 @@ export const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.input.border,
         borderRadius: SPACING.sm,
         padding: SPACING.md,
         marginBottom: SPACING.sm,
         fontSize: 16,
+        backgroundColor: COLORS.input.background,
     },
     inputError: {
-        borderColor: COLORS.RED,
+        borderColor: COLORS.input.borderError,
     },
     errorText: {
         ...TYPOGRAPHY.body,
-        color: COLORS.RED,
+        color: COLORS.text.error,
         fontSize: 12,
         marginBottom: SPACING.sm,
         marginLeft: SPACING.xs,

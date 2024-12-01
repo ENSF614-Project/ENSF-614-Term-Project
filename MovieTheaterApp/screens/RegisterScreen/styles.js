@@ -5,7 +5,7 @@ import { COLORS, SPACING, TYPOGRAPHY } from '../../styles';
 export const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.primary,
         justifyContent: 'center',
         padding: SPACING.xl,
     },
@@ -20,13 +20,14 @@ export const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: SPACING.xl,
         textAlign: 'center',
+        color: COLORS.text.primary,
     },
     section: {
         marginBottom: SPACING.xl,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.background.secondary,
         borderRadius: SPACING.sm,
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.border.default,
         padding: SPACING.lg,
     },
     sectionHeader: {
@@ -38,21 +39,24 @@ export const styles = StyleSheet.create({
     sectionTitle: {
         ...TYPOGRAPHY.title,
         fontSize: 18,
+        color: COLORS.text.primary,
     },
     input: {
         borderWidth: 1,
-        borderColor: COLORS.border,
+        borderColor: COLORS.input.border,
+        backgroundColor: COLORS.input.background,
         borderRadius: SPACING.sm,
         padding: SPACING.md,
         marginBottom: SPACING.lg,
         fontSize: 16,
+        color: COLORS.text.primary,
     },
     inputError: {
-        borderColor: COLORS.RED,
+        borderColor: COLORS.input.borderError,
     },
     errorText: {
         ...TYPOGRAPHY.body,
-        color: COLORS.RED,
+        color: COLORS.text.error,
         fontSize: 12,
         marginBottom: SPACING.sm,
         marginLeft: SPACING.xs,
@@ -66,11 +70,12 @@ export const styles = StyleSheet.create({
     membershipTitle: {
         ...TYPOGRAPHY.title,
         fontSize: 18,
+        color: COLORS.text.primary,
     },
     membershipAmount: {
         ...TYPOGRAPHY.title,
         fontSize: 20,
-        color: COLORS.RED,
+        color: COLORS.button.danger.background,
     },
     membershipInfo: {
         ...TYPOGRAPHY.body,
@@ -78,13 +83,13 @@ export const styles = StyleSheet.create({
         fontStyle: 'italic',
     },
     registerButton: {
-        backgroundColor: COLORS.RED,
+        backgroundColor: COLORS.button.primary.background,
         padding: SPACING.md,
         borderRadius: SPACING.sm,
         marginBottom: SPACING.md,
     },
     registerButtonText: {
-        color: COLORS.background,
+        color: COLORS.button.primary.text,
         textAlign: 'center',
         fontSize: 16,
         fontWeight: 'bold',
@@ -99,6 +104,18 @@ export const styles = StyleSheet.create({
     },
     loginButtonText: {
         color: COLORS.text.secondary,
+        textAlign: 'center',
+    },
+
+    errorContainer: {
+        marginVertical: SPACING.md,
+        padding: SPACING.md,
+        backgroundColor: COLORS.background.error,
+        borderRadius: SPACING.sm,
+    },
+    errorText: {
+        color: COLORS.text.error,
+        fontSize: 14,
         textAlign: 'center',
     },
 });

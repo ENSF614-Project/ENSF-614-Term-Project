@@ -33,6 +33,20 @@ A Movie Theater Ticket Reservation App
 1. Check that it worked with `SHOW DATABASES;`
     1. `ENSF614PROJECT` should appear in the results.
 
+## To create email-backend using the Terminal
+1. Initialize a Node.js project
+   1. mkdir email-backend
+   1. cd email-backend
+   1. npm init -y
+1. Install Nodemailer
+   1. npm install nodemailer
+   1. npm install express
+   1. npm install cors
+1. Create a server.js file in the email-backend directory:
+   1. email-backend/server.js (already created)
+1. Run the backend
+   1. node server.js
+
 ## Code to run when errors occur
 ### Frontend
 1. When you are trying to install the package, but you're getting version error 
@@ -43,6 +57,28 @@ A Movie Theater Ticket Reservation App
 ### Backend
 1. When the springboot isn't recognized 
     - `mvn -U idea:idea`
+
+### email-backend
+Steps to Resolve the Issue:
+
+1. Kill the Process Using Port 5000
+   1. You need to stop the process currently using port 5000. Here's how:
+      1. On Windows:
+         1. Open Terminal, Command Prompt or PowerShell and run:
+            1. netstat -ano | findstr :5000
+            1. This will show a list of processes using port 5000. Look for the PID (Process ID).
+               1. Kill the process using:
+               1. taskkill /PID <PID> /F
+                  1. (Replace <PID> with the actual PID from the previous command.)
+      1. On macOS/Linux: Run the following commands:
+         1. lsof -i :5000
+         1. kill -9 <PID>
+1. Make sure you are in the email-backend directory:
+   1. cd email-backend
+1. Start the Backend: Ensure the backend is running and accessible:
+   1. node server.js
+1. Run the React Native App: Start your React Native app:
+   1. npm start
 
 ## I don't think that you'll need to run the commands below this line, they are just included for reference
 

@@ -19,6 +19,37 @@ const PaymentScreen = ({ route, navigation }) => {
     const { total, selectedSeats, showtime, movie } = route.params;
     const { user } = useAuth();
 
+const sendEmail = async (paymentInfo, tickets, total, userEmail, movieDetails) => {
+    try {
+        const ticketDetails = tickets.map(ticket => `Row: ${ticket.row}, Seat: ${ticket.seatNum}`).join('\n');
+        const receipt = `Thank you for your purchase!\n\nTotal Paid: $${total.toFixed(2)}\n\nPayment Info: **** **** **** ${paymentInfo.last4}`;
+        const movieInfo = `Movie: ${movieDetails.title}\nDate: ${movieDetails.date}\nTime: ${movieDetails.time}`;
+
+        const response = await fetch('http://localhost:5000/send-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                templateParams: {
+                    user_email: userEmail,
+                    receipt: receipt,
+                    ticket_details: `Tickets:\n${ticketDetails}`,
+                    movie_info: movieInfo
+                },
+            }),
+        });
+
+        if (response.ok) {
+            console.log('Email sent successfully:', await response.text());
+        } else {
+            console.error('Failed to send email:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error while sending email:', error);
+    }
+};
+
     // State management
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
@@ -95,6 +126,31 @@ const PaymentScreen = ({ route, navigation }) => {
 
             // Log the showtime object to see its structure
             console.log('Showtime object:', showtime);
+
+        // Call backend to send email after successful payment
+await sendEmail(
+    {
+        ...cardFormValues,
+        last4: cardFormValues.cardNumber.slice(-4)
+    },
+    selectedSeats.map(seat => ({
+        row: seat.row,
+        seatNum: seat.seatNum
+    })),
+    calculateFinalTotal(),
+    user?.email || email,
+    {
+        title: movie.title,
+        date: showtime.startTime
+            ? new Date(showtime.startTime).toLocaleDateString()
+            : showtime.date,
+        time: showtime.startTime
+            ? new Date(showtime.startTime).toLocaleTimeString()
+            : showtime.time
+    }
+);
+
+
 
             // Create a formatted showtime object for the confirmation screen
             const formattedShowtime = {

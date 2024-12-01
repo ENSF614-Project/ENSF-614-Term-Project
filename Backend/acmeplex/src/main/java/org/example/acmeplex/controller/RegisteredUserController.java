@@ -36,7 +36,7 @@ public class RegisteredUserController {
             return ResponseEntity.badRequest().body("Email already exists");
         }
 
-        RegisteredUser newUser = registeredUserService.createUser(user);
+        RegisteredUser newUser = registeredUserService.createRegisteredUser(user);
         return ResponseEntity.ok(newUser);
     }
 

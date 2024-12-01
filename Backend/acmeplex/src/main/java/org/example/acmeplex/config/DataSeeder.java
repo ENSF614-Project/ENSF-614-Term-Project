@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,8 +41,8 @@ public class DataSeeder {
             user2.setAnnualFeeDueDate(new Date());
             user2.setIsRU(true);
 
-            RegistereduserService.createUser(user1);
-            RegistereduserService.createUser(user2);
+            RegistereduserService.createRegisteredUser(user1);
+            RegistereduserService.createRegisteredUser(user2);
 
             //Create guest users:
             User user3 = new User();

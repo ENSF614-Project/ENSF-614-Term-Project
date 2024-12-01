@@ -33,16 +33,16 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
-    public Optional<Ticket> getTicketById(Long ticketId) {
-        return ticketRepository.findById(ticketId);
+    public Ticket getTicketById(long id) {
+        return ticketRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    @Transactional
-    public List<Ticket> purchaseTicket(User user, Integer showtimeID, List<Integer> seatIDs, Double price, Long couponId) {
+    public List<Ticket> purchaseTicket(User user, Integer showtimeID, List<Integer> seatIDs, Double price,
+            Long couponId) {
         Transaction transaction = transactionService.createTransaction(user, price * seatIDs.size(), couponId);
 
         List<Ticket> tickets = new ArrayList<>();
-        for(Integer seatID: seatIDs) {
+        for (Integer seatID : seatIDs) {
             Seat seat = seatRepository.findById(seatID)
                     .orElseThrow(() -> new EntityNotFoundException("Seat not found: " + seatID));
 

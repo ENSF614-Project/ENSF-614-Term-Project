@@ -58,4 +58,10 @@ public class TicketController {
         List<Ticket> tickets = ticketService.getTicketsByUser(user);
         return ResponseEntity.ok(tickets);
     }
+
+    @GetMapping("{ticketId}")
+    public ResponseEntity<Ticket> getTicketByTicketId(@PathVariable Integer ticketId) {
+        return ResponseEntity.ok(ticketService.getTicketById(ticketId));
+    }
+
 }

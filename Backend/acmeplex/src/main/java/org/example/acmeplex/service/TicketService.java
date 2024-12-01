@@ -45,6 +45,12 @@ public class TicketService {
         );
     }
 
+    public List<TicketDTO> getTicketsByEmail(String email) {
+        return ticketRepository.findByEmail(email).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<TicketDTO> getAllTickets() {
         return ticketRepository.findAll().stream()
                 .map(this::convertToDTO)

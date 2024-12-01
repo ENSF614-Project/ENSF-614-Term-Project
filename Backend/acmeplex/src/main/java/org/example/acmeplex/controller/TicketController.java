@@ -72,4 +72,10 @@ public class TicketController {
         return ResponseEntity.ok(ticket);
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<List<TicketDTO>> getTicketsByEmail(@PathVariable String email) {
+        List<TicketDTO> tickets = ticketService.getTicketsByEmail(email);
+        return ResponseEntity.ok(tickets);
+    }
+
 }

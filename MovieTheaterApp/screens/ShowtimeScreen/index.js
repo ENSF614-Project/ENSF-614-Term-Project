@@ -82,7 +82,7 @@ const ShowtimeScreen = ({ route, navigation }) => {
             showtime: {
                 ...showtime,
                 movie,
-                date: new Date(showtime.startTime)
+                price: 12.99 // Get this from the backend??
             }
         });
     };

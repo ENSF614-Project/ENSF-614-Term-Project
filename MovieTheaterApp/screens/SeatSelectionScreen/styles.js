@@ -7,6 +7,37 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: COLORS.background.primary,
     },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.background.primary,
+    },
+    loadingSpinner: {
+        color: COLORS.button.primary.background,
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: SPACING.xl,
+        backgroundColor: COLORS.background.primary,
+    },
+    errorText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.error,
+        textAlign: 'center',
+        marginBottom: SPACING.lg,
+    },
+    retryButton: {
+        backgroundColor: COLORS.button.primary.background,
+        padding: SPACING.md,
+        borderRadius: SPACING.sm,
+    },
+    retryButtonText: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.inverse,
+    },
     movieInfo: {
         padding: SPACING.lg,
         borderBottomWidth: 1,
@@ -20,6 +51,11 @@ export const styles = StyleSheet.create({
     showtimeInfo: {
         ...TYPOGRAPHY.body,
         color: COLORS.text.secondary,
+    },
+    theatreInfo: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+        marginTop: SPACING.xs,
     },
     screen: {
         height: 40,
@@ -64,20 +100,12 @@ export const styles = StyleSheet.create({
         backgroundColor: COLORS.background.primary,
         borderColor: COLORS.button.primary.background,
     },
-    availableSeat: {
-        backgroundColor: COLORS.background.primary,
-        borderColor: COLORS.button.primary.background,
-    },
     occupiedSeat: {
         backgroundColor: COLORS.status.inactive,
         borderColor: COLORS.status.inactive,
     },
     selectedSeat: {
         backgroundColor: COLORS.button.primary.background,
-        borderColor: COLORS.button.primary.background,
-    },
-    hoveredSeat: {
-        backgroundColor: COLORS.text.primary,
         borderColor: COLORS.button.primary.background,
     },
     seatText: {
@@ -90,8 +118,9 @@ export const styles = StyleSheet.create({
     selectedSeatText: {
         color: COLORS.text.inverse,
     },
-    hoveredSeatText: {
-        color: COLORS.button.primary.background,
+    availableSeat: {
+        backgroundColor: COLORS.background.primary,
+        borderColor: COLORS.button.primary.background,
     },
     legend: {
         flexDirection: 'row',
@@ -146,5 +175,13 @@ export const styles = StyleSheet.create({
     confirmButtonText: {
         color: COLORS.text.inverse,
         ...TYPOGRAPHY.title,
+    },
+    hoveredSeat: {
+        backgroundColor: COLORS.button.primary.light,
+        borderColor: COLORS.button.primary.background,
+        transform: [{ scale: 1.1 }],
+    },
+    hoveredSeatText: {
+        color: COLORS.text.primary,
     },
 });

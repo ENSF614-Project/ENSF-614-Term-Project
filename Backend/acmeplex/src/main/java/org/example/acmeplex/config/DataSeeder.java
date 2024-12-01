@@ -1,5 +1,6 @@
 package org.example.acmeplex.config;
 
+import org.example.acmeplex.dto.UserDTO;
 import org.example.acmeplex.model.*;
 import org.example.acmeplex.repository.SeatRepository;
 import org.example.acmeplex.repository.ShowtimeRepository;

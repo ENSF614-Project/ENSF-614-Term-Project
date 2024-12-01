@@ -7,6 +7,8 @@ import org.example.acmeplex.service.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.example.acmeplex.service.PaymentInfoService;
+import org.example.acmeplex.repository.PaymentInfoRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,8 +20,8 @@ import java.util.List;
 public class DataSeeder {
 
     @Bean
-    public CommandLineRunner demo(UserService userService, RegisteredUserService RegistereduserService,
-            MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository,
+    public CommandLineRunner demo(UserService userService, RegisteredUserService RegistereduserService, PaymentInfoService paymentInfoService,
+            PaymentInfoRepository paymentInfoRepository, MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository,
             ShowtimeService showtimeService, SeatRepository seatRepository, TicketService ticketService,
             CouponService couponService) {
         return (args) -> {
@@ -57,6 +59,31 @@ public class DataSeeder {
             user4.setEmail("test4@example.com");
             user4.setIsRU(false);
             userService.createRegularUser(user4);
+
+            // Payment Info for Registered Users
+            PaymentInfo paymentInfo1 = new PaymentInfo();
+            paymentInfo1.setUser(user1);
+            paymentInfo1.setCardNumber("1234-5678-9012-3456");
+            paymentInfo1.setExpiryMonth(12);
+            paymentInfo1.setExpiryYear(2024);
+            paymentInfo1.setCw(123);
+            paymentInfo1.setBillingAddress("sjhdbshj");
+            paymentInfo1.setCardHolderName("Test User 1");
+            paymentInfo1.setCardType("Visa");
+
+            PaymentInfo paymentInfo2 = new PaymentInfo();
+            paymentInfo2.setUser(user2);
+            paymentInfo2.setCardNumber("2345-6789-0123-4567");
+            paymentInfo2.setExpiryMonth(11);
+            paymentInfo2.setExpiryYear(2020);
+            paymentInfo2.setCw(456);
+            paymentInfo2.setBillingAddress("sdsdjwe");
+            paymentInfo2.setCardHolderName("Test User 2");
+            paymentInfo2.setCardType("Visa");
+
+            paymentInfoService.savePaymentInfo(paymentInfo1);
+            paymentInfoService.savePaymentInfo(paymentInfo2);
+
 
             // Create movies
             Movie movie1 = new Movie();

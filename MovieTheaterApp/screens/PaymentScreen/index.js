@@ -38,7 +38,7 @@ const PaymentScreen = ({ route, navigation }) => {
     ]);
 
     const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', {
+        return new Date(date).toLocaleDateString('en-US', {
             weekday: 'long',
             month: 'long',
             day: 'numeric',
@@ -136,7 +136,7 @@ const PaymentScreen = ({ route, navigation }) => {
                 <View style={styles.summaryRow}>
                     <Text style={styles.summaryLabel}>Seats:</Text>
                     <Text style={styles.summaryText}>
-                        {selectedSeats.map(seat => `${seat.row}${seat.seat}`).join(', ')}
+                        {selectedSeats.map(seat => `${seat.row}${seat.seatNum}`).join(', ')}
                     </Text>
                 </View>
             </View>

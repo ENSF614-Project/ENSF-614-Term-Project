@@ -13,7 +13,7 @@ const TicketConfirmationScreen = ({ route, navigation }) => {
     const { tickets, movie, showtime, total, paymentInfo } = route.params;
 
     const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', {
+        return new Date(date).toLocaleDateString('en-US', {
             weekday: 'long',
             month: 'long',
             day: 'numeric',
@@ -65,7 +65,7 @@ const TicketConfirmationScreen = ({ route, navigation }) => {
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Seats:</Text>
                     <Text style={styles.value}>
-                        {tickets.map(seat => `${seat.row}${seat.seat}`).join(', ')}
+                        {tickets.map(seat => `${seat.row}${seat.seatNum}`).join(', ')}
                     </Text>
                 </View>
 

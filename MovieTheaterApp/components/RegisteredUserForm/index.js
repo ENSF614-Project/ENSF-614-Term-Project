@@ -9,6 +9,7 @@ const RegisteredUserForm = ({
     initialValues = {
         name: '',
         email: '',
+        username: '',
         password: '',
         confirmPassword: '',
         address: '',
@@ -20,6 +21,7 @@ const RegisteredUserForm = ({
 }) => {
     const [name, setName] = useState(initialValues.name);
     const [email, setEmail] = useState(initialValues.email);
+    const [username, setUsername] = useState(initialValues.username);
     const [password, setPassword] = useState(initialValues.password);
     const [confirmPassword, setConfirmPassword] = useState(initialValues.confirmPassword);
     const [address, setAddress] = useState(initialValues.address);
@@ -27,6 +29,7 @@ const RegisteredUserForm = ({
     const [touched, setTouched] = useState({
         name: false,
         email: false,
+        username: false,
         password: false,
         confirmPassword: false,
         address: false,
@@ -47,10 +50,17 @@ const RegisteredUserForm = ({
         } else if (!/^[a-zA-Z'][a-zA-Z' ]*[a-zA-Z']$/.test(name.trim())) {
             newErrors.name = 'Name can only contain letters, spaces, and apostrophes, must not start or end with a space, and must contain at least one letter.';
         }
-        
 
         if (!email.trim() || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
             newErrors.email = 'Valid email is required';
+        }
+
+        if (!username.trim()) {
+            newErrors.username = 'Username is required';
+        } else if (username.length < 3 || username.length > 15) {
+            newErrors.username = 'Username must be 3-15 characters long';
+        } else if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+            newErrors.username = 'Username can only contain letters, numbers, dots, underscores, and hyphens';
         }
 
         if (!password) {
@@ -78,13 +88,13 @@ const RegisteredUserForm = ({
     };
 
     useEffect(() => {
-        const formValues = { name, email, password, confirmPassword, address };
+        const formValues = { name, email, username, password, confirmPassword, address };
         onValuesChange?.(formValues);
 
         const { allErrors, touchedErrors } = validateFields();
         const isValid = Object.keys(allErrors).length === 0;
         onValidationChange?.(isValid, touchedErrors);
-    }, [name, email, password, confirmPassword, address, touched]);
+    }, [name, email, username, password, confirmPassword, address, touched]);
 
     const renderError = (field) => {
         if (touched[field] && errors[field]) {
@@ -119,6 +129,16 @@ const RegisteredUserForm = ({
                 autoCapitalize="none"
             />
             {renderError('email')}
+
+            <TextInput
+                style={[styles.input, touched.username && errors.username && styles.inputError]}
+                placeholder="Username"
+                value={username}
+                onChangeText={setUsername}
+                onBlur={() => handleBlur('username')}
+                autoCapitalize="none"
+            />
+            {renderError('username')}
 
             <TextInput
                 style={[styles.input, touched.password && errors.password && styles.inputError]}

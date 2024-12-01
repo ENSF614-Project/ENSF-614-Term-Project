@@ -107,7 +107,7 @@ const TicketScreen = () => {
     };
 
     const renderTicketCard = (ticket) => {
-        const isActive = new Date(ticket.showtime) > new Date(); //Change for showtime need to create api
+        const isActive = new Date(ticket.showtimeID.startTime) > new Date(); //Change for showtime need to create api
         const canCancel = new Date(ticket.cancellationDeadline) > new Date();
 
         return (
@@ -127,16 +127,18 @@ const TicketScreen = () => {
                 <View style={styles.ticketInfo}>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Theatre:</Text>
-                        <Text style={styles.infoValue}>{ticket.theatre}</Text>
+                        <Text style={styles.infoValue}>{ticket.showtimeID}</Text>
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Seat:</Text>
-                        <Text style={styles.infoValue}>{ticket.seatInfo}</Text>
+                        <Text style={styles.infoValue}>
+                            {[ticket.seatID.seatRow, ticket.seatID.seatNum].join(' ')}
+                        
+                        </Text>
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Showtime:</Text>
-
-                        <Text style={styles.infoValue}>{formatDate(ticket.showtime)}</Text>
+                        <Text style={styles.infoValue}>{formatDate(ticket.showtimeID.startTime)}</Text>
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Price:</Text>

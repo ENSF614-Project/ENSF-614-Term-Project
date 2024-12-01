@@ -16,17 +16,17 @@ app.post('/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail', // or any email service you use
         auth: {
-            user: 'mohd.abusaleh@gmail.com', // Replace with your email
-            pass: 'etyq wnea ojrg anrt', // Replace with your email password or app password
+            user: 'mohd.abusaleh@gmail.com',
+            pass: 'etyq wnea ojrg anrt',
         },
     });
 
-const mailOptions = {
-    from: 'mohd.abusaleh@gmail.com',
-    to: templateParams.user_email,
-    subject: 'Your Receipt and Ticket',
-    text: `Dear Valued Customer,\n\n${templateParams.receipt}\n\n${templateParams.ticket_details}\n\n${templateParams.movie_info}`,
-};
+    const mailOptions = {
+        from: 'mohd.abusaleh@gmail.com',
+        to: templateParams.user_email,
+        subject: 'Your Receipt and Ticket',
+        text: `Dear Valued Customer,\n\n${templateParams.receipt}\n\n${templateParams.ticket_details}\n\n${templateParams.movie_info}`,
+    };
 
     try {
         const info = await transporter.sendMail(mailOptions);

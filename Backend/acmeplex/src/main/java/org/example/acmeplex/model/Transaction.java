@@ -18,7 +18,7 @@ public class Transaction {
     private User user;
 
     @OneToOne
-    @JoinColumn(name = "coupon_id", nullable = true)
+    @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
     @Column(name = "total", nullable = false)

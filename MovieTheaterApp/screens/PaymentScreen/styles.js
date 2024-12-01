@@ -229,5 +229,46 @@ export const styles = StyleSheet.create({
         fontSize: 12,
         marginBottom: SPACING.sm,
         marginLeft: SPACING.xs,
+    },
+    discountSummary: {
+        marginTop: SPACING.lg,
+        padding: SPACING.lg,
+        backgroundColor: COLORS.background.secondary,
+        borderRadius: SPACING.sm,
+        borderWidth: 1,
+        borderColor: COLORS.border.default,
+    },
+    summaryRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: SPACING.sm,
+    },
+    summaryLabel: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.secondary,
+    },
+    summaryValue: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.text.primary,
+    },
+    discountValue: {
+        ...TYPOGRAPHY.body,
+        color: COLORS.button.primary.background,
+        fontWeight: 'bold',
+    },
+    finalTotalLabel: {
+        ...TYPOGRAPHY.title,
+        fontSize: 18,
+        color: COLORS.text.primary,
+    },
+    finalTotalAmount: {
+        ...TYPOGRAPHY.title,
+        fontSize: 18,
+        color: COLORS.button.primary.background,
+    },
+    selectedCoupon: {
+        borderColor: COLORS.button.primary.background,
+        backgroundColor: COLORS.background.secondary,
     }
 });

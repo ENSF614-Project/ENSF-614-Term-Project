@@ -1,7 +1,6 @@
 package org.example.acmeplex.controller;
 
-import org.example.acmeplex.dto.TransactionDTO;
-import org.example.acmeplex.dto.UserDTO;
+import org.example.acmeplex.model.Transaction;
 import org.example.acmeplex.model.User;
 import org.example.acmeplex.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +17,24 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @GetMapping
-    public ResponseEntity<List<TransactionDTO>> getAllTransactions() {
-        List<TransactionDTO> transactions = transactionService.getAllTransactions();
-        return ResponseEntity.status(HttpStatus.OK).body(transactions);
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        List<Transaction> transactions = transactionService.getAllTransactions();
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 
     // Create a transaction with optional coupon
     @PostMapping("/create")
-    public ResponseEntity<TransactionDTO> createTransaction(
+    public ResponseEntity<Transaction> createTransaction(
             @RequestParam(required = false) Integer userId,
             @RequestParam Double totalAmount,
             @RequestParam(required = false) Long couponId) {
         try {
-            UserDTO userDTO = null;
+            User user = null;
             if (userId != null) {
-                userDTO = new UserDTO(userId, null, null);
+                user = new User();
+                user.setUserId(userId);
             }
-            TransactionDTO transaction = transactionService.createTransaction(userDTO, totalAmount, couponId);
+            Transaction transaction = transactionService.createTransaction(user, totalAmount, couponId);
             return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
         } catch (Exception e) {
             System.err.println("Error creating transaction: " + e.getMessage());
@@ -44,10 +44,10 @@ public class TransactionController {
 
     // Get all transactions by user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<TransactionDTO>> getTransactionsByUser(@PathVariable Integer userId) {
+    public ResponseEntity<List<Transaction>> getTransactionsByUser(@PathVariable Integer userId) {
         User user = new User();
         user.setUserId(userId);
-        List<TransactionDTO> transactions = transactionService.getTransactionsByUser(user);
+        List<Transaction> transactions = transactionService.getTransactionsByUser(user);
         return ResponseEntity.ok(transactions);
     }
 

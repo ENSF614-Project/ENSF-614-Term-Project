@@ -22,10 +22,9 @@ A Movie Theater Ticket Reservation App
 
 ## To run the frontend
 1. Ensure you are in the correct directory: `cd MovieTheaterApp`
-1. To ensure all of the packages are installed: `npx expo install`
+1. To ensure all the packages are installed: `npx expo install`
 1. To run the program: `npx expo start`
 1. Once the program is running, specify `w` to open the project in a web browser.
-
 
 ## To connect to the database
 1. Ensure that you've run the backend, as that should create the database `ENSF614PROJECT`
@@ -33,19 +32,13 @@ A Movie Theater Ticket Reservation App
 1. Check that it worked with `SHOW DATABASES;`
     1. `ENSF614PROJECT` should appear in the results.
 
-## To create email-backend using the Terminal
-1. Initialize a Node.js project
-   1. mkdir email-backend
-   1. cd email-backend
-   1. npm init -y
-1. Install Nodemailer
-   1. npm install nodemailer
-   1. npm install express
-   1. npm install cors
-1. Create a server.js file in the email-backend directory:
-   1. email-backend/server.js (already created)
-1. Run the backend
-   1. node server.js
+## To connect to email-backend - using the Terminal
+1. Ensure you are in the correct directory: `cd email-backend`
+1. To ensure all the packages are installed:
+   1. `npm install nodemailer`
+   1. `npm install express`
+   1. `npm install cors`
+1. Run the backend: `node server.js`
 
 ## Code to run when errors occur
 ### Frontend
@@ -79,6 +72,20 @@ Steps to Resolve the Issue:
    1. node server.js
 1. Run the React Native App: Start your React Native app:
    1. npm start
+
+## (If needed) To create email-backend - using the Terminal
+1. Initialize a Node.js project
+   1. mkdir email-backend
+   1. cd email-backend
+   1. npm init -y
+1. Install Nodemailer
+   1. npm install nodemailer
+   1. npm install express
+   1. npm install cors
+1. Create a server.js file in the email-backend directory:
+   1. email-backend/server.js (already created)
+1. Run the backend
+   1. node server.js
 
 ## I don't think that you'll need to run the commands below this line, they are just included for reference
 

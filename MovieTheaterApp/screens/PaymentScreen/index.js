@@ -18,6 +18,46 @@ import { paymentFlowService } from '../../services/paymentFlowService';
 const PaymentScreen = ({ route, navigation }) => {
     const { total, selectedSeats, showtime, movie } = route.params;
     const { user } = useAuth();
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('new');
+    const [formValues, setFormValues] = useState({});
+    const [formErrors, setFormErrors] = useState({});
+    const [isFormValid, setIsFormValid] = useState(false);
+    const [couponCode, setCouponCode] = useState('');
+    const [selectedCoupon, setSelectedCoupon] = useState(null);
+    const [couponError, setCouponError] = useState('');
+
+    const sendEmail = async (paymentInfo, tickets, total, userEmail) => {
+        try {
+            const response = await fetch('http://localhost:5000/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    templateParams: {
+                        user_email: userEmail,
+                        receipt: `Thank you for your purchase. Total: $${total}`,
+                        ticket_details: `Your tickets: ${tickets.map(ticket => ticket.seatNumber).join(', ')}`,
+                    },
+                }),
+            });
+
+            if (response.ok) {
+                console.log('Email sent successfully:', await response.text());
+            } else {
+                console.error('Failed to send email:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error while sending email:', error);
+        }
+    };
+
+    // Mock data
+    //TODO: replace with an API call
+    const [savedCards] = useState([
+        { id: 1, last4: '4242', expiryDate: '12/25', cardHolderName: 'Test User' },
+        { id: 2, last4: '1234', expiryDate: '10/25', cardHolderName: 'Test User' }
+    ]);
 
     // State management
     const [loading, setLoading] = useState(false);
@@ -78,6 +118,32 @@ const PaymentScreen = ({ route, navigation }) => {
             return;
         }
 
+    const finalTotal = calculateFinalTotal();
+        alert(`Processing payment of $${finalTotal.toFixed(2)}...`);
+
+    //TODO: replace with an API call
+    setTimeout(() => {
+        const paymentInfo = selectedPaymentMethod === 'new'
+            ? formValues
+            : savedCards.find(card => card.id === selectedPaymentMethod);
+
+        // Call backend to send email
+        sendEmail(paymentInfo, selectedSeats, finalTotal, user.email);
+
+        navigation.replace('TicketConfirmation', {
+            tickets: selectedSeats,
+            movie,
+            showtime,
+            total: finalTotal,
+            paymentInfo,
+            appliedCoupon: selectedCoupon
+        });
+    }, 1000);
+};
+
+    const handleRemoveCard = (cardId) => {
+        alert('Are you sure you want to remove this card?');
+        // TODO: Add card removal logic here
         if (!validateEmail()) {
             return;
         }

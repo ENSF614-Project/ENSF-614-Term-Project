@@ -19,9 +19,9 @@ import java.util.List;
 public class DataSeeder {
 
     @Bean
-    public CommandLineRunner demo(UserService userService, RegisteredUserService RegistereduserService, MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository, ShowtimeService showtimeService, SeatRepository seatRepository, TicketService ticketService) {
+    public CommandLineRunner demo(UserService userService, RegisteredUserService RegistereduserService, MovieService movieService, TheatreService theatreService, ShowtimeRepository showtimeRepository, ShowtimeService showtimeService, SeatRepository seatRepository, TicketService ticketService, CouponService couponService) {
         return (args) -> {
-            //Create users:
+            //Create registered users:
             RegisteredUser user1 = new RegisteredUser();
             user1.setUsername("testuser1");
             user1.setEmail("test1@example.com");
@@ -44,6 +44,17 @@ public class DataSeeder {
 
             RegistereduserService.createUser(user1);
             RegistereduserService.createUser(user2);
+
+            //Create guest users:
+            User user3 = new User();
+            user3.setEmail("test3@example.com");
+            user3.setIsRU(false);
+            userService.createRegularUser(user3);
+
+            User user4 = new User();
+            user4.setEmail("test4@example.com");
+            user4.setIsRU(false);
+            userService.createRegularUser(user4);
 
             // Create movies
             Movie movie1 = new Movie();
@@ -148,8 +159,13 @@ public class DataSeeder {
             //Create tickets
             ticketService.purchaseTicket((User)user1, 1, List.of(1,2,3), 14.00, null);
             ticketService.purchaseTicket((User)user2, 2, List.of(101,102,103), 14.00, null);
-
             ticketService.cancelTicket(6L);
+
+            ticketService.purchaseTicket(user3, 25, List.of(2401,2402,2403), 14.00, null);
+            ticketService.purchaseTicket(user4, 25, List.of(2404,2403,2404), 14.00, null);
+            ticketService.cancelTicket(8L);
+            ticketService.cancelTicket(12L);
+            couponService.deactivateCoupon(3L);
 
         };
     }

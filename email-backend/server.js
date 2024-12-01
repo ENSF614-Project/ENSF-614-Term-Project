@@ -19,6 +19,9 @@ app.post('/send-email', async (req, res) => {
             user: 'mohd.abusaleh@gmail.com',
             pass: 'etyq wnea ojrg anrt',
         },
+        tls: {
+            rejectUnauthorized: false, // Accept self-signed certificates
+        },
     });
 
     const mailOptions = {

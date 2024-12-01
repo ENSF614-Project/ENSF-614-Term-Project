@@ -1,6 +1,5 @@
 package org.example.acmeplex.config;
 
-import org.example.acmeplex.dto.UserDTO;
 import org.example.acmeplex.model.*;
 import org.example.acmeplex.repository.SeatRepository;
 import org.example.acmeplex.repository.ShowtimeRepository;
@@ -160,11 +159,6 @@ public class DataSeeder {
             }
             seatRepository.saveAll(allSeats);
             System.out.println("Seeded seats successfully for each showtime.");
-
-            // Convert to UserDTO
-            UserDTO user1DTO = new UserDTO(user1.getUserId(), user1.getEmail(), user1.getIsRU());
-            UserDTO user2DTO = new UserDTO(user2.getUserId(), user2.getEmail(), user2.getIsRU());
-            UserDTO user3DTO = new UserDTO(user3.getUserId(), user3.getEmail(), user3.getIsRU());
 
             // Create tickets
             ticketService.purchaseTicket((User) user1, 1, List.of(1, 2, 3), 14.00, null, user1.getEmail());

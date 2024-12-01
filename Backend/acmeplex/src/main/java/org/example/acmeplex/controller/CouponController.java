@@ -1,11 +1,11 @@
 //CouponController.java
 package org.example.acmeplex.controller;
 
-import org.example.acmeplex.dto.CouponDTO;
 import org.example.acmeplex.model.Coupon;
 import org.example.acmeplex.model.User;
 import org.example.acmeplex.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,23 +21,23 @@ public class CouponController {
     private CouponService couponService;
 
     @GetMapping
-    public ResponseEntity<List<CouponDTO>> getAllCoupons() {
-        List<CouponDTO> coupons = couponService.getAllCoupons();
-        return ResponseEntity.ok(coupons);
+    public ResponseEntity<List<Coupon>> getAllCoupons() {
+        List<Coupon> coupons = couponService.getAllCoupons();
+        return new ResponseEntity<>(coupons, HttpStatus.OK);
     }
 
     @GetMapping("/{couponId}")
-    public ResponseEntity<CouponDTO> getCouponById(@PathVariable long couponId) {
-        CouponDTO coupon = couponService.getCouponById(couponId);
-        return ResponseEntity.ok(coupon);
+    public ResponseEntity<Coupon> getCouponById(@PathVariable long couponId) {
+        Coupon coupon = couponService.getCouponById(couponId);
+        return new ResponseEntity<>(coupon, HttpStatus.OK);
     }
 
     // Get all coupons by user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CouponDTO>> getCouponsByUser(@PathVariable Integer userId) {
+    public ResponseEntity<List<Coupon>> getCouponsByUser(@PathVariable Integer userId) {
         User user = new User();
         user.setUserId(userId);
-        List<CouponDTO> coupons = couponService.getCouponsByUser(user);
+        List<Coupon> coupons = couponService.getCouponsByUser(user);
         return ResponseEntity.ok(coupons);
     }
 

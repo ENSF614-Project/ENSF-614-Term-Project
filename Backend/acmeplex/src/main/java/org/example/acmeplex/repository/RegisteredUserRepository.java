@@ -10,8 +10,12 @@ import java.util.Optional;
 @Repository
 public interface RegisteredUserRepository extends JpaRepository<RegisteredUser, Integer> {
     RegisteredUser findByUsername(String username);
+
     boolean existsByUsername(String username);
+
     boolean existsByEmail(String email);
+
     boolean existsByEmailAndIsRUFalse(String email);
+
     boolean existsByEmailAndIsRUTrue(String email);
 }

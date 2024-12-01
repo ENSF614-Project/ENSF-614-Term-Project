@@ -27,5 +27,7 @@ public class TheatreService {
         return theatreRepository.findById(theatreId);
     }
 
-    public Theatre createTheatre(Theatre theatre) {return theatreRepository.save(theatre);}
+    public Theatre createTheatre(Theatre theatre) {
+        return theatreRepository.save(theatre);
+    }
 }

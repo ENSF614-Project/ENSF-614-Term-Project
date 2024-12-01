@@ -1,8 +1,6 @@
 //TicketController.java
 package org.example.acmeplex.controller;
 
-import org.example.acmeplex.dto.TicketDTO;
-import org.example.acmeplex.dto.UserDTO;
 import org.example.acmeplex.model.Ticket;
 import org.example.acmeplex.model.User;
 import org.example.acmeplex.service.TicketService;
@@ -23,7 +21,7 @@ public class TicketController {
     private UserService userService;
 
     @PostMapping("/purchase")
-    public ResponseEntity<List<TicketDTO>> purchaseTicket(
+    public ResponseEntity<List<Ticket>> purchaseTicket(
             @RequestParam(required = false) Integer userId,
             @RequestParam Integer showtimeID,
             @RequestParam List<Integer> seatIDs,
@@ -33,7 +31,7 @@ public class TicketController {
             @RequestParam(required = false) String email,
             @RequestParam Double totalAmount) {
 
-        UserDTO user = null;
+        User user = null;
         if (userId != null) {
             user = userService.getUserById(userId);
             if (user != null) {
@@ -53,8 +51,8 @@ public class TicketController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TicketDTO>> getAllTickets() {
-        List<TicketDTO> tickets = ticketService.getAllTickets();
+    public ResponseEntity<List<Ticket>> getAllTickets() {
+        List<Ticket> tickets = ticketService.getAllTickets();
         return ResponseEntity.status(HttpStatus.OK).body(tickets);
     }
 
@@ -67,17 +65,16 @@ public class TicketController {
 
     // Get tickets by user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<TicketDTO>> getTicketsByUser(@PathVariable Integer userId) {
+    public ResponseEntity<List<Ticket>> getTicketsByUser(@PathVariable Integer userId) {
         User user = new User();
         user.setUserId(userId);
-        List<TicketDTO> tickets = ticketService.getTicketsByUser(user);
+        List<Ticket> tickets = ticketService.getTicketsByUser(user);
         return ResponseEntity.ok(tickets);
     }
 
     @GetMapping("{ticketId}")
-    public ResponseEntity<TicketDTO> getTicketByTicketId(@PathVariable Long ticketId) {
-        TicketDTO ticket = ticketService.getTicketById(ticketId);
-        return ResponseEntity.ok(ticket);
+    public ResponseEntity<Ticket> getTicketByTicketId(@PathVariable Integer ticketId) {
+        return ResponseEntity.ok(ticketService.getTicketById(ticketId));
     }
 
 }

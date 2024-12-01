@@ -2,7 +2,7 @@
 package org.example.acmeplex.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.example.acmeplex.dto.CouponDTO;
+import jakarta.transaction.Transactional;
 import org.example.acmeplex.model.Coupon;
 import org.example.acmeplex.model.Ticket;
 import org.example.acmeplex.model.User;
@@ -14,7 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CouponService {
@@ -22,31 +21,12 @@ public class CouponService {
     @Autowired
     private CouponRepository couponRepository;
 
-    // Convert Coupon entity to DTO
-    private CouponDTO convertToDTO(Coupon coupon) {
-        return new CouponDTO(
-                coupon.getCouponID(),
-                coupon.getEmail(),
-                coupon.getValue(),
-                coupon.getExpiryDate(),
-                coupon.getStatus());
+    public List<Coupon> getAllCoupons() {
+        return couponRepository.findAll();
     }
 
-    public List<CouponDTO> getAllCoupons() {
-        return couponRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    public CouponDTO getCouponById(Long id) {
-        return couponRepository.findById(id)
-                .map(this::convertToDTO)
-                .orElseThrow(() -> new EntityNotFoundException("Coupon not found"));
-    }
-
-    public Coupon getCouponEntityById(Long couponID) {
-        return couponRepository.findById(couponID)
-                .orElseThrow(() -> new EntityNotFoundException("Coupon not found with ID: " + couponID));
+    public Coupon getCouponById(Long id) {
+        return couponRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional

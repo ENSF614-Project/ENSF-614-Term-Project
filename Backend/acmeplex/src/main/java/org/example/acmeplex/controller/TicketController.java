@@ -4,6 +4,7 @@ package org.example.acmeplex.controller;
 import org.example.acmeplex.model.Ticket;
 import org.example.acmeplex.model.User;
 import org.example.acmeplex.service.TicketService;
+import org.example.acmeplex.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +17,23 @@ public class TicketController {
 
     @Autowired
     private TicketService ticketService;
+    @Autowired
+    private UserService userService;
 
     // Purchase a ticket
     @PostMapping("/purchase")
     public ResponseEntity<List<Ticket>> purchaseTicket(
-            @RequestParam Integer userId,
+            @RequestParam(required = false) Integer userId,
             @RequestParam Integer showtimeID,
             @RequestParam List<Integer> seatIDs,
             @RequestParam Double price,
-            @RequestParam Long couponId) {
-        User user = new User();
-        user.setUserId(userId);
-        List<Ticket> tickets = ticketService.purchaseTicket(user,showtimeID, seatIDs, price, couponId);
+            @RequestParam(required = false) Long couponId) {
+        User user = null;
+        if (userId != null) {
+            user = new User();
+            user.setUserId(userId);
+        }
+        List<Ticket> tickets = ticketService.purchaseTicket(user, showtimeID, seatIDs, price, couponId);
         return ResponseEntity.status(HttpStatus.CREATED).body(tickets);
     }
 

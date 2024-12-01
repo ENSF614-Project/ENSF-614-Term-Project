@@ -162,11 +162,6 @@ public class DataSeeder {
             ticketService.cancelTicket(6L);
 
             ticketService.purchaseTicket(user3, 25, List.of(2401,2402,2403), 14.00, null);
-            ticketService.purchaseTicket(user4, 25, List.of(2404,2403,2404), 14.00, null);
-            ticketService.cancelTicket(8L);
-            ticketService.cancelTicket(12L);
-            couponService.deactivateCoupon(3L);
-
         };
     }
 }

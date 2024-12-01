@@ -31,11 +31,18 @@ public class UserService {
     }
 
     public User createRegularUser(User user) {
-        if(userRepository.existsByEmail(user.getEmail())) {
-        return userRepository.findByUserId(user.getUserId());
+        // Check if user with email already exists
+        if (user.getEmail() != null && userRepository.existsByEmail(user.getEmail())) {
+            return userRepository.findByEmail(user.getEmail());
         }
-        user.setEmail(user.getEmail());
+
+        // Set default values for new user
+        user.setIsRU(false);
         return userRepository.save(user);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public List<User> getAllUsers() {

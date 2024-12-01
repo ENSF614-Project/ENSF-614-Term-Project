@@ -20,20 +20,25 @@ public class TicketController {
     @Autowired
     private UserService userService;
 
-    // Purchase a ticket
     @PostMapping("/purchase")
     public ResponseEntity<List<Ticket>> purchaseTicket(
             @RequestParam(required = false) Integer userId,
             @RequestParam Integer showtimeID,
             @RequestParam List<Integer> seatIDs,
             @RequestParam Double price,
-            @RequestParam(required = false) Long couponId) {
+            @RequestParam(required = false) Long couponId,
+            @RequestParam(required = false) String email) {
+
         User user = null;
         if (userId != null) {
-            user = new User();
-            user.setUserId(userId);
+            user = userService.getUserById(userId);
+            // If user exists, use their email
+            if (user != null) {
+                email = user.getEmail();
+            }
         }
-        List<Ticket> tickets = ticketService.purchaseTicket(user, showtimeID, seatIDs, price, couponId);
+
+        List<Ticket> tickets = ticketService.purchaseTicket(user, showtimeID, seatIDs, price, couponId, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(tickets);
     }
 

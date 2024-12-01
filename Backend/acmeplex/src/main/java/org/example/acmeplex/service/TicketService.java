@@ -37,12 +37,12 @@ public class TicketService {
         return ticketRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    public List<Ticket> purchaseTicket(User user, Integer showtimeID, List<Integer> seatIDs, Double price,
-            Long couponId) {
+    @Transactional
+    public List<Ticket> purchaseTicket(User user, Integer showtimeID, List<Integer> seatIDs, Double price, Long couponId, String email) {
         Transaction transaction = transactionService.createTransaction(user, price * seatIDs.size(), couponId);
 
         List<Ticket> tickets = new ArrayList<>();
-        for (Integer seatID : seatIDs) {
+        for(Integer seatID: seatIDs) {
             Seat seat = seatRepository.findById(seatID)
                     .orElseThrow(() -> new EntityNotFoundException("Seat not found: " + seatID));
 
@@ -57,13 +57,18 @@ public class TicketService {
             if (user != null) {
                 ticket.setUser(user);
                 ticket.setEmail(user.getEmail());
+            } else if (email != null && !email.isEmpty()) {
+                ticket.setEmail(email);
+            } else {
+                throw new IllegalArgumentException("Email is required for anonymous purchases");
             }
+
             ticket.setShowtimeID(showtimeID);
             ticket.setSeatID(seatID);
             ticket.setPurchasedDate(new Date());
-            ticket.setCancellationDeadline(new Date(System.currentTimeMillis() + (72L * 60 * 60 * 1000))); // 72 hours
+            ticket.setCancellationDeadline(new Date(System.currentTimeMillis() + (72L * 60 * 60 * 1000)));
             ticket.setPrice(price);
-            ticket.setRefund(0.0); // Default to no refund
+            ticket.setRefund(0.0);
             ticket.setStatus("BOOKED");
             ticket.setTransaction(transaction);
             tickets.add(ticketRepository.save(ticket));

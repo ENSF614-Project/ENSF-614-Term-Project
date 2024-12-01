@@ -156,11 +156,11 @@ public class DataSeeder {
             System.out.println("Seeded seats successfully for each showtime.");
 
             //Create tickets
-            ticketService.purchaseTicket((User)user1, 1, List.of(1,2,3), 14.00, null);
-            ticketService.purchaseTicket((User)user2, 2, List.of(101,102,103), 14.00, null);
+            ticketService.purchaseTicket((User)user1, 1, List.of(1,2,3), 14.00, null, user1.getEmail());
+            ticketService.purchaseTicket((User)user2, 2, List.of(101,102,103), 14.00, null, user2.getEmail());
             ticketService.cancelTicket(6L);
 
-            ticketService.purchaseTicket(user3, 25, List.of(2401,2402,2403), 14.00, null);
+            ticketService.purchaseTicket(user3, 25, List.of(2401,2402,2403), 14.00, null, user3.getEmail());
         };
     }
 }

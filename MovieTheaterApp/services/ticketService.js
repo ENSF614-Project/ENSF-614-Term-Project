@@ -1,7 +1,7 @@
 // services/ticketService.js
 const API_URL = 'http://localhost:8080';
 
-export const ticektService = {
+export const ticketService = {
 
 
     // Get tickets by userID

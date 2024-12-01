@@ -12,7 +12,7 @@ import { Ticket, AlertCircle } from 'lucide-react-native';
 import { styles } from './styles';
 //import { getUserTickets, getTicketById } from '../../MockData';
 import { useAuth } from '../../context/AuthContext';
-import ticketService from '../../services/ticketService.js'
+import { ticketService } from '../../services/ticketService'
 
 const TicketScreen = () => {
     const { user } = useAuth();
@@ -23,7 +23,9 @@ const TicketScreen = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        console.log('test use');
         if (user) {
+            console.log('test use in');
             fetchUserTickets();
         }
     }, [user]);
@@ -31,7 +33,8 @@ const TicketScreen = () => {
     const fetchUserTickets = async () => {
         setLoading(true);
         try {
-            const tickets = ticketService.getUserTickets(user.userId);
+            const tickets = await ticketService.getUserTickets(user.userId);
+            console.log('test');
             setUserTickets(tickets);
             setError(null);
         } catch (err) {
@@ -49,7 +52,7 @@ const TicketScreen = () => {
 
         setLoading(true);
         try {
-            const ticket = ticketService.getTicketById(ticketNumber);
+            const ticket = await ticketService.getTicketById(ticketNumber);
             if (ticket) {
                 setSearchedTicket(ticket);
                 setError(null);
@@ -104,7 +107,7 @@ const TicketScreen = () => {
     };
 
     const renderTicketCard = (ticket) => {
-        const isActive = new Date(ticket.showtime) > new Date();
+        const isActive = new Date(ticket.showtime) > new Date(); //Change for showtime need to create api
         const canCancel = new Date(ticket.cancellationDeadline) > new Date();
 
         return (

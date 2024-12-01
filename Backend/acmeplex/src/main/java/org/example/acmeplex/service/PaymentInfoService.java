@@ -33,4 +33,9 @@ public class PaymentInfoService {
     public void deletePaymentInfo(int id) {
         paymentInfoRepository.deleteById(id);
     }
+
+    //Get PaymentInfo by User
+    public List<PaymentInfo> getPaymentInfoByUser(User user) {
+        return paymentInfoRepository.findByUser(user);
+    }
 }

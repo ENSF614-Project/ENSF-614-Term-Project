@@ -64,7 +64,7 @@ public class DataSeeder {
             movie1.setGenre("Action/Sci-Fi");
             movie1.setDuration(180);
             movie1.setDescription(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
+                    "The epic conclusion to the Infinity Saga follows the remaining Avengers as they come to terms with the aftermath of Thanos's devastating snap that wiped out half of all life in the universe. Five years later, when a chance for redemption presents itself, Earth's mightiest heroes must reunite for one final mission - a daring time heist that could restore everything they've lost. But the cost of saving the universe might be greater than they're willing to pay.");
             movie1.setRating(8.5);
             movie1.setReleaseDate(java.sql.Date.valueOf("2025-04-26"));
             movie1.setPosterUrl("https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg");
@@ -74,7 +74,7 @@ public class DataSeeder {
             movie2.setGenre("Sci-Fi/Thriller");
             movie2.setDuration(148);
             movie2.setDescription(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
+                    "In this mind-bending thriller, Dom Cobb is a skilled thief who specializes in extracting secrets from people's minds while they dream. Now, he's been offered a chance at redemption - instead of stealing an idea, he must plant one. If he succeeds, it will be the perfect crime, but no amount of meticulous planning can prepare the team for the dangerous enemy that seems to predict their every move. Success means everything, but at what cost?");
             movie2.setRating(8.8);
             movie2.setReleaseDate(java.sql.Date.valueOf("2010-07-16"));
             movie2.setPosterUrl("https://www.themoviedb.org/t/p/w600_and_h900_bestv2/edv5CZvWj09upOsy2Y6IwDhK8bt.jpg");
@@ -84,7 +84,7 @@ public class DataSeeder {
             movie3.setGenre("Action/Drama");
             movie3.setDuration(152);
             movie3.setDescription(
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
+                    "When Gotham's criminal underworld is terrorized by a mysterious psychopath known as The Joker, Batman must confront one of his most dangerous adversaries yet. As the Joker unleashes chaos and destruction upon the city, Batman's commitment to justice is tested when he must choose between saving the woman he loves or protecting the city he's sworn to defend. In this gritty crime drama, the line between hero and vigilante becomes increasingly blurred.");
             movie3.setRating(9.0);
             movie3.setReleaseDate(java.sql.Date.valueOf("2008-07-18"));
             movie3.setPosterUrl("https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg");

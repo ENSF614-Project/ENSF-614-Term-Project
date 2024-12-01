@@ -3,6 +3,8 @@ package org.example.acmeplex.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.example.acmeplex.dto.TicketDTO;
+import org.example.acmeplex.dto.UserDTO;
 import org.example.acmeplex.model.*;
 import org.example.acmeplex.repository.TicketRepository;
 import org.example.acmeplex.repository.SeatRepository;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketService {
@@ -29,19 +31,45 @@ public class TicketService {
     @Autowired
     private SeatRepository seatRepository;
 
-    public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+    // Convert Ticket entity to DTO
+    private TicketDTO convertToDTO(Ticket ticket) {
+        return new TicketDTO(
+                ticket.getTicketID(),
+                ticket.getShowtimeID(),
+                ticket.getSeatID(),
+                ticket.getPurchasedDate(),
+                ticket.getCancellationDeadline(),
+                ticket.getPrice(),
+                ticket.getStatus(),
+                ticket.getEmail()
+        );
     }
 
-    public Ticket getTicketById(long id) {
-        return ticketRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public List<TicketDTO> getAllTickets() {
+        return ticketRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public TicketDTO getTicketById(long id) {
+        return ticketRepository.findById(id)
+                .map(this::convertToDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
     }
 
     @Transactional
-    public List<Ticket> purchaseTicket(User user, Integer showtimeID, List<Integer> seatIDs, Double price, Long couponId, String email) {
-        Transaction transaction = transactionService.createTransaction(user, price * seatIDs.size(), couponId);
+    public List<TicketDTO> purchaseTicket(UserDTO userDTO, Integer showtimeID, List<Integer> seatIDs, Double price, Long couponId, String email) {
+        User user = null;
+        if (userDTO != null) {
+            user = new User();
+            user.setUserId(userDTO.getUserId());
+            user.setEmail(userDTO.getEmail());
+            user.setIsRU(userDTO.getIsRU());
+        }
 
-        List<Ticket> tickets = new ArrayList<>();
+        Transaction transaction = transactionService.createTransactionEntity(user, price * seatIDs.size(), couponId);
+
+        List<TicketDTO> tickets = new ArrayList<>();
         for(Integer seatID: seatIDs) {
             Seat seat = seatRepository.findById(seatID)
                     .orElseThrow(() -> new EntityNotFoundException("Seat not found: " + seatID));
@@ -71,7 +99,7 @@ public class TicketService {
             ticket.setRefund(0.0);
             ticket.setStatus("BOOKED");
             ticket.setTransaction(transaction);
-            tickets.add(ticketRepository.save(ticket));
+            tickets.add(convertToDTO(ticketRepository.save(ticket)));
         }
 
         return tickets;
@@ -113,7 +141,8 @@ public class TicketService {
         }
     }
 
-    public List<Ticket> getTicketsByUser(User user) {
-        return ticketRepository.findByUser(user);
-    }
-}
+    public List<TicketDTO> getTicketsByUser(User user) {
+        return ticketRepository.findByUser(user).stream()
+                .map(this::convertToDTO) // Convert each Ticket to TicketDTO
+                .collect(Collectors.toList());
+    }}

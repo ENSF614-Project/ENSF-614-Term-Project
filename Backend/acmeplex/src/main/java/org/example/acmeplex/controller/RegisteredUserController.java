@@ -1,6 +1,7 @@
 //RegisteredUserController.java
 package org.example.acmeplex.controller;
 
+import org.example.acmeplex.dto.UserDTO;
 import org.example.acmeplex.model.RegisteredUser;
 import org.example.acmeplex.service.RegisteredUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class RegisteredUserController {
     }
 
     @GetMapping
-    public List<RegisteredUser> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return registeredUserService.getAllUsers();
     }
 
@@ -41,10 +42,10 @@ public class RegisteredUserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RegisteredUser> getUserById(@PathVariable Integer id) {
-        RegisteredUser user = registeredUserService.getUserById(id);
-        if (user != null) {
-            return ResponseEntity.ok(user);
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
+        UserDTO userDTO = registeredUserService.getUserById(id);
+        if (userDTO != null) {
+            return ResponseEntity.ok(userDTO);
         }
         return ResponseEntity.notFound().build();
     }

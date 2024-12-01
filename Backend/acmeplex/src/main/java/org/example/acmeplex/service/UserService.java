@@ -7,8 +7,10 @@ import org.example.acmeplex.repository.RegisteredUserRepository;
 import org.example.acmeplex.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.example.acmeplex.dto.UserDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -18,7 +20,7 @@ public class UserService {
     @Autowired
     private RegisteredUserRepository registeredUserRepository;
 
-    public User login(String username, String password) {
+    public UserDTO login(String username, String password) {
         RegisteredUser user = registeredUserRepository.findByUsername(username);
         if (user == null) {
             throw new IllegalArgumentException("User not found");
@@ -26,8 +28,7 @@ public class UserService {
         if (!user.getPassword().equals(password)) {
             throw new IllegalArgumentException("Invalid credentials");
         }
-        user.setPassword(null); // Don't send password back to client for security
-        return user;
+        return new UserDTO(user.getUserId(), user.getEmail(), user.getIsRU());
     }
 
     public User createRegularUser(User user) {
@@ -45,11 +46,15 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> new UserDTO(user.getUserId(), user.getEmail(), user.getIsRU()))
+                .collect(Collectors.toList());
     }
 
-    public User getUserById(Integer id) {
-        return userRepository.findById(id).orElse(null);
-    }
-}
+    public UserDTO getUserById(Integer id) {
+        return userRepository.findById(id)
+                .map(user -> new UserDTO(user.getUserId(), user.getEmail(), user.getIsRU()))
+                .orElse(null);
+    }}

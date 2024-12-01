@@ -201,6 +201,21 @@ const PaymentScreen = ({ route, navigation }) => {
                 finalTotal: discountedTotal,
             });
 
+            console.log('Showtime data:', showtime);
+
+            const formattedShowtime = {
+                date: showtime.startTime ?
+                    new Date(showtime.startTime).toLocaleDateString() :
+                    showtime.date,
+                time: showtime.startTime ?
+                    new Date(showtime.startTime).toLocaleTimeString() :
+                    showtime.time,
+                // Handle different possible theater data structures
+                theatre: typeof showtime.theatre === 'object' ?
+                    showtime.theatre.theatreName :
+                    (showtime.theatre || showtime.theatreName || 'Theater information unavailable')
+            };
+
             // Format the data for the email
             const emailData = {
                 templateParams: {
@@ -232,11 +247,7 @@ const PaymentScreen = ({ route, navigation }) => {
                 tickets: result.tickets,
                 selectedSeats,
                 movie,
-                showtime: {
-                    date: showtime.startTime ? new Date(showtime.startTime).toLocaleDateString() : showtime.date,
-                    time: showtime.startTime ? new Date(showtime.startTime).toLocaleTimeString() : showtime.time,
-                    theatre: showtime.theatre.theatreName
-                },
+                showtime: formattedShowtime,
                 total: discountedTotal,
                 paymentInfo: {
                     ...cardFormValues,

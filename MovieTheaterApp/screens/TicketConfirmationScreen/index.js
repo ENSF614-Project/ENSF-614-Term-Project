@@ -80,7 +80,7 @@ const TicketConfirmationScreen = ({ route, navigation }) => {
 
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Date:</Text>
-                    <Text style={styles.value}>{showtime?.date || 'N/A'}</Text>
+                    <Text style={styles.value}>{formatDate(showtime?.date) || 'N/A'}</Text>
                 </View>
 
                 <View style={styles.detailRow}>
@@ -90,7 +90,9 @@ const TicketConfirmationScreen = ({ route, navigation }) => {
 
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Theatre:</Text>
-                    <Text style={styles.value}>{showtime?.theatre || 'N/A'}</Text>
+                    <Text style={styles.value}>
+                        {showtime?.theatre || 'Theatre information unavailable'}
+                    </Text>
                 </View>
 
                 <View style={styles.detailRow}>

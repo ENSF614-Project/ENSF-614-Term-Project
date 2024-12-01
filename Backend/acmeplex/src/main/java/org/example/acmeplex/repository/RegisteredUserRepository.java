@@ -12,4 +12,6 @@ public interface RegisteredUserRepository extends JpaRepository<RegisteredUser, 
     RegisteredUser findByUsername(String username);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
+    boolean existsByEmailAndIsRUFalse(String email);
+    boolean existsByEmailAndIsRUTrue(String email);
 }

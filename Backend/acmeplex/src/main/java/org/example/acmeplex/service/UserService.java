@@ -30,6 +30,14 @@ public class UserService {
         return user;
     }
 
+    public User createRegularUser(User user) {
+        if(userRepository.existsByEmail(user.getEmail())) {
+        return userRepository.findByUserId(user.getUserId());
+        }
+        user.setEmail(user.getEmail());
+        return userRepository.save(user);
+    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

@@ -3,6 +3,7 @@ package org.example.acmeplex.service;
 
 import org.example.acmeplex.model.RegisteredUser;
 import org.example.acmeplex.repository.RegisteredUserRepository;
+import org.example.acmeplex.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 public class RegisteredUserService {
     @Autowired
     private RegisteredUserRepository registeredUserRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<RegisteredUser> getAllUsers() {
         return registeredUserRepository.findAll();
@@ -34,5 +37,13 @@ public class RegisteredUserService {
 
     public boolean existsByEmail(String email) {
         return registeredUserRepository.existsByEmail(email);
+    }
+
+    public boolean existsByEmailAndIsRUTrue(String email) {
+        return registeredUserRepository.existsByEmailAndIsRUTrue(email);
+    }
+
+    public boolean existByEmailAndIsRUFalse(String email){
+        return registeredUserRepository.existsByEmailAndIsRUFalse(email);
     }
 }

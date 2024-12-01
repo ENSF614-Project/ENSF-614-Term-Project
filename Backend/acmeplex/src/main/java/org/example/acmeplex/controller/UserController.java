@@ -27,6 +27,12 @@ public class UserController {
         }
     }
 
+    @PostMapping
+    public ResponseEntity<User> createRegularUser(@RequestBody User user) {
+        User createdUser = userService.createRegularUser(user);
+        return ResponseEntity.ok(createdUser);
+    }
+
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();

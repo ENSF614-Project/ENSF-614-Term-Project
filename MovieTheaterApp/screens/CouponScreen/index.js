@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { styles } from './styles';
 import { useAuth } from '../../context/AuthContext';
+import couponService from "../../services/couponService.js";
 
 const CouponScreen = () => {
     const { user } = useAuth();
@@ -11,15 +12,15 @@ const CouponScreen = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     // Mock data
-    const allCoupons = [
-        { isRegistered: 1, CouponCode: 'AZ4g3b3x', Value: 36.0, Expiry: '27/05/2025', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
-        { isRegistered: 1, CouponCode: 'Bg6u90Pc', Value: 12.0, Expiry: '25/12/2024', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
-        { isRegistered: 1, CouponCode: '5Z345tYd', Value: 48.0, Expiry: '13/04/2025', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
-        { isRegistered: 0, CouponCode: '45Ttb3Gj', Value: 10.0, Expiry: '27/05/2025', Status: 'Valid', userID: 2, email: 'biggie@gmail.com' },
-        { isRegistered: 0, CouponCode: '12Qwp05f', Value: 90.0, Expiry: '14/02/2023', Status: 'Expired', userID: 3, email: 'monkeyman@hotmail.com' },
-        { isRegistered: 0, CouponCode: 'FFf3r78p', Value: 5.0, Expiry: '01/01/2025', Status: 'Valid', userID: 4, email: 'datboi@waddup.pizza' },
-        { isRegistered: 1, CouponCode: 'VrtY7e2S', Value: 36.0, Expiry: '27/05/2024', Status: 'Expired', userID: 1, email: 'tony@tony.ca' },
-    ];
+    // const allCoupons = [
+    //     { isRegistered: 1, CouponCode: 'AZ4g3b3x', Value: 36.0, Expiry: '27/05/2025', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
+    //     { isRegistered: 1, CouponCode: 'Bg6u90Pc', Value: 12.0, Expiry: '25/12/2024', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
+    //     { isRegistered: 1, CouponCode: '5Z345tYd', Value: 48.0, Expiry: '13/04/2025', Status: 'Valid', userID: 1, email: 'tony@tony.ca' },
+    //     { isRegistered: 0, CouponCode: '45Ttb3Gj', Value: 10.0, Expiry: '27/05/2025', Status: 'Valid', userID: 2, email: 'biggie@gmail.com' },
+    //     { isRegistered: 0, CouponCode: '12Qwp05f', Value: 90.0, Expiry: '14/02/2023', Status: 'Expired', userID: 3, email: 'monkeyman@hotmail.com' },
+    //     { isRegistered: 0, CouponCode: 'FFf3r78p', Value: 5.0, Expiry: '01/01/2025', Status: 'Valid', userID: 4, email: 'datboi@waddup.pizza' },
+    //     { isRegistered: 1, CouponCode: 'VrtY7e2S', Value: 36.0, Expiry: '27/05/2024', Status: 'Expired', userID: 1, email: 'tony@tony.ca' },
+    // ];
 
     const sortCouponsByExpiry = (coupons) => {
         return coupons.sort((a, b) => {
@@ -29,53 +30,103 @@ const CouponScreen = () => {
         });
     };
 
-    const handleCouponSubmit = () => {
+    // const handleCouponSubmit = () => {
+    //     if (!couponInput) {
+    //         setErrorMessage('Please enter a coupon code or email.');
+    //         return;
+    //     }
+
+    //     const isEmail = couponInput.includes('@');
+
+    //     if (isEmail) {
+    //         const emailCoupons = allCoupons.filter(
+    //             coupon => coupon.email === couponInput && coupon.Status === 'Valid'
+    //         );
+
+    //         if (emailCoupons.length > 0) {
+    //             setFilteredCoupons(sortCouponsByExpiry(emailCoupons));
+    //             setErrorMessage('');
+    //         } else {
+    //             setErrorMessage('Invalid email or no valid coupons found.');
+    //         }
+    //     } else {
+    //         const coupon = allCoupons.find(
+    //             coupon => coupon.CouponCode === couponInput && coupon.Status === 'Valid'
+    //         );
+
+    //         if (coupon) {
+    //             if (!filteredCoupons.some(c => c.CouponCode === coupon.CouponCode)) {
+    //                 setFilteredCoupons(sortCouponsByExpiry([...filteredCoupons, coupon]));
+    //             }
+    //             setErrorMessage('');
+    //         } else {
+    //             setErrorMessage('Invalid coupon code.');
+    //         }
+    //     }
+
+    //     setCouponInput(''); // Clear the input field
+    // };
+
+    const handleCouponSubmit = async () => {
         if (!couponInput) {
             setErrorMessage('Please enter a coupon code or email.');
             return;
         }
-
-        const isEmail = couponInput.includes('@');
-
-        if (isEmail) {
-            const emailCoupons = allCoupons.filter(
-                coupon => coupon.email === couponInput && coupon.Status === 'Valid'
-            );
-
-            if (emailCoupons.length > 0) {
-                setFilteredCoupons(sortCouponsByExpiry(emailCoupons));
+    
+        try {
+            const isEmail = couponInput.includes('@');
+            let fetchedCoupons = [];
+    
+            if (isEmail) {
+                fetchedCoupons = await couponService.getCouponsByEmail(couponInput);
+            } else {
+                const singleCoupon = await couponService.getCouponById(couponInput);
+                if (singleCoupon) fetchedCoupons = [singleCoupon];
+            }
+    
+            if (fetchedCoupons.length > 0) {
+                setFilteredCoupons(sortCouponsByExpiry(fetchedCoupons));
                 setErrorMessage('');
             } else {
-                setErrorMessage('Invalid email or no valid coupons found.');
+                setErrorMessage('No valid coupons found.');
             }
-        } else {
-            const coupon = allCoupons.find(
-                coupon => coupon.CouponCode === couponInput && coupon.Status === 'Valid'
-            );
-
-            if (coupon) {
-                if (!filteredCoupons.some(c => c.CouponCode === coupon.CouponCode)) {
-                    setFilteredCoupons(sortCouponsByExpiry([...filteredCoupons, coupon]));
-                }
-                setErrorMessage('');
-            } else {
-                setErrorMessage('Invalid coupon code.');
-            }
+        } catch (error) {
+            setErrorMessage('Error fetching coupons. Please try again.');
         }
-
+    
         setCouponInput(''); // Clear the input field
     };
 
+
     // Load user's coupons when logged in
+    // useEffect(() => {
+    //     if (user) {
+    //         const userCoupons = allCoupons.filter(
+    //             coupon => coupon.userID === user.userId && coupon.Status === 'Valid'
+    //         );
+    //         setFilteredCoupons(sortCouponsByExpiry(userCoupons));
+    //     } else {
+    //         setFilteredCoupons([]);
+    //     }
+    // }, [user]);
+
+
     useEffect(() => {
-        if (user) {
-            const userCoupons = allCoupons.filter(
-                coupon => coupon.userID === user.userId && coupon.Status === 'Valid'
-            );
-            setFilteredCoupons(sortCouponsByExpiry(userCoupons));
-        } else {
-            setFilteredCoupons([]);
-        }
+        const fetchUserCoupons = async () => {
+            if (user) {
+                try {
+                    const userCoupons = await couponService.getCouponsByUserId(user.userId);
+                    setFilteredCoupons(sortCouponsByExpiry(userCoupons));
+                } catch (error) {
+                    console.error('Error fetching user coupons:', error);
+                    setFilteredCoupons([]);
+                }
+            } else {
+                setFilteredCoupons([]);
+            }
+        };
+    
+        fetchUserCoupons();
     }, [user]);
 
     //Maybe shoould add like a picture or something accompyniing the Coupon/Credits

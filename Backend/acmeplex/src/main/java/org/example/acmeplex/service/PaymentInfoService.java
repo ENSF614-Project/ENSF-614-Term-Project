@@ -1,5 +1,6 @@
 package org.example.acmeplex.service;
 
+import org.example.acmeplex.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.acmeplex.model.PaymentInfo;

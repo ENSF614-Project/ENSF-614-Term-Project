@@ -1,6 +1,8 @@
 package org.example.acmeplex.controller;
 
+import org.example.acmeplex.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.example.acmeplex.model.PaymentInfo;
 import org.example.acmeplex.service.PaymentInfoService;
@@ -28,14 +30,23 @@ public class PaymentInfoController {
 
     // Get a PaymentInfo by ID
     @GetMapping("/{id}")
-    public PaymentInfo getPaymentInfoById(@PathVariable int id) {
+    public PaymentInfo getPaymentInfoById(@PathVariable Long id) {
         return paymentInfoService.getPaymentInfoById(id).orElse(null);
     }
 
     // Delete PaymentInfo by ID
     @DeleteMapping("/{id}")
-    public String deletePaymentInfo(@PathVariable int id) {
+    public String deletePaymentInfo(@PathVariable Long id) {
         paymentInfoService.deletePaymentInfo(id);
         return "PaymentInfo with ID " + id + " deleted successfully.";
+    }
+
+    // Get payment info by user
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PaymentInfo>> getPaymentInfoByUser(@PathVariable Integer userId) {
+        User user = new User();
+        user.setUserId(userId);
+        List<PaymentInfo> paymentInfoList = paymentInfoService.getPaymentInfoByUser(user);
+        return ResponseEntity.ok(paymentInfoList);
     }
 }

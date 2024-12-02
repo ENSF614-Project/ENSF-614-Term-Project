@@ -1,5 +1,6 @@
 package org.example.acmeplex.service;
 
+import org.example.acmeplex.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.example.acmeplex.model.PaymentInfo;
@@ -25,12 +26,17 @@ public class PaymentInfoService {
     }
 
     // Get a PaymentInfo by ID
-    public Optional<PaymentInfo> getPaymentInfoById(int id) {
+    public Optional<PaymentInfo> getPaymentInfoById(Long id) {
         return paymentInfoRepository.findById(id);
     }
 
     // Delete PaymentInfo by ID
-    public void deletePaymentInfo(int id) {
+    public void deletePaymentInfo(Long id) {
         paymentInfoRepository.deleteById(id);
+    }
+
+    //Get PaymentInfo by User
+    public List<PaymentInfo> getPaymentInfoByUser(User user) {
+        return paymentInfoRepository.findByUser(user);
     }
 }

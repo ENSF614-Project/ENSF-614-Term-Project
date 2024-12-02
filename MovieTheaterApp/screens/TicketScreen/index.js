@@ -22,6 +22,7 @@ const TicketScreen = () => {
     const [userTickets, setUserTickets] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [emailNoLogin, setEmailNoLogin] = useState('');
 
     useEffect(() => {
         if (user) {
@@ -74,11 +75,13 @@ const TicketScreen = () => {
         setLoading(true);
         try {
             const ticket = await ticketService.getTicketById(ticketNumber);
+
             if (ticket) {
                 try{
                     const showtime = await showtimeService.getShowtimeById(ticket.showtimeID);
                     const seat = await seatService.getSeatById(ticket.seatID);
-
+                    console.log("USERS:", ticket)
+                    setEmailNoLogin(ticket.email);
                     setSearchedTicket({
                         ...ticket,
                         showtimeDetails: showtime,
@@ -112,7 +115,7 @@ const TicketScreen = () => {
 
             const emailData = {
                 templateParams: {
-                    user_email: user?.email || email,
+                    user_email: user?.email || emailNoLogin,
                     ticketStuff: `Ticket ID: ${ticketId}`  
                 },
             };

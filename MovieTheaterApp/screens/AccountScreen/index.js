@@ -1,3 +1,4 @@
+// screens/AccountScreen/index.js
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -8,66 +9,53 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { styles } from './styles';
-import { User } from 'lucide-react-native';
+import { User } from 'lucide-react-native'; // Assuming you want to add an icon
 import { COLORS } from '../../styles';
 import { useAuth } from '../../context/AuthContext';
-import { accountService } from '../../services/accountService';
+import { accountService } from '../../services/accountService'; // Import accountService
 
 const AccountScreen = ({ navigation }) => {
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
-    const [paymentInfo, setPaymentInfo] = useState([]);
+    const [paymentInfo, setPaymentInfo] = useState([]); // State for payment info
 
-    // Redirect to login if no user
-    useEffect(() => {
-        if (!user) {
-            navigation.replace('Login');
-            return;
+    // State to manage input values if we were to implement editing
+    const [name, setName] = useState(user?.name || '');
+    const [username, setUsername] = useState(user?.username || '');
+    const [email, setEmail] = useState(user?.email || '');
+    const [address, setAddress] = useState(user?.address || '');
+    const [registrationDate, setRegistrationDate] = useState(user?.registrationDate || '');
+    const [annualFeeDueDate, setAnnualFeeDueDate] = useState(user?.annualFeeDueDate || '');
+
+    const [cardHolderName, setCardHolderName] = useState(paymentInfo[0]?.cardHolderName || '');
+    const [cardNumber, setCardNumber] = useState(paymentInfo[0]?.cardNumber || '');
+    const [expiry, setExpiry] = useState(() => {
+        // Check if paymentInfo exists and if expiryMonth and expiryYear are defined
+        if (paymentInfo[0]?.expiryMonth && paymentInfo[0]?.expiryYear) {
+            return paymentInfo[0].expiryMonth < 10 
+                ? '0' + paymentInfo[0].expiryMonth 
+                : paymentInfo[0].expiryMonth + '/' + paymentInfo[0].expiryYear;
         }
-    }, [user, navigation]);
+        return ''; // Return empty string if paymentInfo is not available
+    });
+    const [billingAddress, setBillingAddress] = useState(paymentInfo[0]?.billingAddress || '');
 
-    // State management - initialized with empty values
-    const [name, setName] = useState('');
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [address, setAddress] = useState('');
-    const [registrationDate, setRegistrationDate] = useState('');
-    const [annualFeeDueDate, setAnnualFeeDueDate] = useState('');
-    const [cardHolderName, setCardHolderName] = useState('');
-    const [cardNumber, setCardNumber] = useState('');
-    const [expiry, setExpiry] = useState('');
-    const [billingAddress, setBillingAddress] = useState('');
 
-    // Fetch user payment info
     useEffect(() => {
-        if (user?.userId) {
+        if (user && user.userId) {  // Ensure user and userId are available
             const fetchPaymentInfo = async () => {
                 try {
-                    setLoading(true);
                     const paymentData = await accountService.getPaymentInfo(user.userId);
                     setPaymentInfo(paymentData);
-
-                    // Update state with user info
-                    setName(user.name || '');
-                    setUsername(user.username || '');
-                    setEmail(user.email || '');
-                    setAddress(user.address || '');
-                    setRegistrationDate(user.registrationDate || '');
-                    setAnnualFeeDueDate(user.annualFeeDueDate || '');
-
-                    // Update payment info if available
-                    if (paymentData && paymentData[0]) {
-                        setCardHolderName(paymentData[0].cardHolderName || '');
-                        setCardNumber(paymentData[0].cardNumber || '');
-                        setBillingAddress(paymentData[0].billingAddress || '');
-
-                        // Format expiry date
-                        if (paymentData[0].expiryMonth && paymentData[0].expiryYear) {
-                            const month = paymentData[0].expiryMonth < 10
-                                ? `0${paymentData[0].expiryMonth}`
-                                : paymentData[0].expiryMonth;
-                            setExpiry(`${month}/${paymentData[0].expiryYear}`);
-                        }
+                    console.log(paymentData);
+    
+                    // Set expiry only after payment data is fetched
+                    if (paymentData[0]?.expiryMonth && paymentData[0]?.expiryYear) {
+                        setExpiry(
+                            paymentData[0].expiryMonth < 10 
+                                ? '0' + paymentData[0].expiryMonth 
+                                : paymentData[0].expiryMonth + '/' + paymentData[0].expiryYear
+                        );
                     }
                 } catch (error) {
                     console.error('Error fetching payment info:', error);
@@ -76,22 +64,20 @@ const AccountScreen = ({ navigation }) => {
                 }
             };
             fetchPaymentInfo();
+            
         } else {
-            setLoading(false);
+            console.warn('User or userId is not available');
+            setLoading(false); // Stop loading if user is not available
         }
     }, [user]);
 
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={COLORS.button.primary.background} />
-                <Text style={styles.loadingText}>Loading account information...</Text>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+                <Text>Loading account information...</Text>
             </View>
         );
-    }
-
-    if (!user) {
-        return null;
     }
 
     return (
@@ -107,64 +93,76 @@ const AccountScreen = ({ navigation }) => {
                 <View style={styles.accountDetailsContainer}>
                     <Text style={styles.sectionTitle}>Account Details</Text>
 
+                    {/* Name Field */}
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>Name:</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Name"
+                            placeholder={user.name}
                             value={name}
+                            onChangeText={setName}
                             editable={false}
                         />
                     </View>
 
+                    {/* Username Field */}
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>Username:</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Username"
+                            placeholder={user.username}
                             value={username}
+                            onChangeText={setUsername}
                             editable={false}
                         />
                     </View>
 
+                    {/* Email Field */}
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>Email:</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Email"
+                            placeholder={user.email}
                             value={email}
+                            onChangeText={setEmail}
                             editable={false}
                         />
                     </View>
 
+                    {/* Address Field */}
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>Address:</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Address"
+                            placeholder={user.address}
                             value={address}
+                            onChangeText={setAddress}
                             multiline
                             editable={false}
                         />
                     </View>
 
+                    {/* Registration Date Field */}
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>Registration Date:</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Registration Date"
+                            placeholder={user.registrationDate}
                             value={registrationDate}
-                            editable={false}
+                            onChangeText={setRegistrationDate}
+                            editable={false} // Prevent editing this field
                         />
                     </View>
 
+                    {/* Annual Fee Due Date Field */}
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputLabel}>Annual Fee Due Date:</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Annual Fee Due Date"
+                            placeholder={user.annualFeeDueDate}
                             value={annualFeeDueDate}
-                            editable={false}
+                            onChangeText={setAnnualFeeDueDate}
+                            editable={false} // Prevent editing this field
                         />
                     </View>
                 </View>
@@ -174,22 +172,26 @@ const AccountScreen = ({ navigation }) => {
                     <View style={styles.accountDetailsContainer}>
                         <Text style={styles.sectionTitle}>Payment Information</Text>
 
+                        {/* Payment Info Fields */}
                         <View style={styles.inputContainer}>
                             <Text style={styles.inputLabel}>Cardholder Name:</Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder="Cardholder Name"
+                                placeholder={paymentInfo[0].cardHolderName}
                                 value={cardHolderName}
+                                onChangeText={setCardHolderName}
                                 editable={false}
                             />
                         </View>
+
 
                         <View style={styles.inputContainer}>
                             <Text style={styles.inputLabel}>Card Number:</Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder="Card Number"
+                                placeholder={paymentInfo[0].cardNumber}
                                 value={cardNumber}
+                                onChangeText={setCardNumber}
                                 editable={false}
                             />
                         </View>
@@ -198,8 +200,9 @@ const AccountScreen = ({ navigation }) => {
                             <Text style={styles.inputLabel}>Expiration Date:</Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder="MM/YY"
+                                placeholder={expiry}
                                 value={expiry}
+                                onChangeText={setExpiry}
                                 editable={false}
                             />
                         </View>
@@ -208,8 +211,9 @@ const AccountScreen = ({ navigation }) => {
                             <Text style={styles.inputLabel}>Billing Address:</Text>
                             <TextInput
                                 style={styles.input}
-                                placeholder="Billing Address"
+                                placeholder={paymentInfo[0].billingAddress}
                                 value={billingAddress}
+                                onChangeText={setBillingAddress}
                                 editable={false}
                             />
                         </View>

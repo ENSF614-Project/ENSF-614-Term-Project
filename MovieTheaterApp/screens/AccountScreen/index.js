@@ -12,10 +12,12 @@ import { styles } from './styles';
 import { User } from 'lucide-react-native'; // Assuming you want to add an icon
 import { COLORS } from '../../styles';
 import { useAuth } from '../../context/AuthContext';
+import { accountService } from '../../services/accountService'; // Import accountService
 
 const AccountScreen = ({ navigation }) => {
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
+    const [paymentInfo, setPaymentInfo] = useState([]); // State for payment info
 
     // State to manage input values if we were to implement editing
     const [name, setName] = useState(user?.name || '');
@@ -25,8 +27,46 @@ const AccountScreen = ({ navigation }) => {
     const [registrationDate, setRegistrationDate] = useState(user?.registrationDate || '');
     const [annualFeeDueDate, setAnnualFeeDueDate] = useState(user?.annualFeeDueDate || '');
 
+    const [cardHolderName, setCardHolderName] = useState(paymentInfo[0]?.cardHolderName || '');
+    const [cardNumber, setCardNumber] = useState(paymentInfo[0]?.cardNumber || '');
+    const [expiry, setExpiry] = useState(() => {
+        // Check if paymentInfo exists and if expiryMonth and expiryYear are defined
+        if (paymentInfo[0]?.expiryMonth && paymentInfo[0]?.expiryYear) {
+            return paymentInfo[0].expiryMonth < 10 
+                ? '0' + paymentInfo[0].expiryMonth 
+                : paymentInfo[0].expiryMonth + '/' + paymentInfo[0].expiryYear;
+        }
+        return ''; // Return empty string if paymentInfo is not available
+    });
+    const [billingAddress, setBillingAddress] = useState(paymentInfo[0]?.billingAddress || '');
+
+
     useEffect(() => {
-        setLoading(false);
+        if (user && user.userId) {  // Ensure user and userId are available
+            const fetchPaymentInfo = async () => {
+                try {
+                    const paymentData = await accountService.getPaymentInfo(user.userId);
+                    setPaymentInfo(paymentData);
+    
+                    // Set expiry only after payment data is fetched
+                    if (paymentData[0]?.expiryMonth && paymentData[0]?.expiryYear) {
+                        setExpiry(
+                            paymentData[0].expiryMonth < 10 
+                                ? '0' + paymentData[0].expiryMonth 
+                                : paymentData[0].expiryMonth + '/' + paymentData[0].expiryYear
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error fetching payment info:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchPaymentInfo();
+        } else {
+            console.warn('User or userId is not available');
+            setLoading(false); // Stop loading if user is not available
+        }
     }, [user]);
 
     if (loading) {
@@ -124,6 +164,59 @@ const AccountScreen = ({ navigation }) => {
                         />
                     </View>
                 </View>
+
+                {/* Payment Info Section */}
+                {paymentInfo.length > 0 && (
+                    <View style={styles.accountDetailsContainer}>
+                        <Text style={styles.sectionTitle}>Payment Information</Text>
+
+                        {/* Payment Info Fields */}
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Cardholder Name:</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder={paymentInfo[0].cardHolderName}
+                                value={cardHolderName}
+                                onChangeText={setCardHolderName}
+                                editable={false}
+                            />
+                        </View>
+
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Card Number:</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder={paymentInfo[0].cardNumber}
+                                value={cardNumber}
+                                onChangeText={setCardNumber}
+                                editable={false}
+                            />
+                        </View>
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Expiration Date:</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder={expiry}
+                                value={expiry}
+                                onChangeText={setExpiry}
+                                editable={false}
+                            />
+                        </View>
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Billing Address:</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder={paymentInfo[0].billingAddress}
+                                value={billingAddress}
+                                onChangeText={setBillingAddress}
+                                editable={false}
+                            />
+                        </View>
+                    </View>
+                )}
 
                 {/* Navigation Buttons */}
                 <View style={styles.navigationButtonsContainer}>

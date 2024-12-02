@@ -109,6 +109,27 @@ const TicketScreen = () => {
                 prev.filter((ticket) => ticket.ticketID !== ticketId)
             );
             console.log('Ticket canceled successfully.');
+
+            const emailData = {
+                templateParams: {
+                    user_email: user?.email || email,
+                    ticketStuff: `Ticket ID: ${ticketId}`  
+                },
+            };
+
+            // Send email
+            const emailResponse = await fetch('http://localhost:5000/send-email-cancel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(emailData),
+            });
+
+            if (!emailResponse.ok) {
+                console.error('Failed to send confirmation email');
+                // Don't throw error here - we still want to complete the transaction
+            }
         } catch (err) {
             console.error('Failed to cancel ticket. Please try again.', err);
         } finally {

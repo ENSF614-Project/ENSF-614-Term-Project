@@ -33,34 +33,37 @@ const TicketScreen = () => {
         setLoading(true);
         try {
             const tickets = await ticketService.getUserTickets(user.userId);
-
+            console.log(tickets);
             // Fetch additional details for each ticket
-            const ticket = await Promise.all(
+            const detailedTickets = await Promise.all(
                 tickets.map(async (ticket) => {
-                try {
-                    const showtime = await showtimeService.getShowtimeById(ticket.showtimeID);
-                    const seat = await seatService.getSeatById(ticket.seatID);
-
-                    return {
-                        ...ticket,
-                        showtimeDetails: showtime,
-                        seatDetails: seat,
-                    };
-                } catch (error) {
-                    console.error(`Error fetching details for ticket ID ${ticket.ticketID}:`, error);
-                    return { ...ticket, showtimeDetails: null, seatDetails: null };
-                }
-            })
-        );
-        console.log('test');
-        setUserTickets(ticket);
-        setError(null);
-    } catch (err) {
-        setError('Failed to fetch tickets. Please try again.');
-    } finally {
-        setLoading(false);
-    }
-};
+                    try {
+                        const showtime = await showtimeService.getShowtimeById(ticket.showtimeID);
+                        const seat = await seatService.getSeatById(ticket.seatID);
+    
+                        return {
+                            ...ticket,
+                            showtimeDetails: showtime,
+                            seatDetails: seat,
+                        };
+                    } catch (error) {
+                        console.error(`Error fetching details for ticket ID ${ticket.ticketID}:`, error);
+                        return { ...ticket, showtimeDetails: null, seatDetails: null };
+                    }
+                })
+            );
+    
+            // Filter out tickets with status "cancelled"
+            const activeTickets = detailedTickets.filter(ticket => ticket.status !== "CANCELLED");
+    
+            setUserTickets(activeTickets);
+            setError(null);
+        } catch (err) {
+            setError('Failed to fetch tickets. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleTicketSearch = async () => {
         if (!ticketNumber.trim()) {
@@ -97,33 +100,6 @@ const TicketScreen = () => {
         }
     };
 
-    // const handleCancelTicket = async (ticketId) => {
-    //     //link to cancel button
-    //     Alert.alert(
-    //         'Confirm Cancellation',
-    //         'Are you sure you want to cancel this ticket?',
-    //         [
-    //             { text: 'No', style: 'cancel' },
-    //             {
-    //                 text: 'Yes',
-    //                 onPress: async () => {
-    //                     setLoading(true);
-    //                     try {
-    //                         await ticketService.cancelTicketById(ticketId);
-    //                         setUserTickets((prev) =>
-    //                             prev.filter((ticket) => ticket.ticketID !== ticketId)
-    //                         );
-    //                         Alert.alert('Success', 'Ticket canceled successfully.');
-    //                     } catch (err) {
-    //                         Alert.alert('Error', 'Failed to cancel ticket. Please try again.');
-    //                     } finally {
-    //                         setLoading(false);
-    //                     }
-    //                 }
-    //             }
-    //         ]
-    //     );
-    // };
 
     const handleCancelTicket = async (ticketId) => {
         setLoading(true);

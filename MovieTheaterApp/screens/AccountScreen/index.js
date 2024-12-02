@@ -47,6 +47,7 @@ const AccountScreen = ({ navigation }) => {
                 try {
                     const paymentData = await accountService.getPaymentInfo(user.userId);
                     setPaymentInfo(paymentData);
+                    console.log(paymentData);
     
                     // Set expiry only after payment data is fetched
                     if (paymentData[0]?.expiryMonth && paymentData[0]?.expiryYear) {
@@ -63,6 +64,7 @@ const AccountScreen = ({ navigation }) => {
                 }
             };
             fetchPaymentInfo();
+            
         } else {
             console.warn('User or userId is not available');
             setLoading(false); // Stop loading if user is not available

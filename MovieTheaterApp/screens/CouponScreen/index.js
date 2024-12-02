@@ -76,6 +76,7 @@ const CouponScreen = () => {
         try {
             const isEmail = couponInput.includes('@');
             let fetchedCoupons = [];
+            //console.log(isEmail);
     
             if (isEmail) {
                 fetchedCoupons = await couponService.getCouponsByEmail(couponInput);
@@ -97,6 +98,7 @@ const CouponScreen = () => {
                 if (filteredCoupons.length > 0) {
                     setFilteredCoupons(sortCouponsByExpiry(filteredCoupons));
                     setErrorMessage('');
+                    console.log(filteredCoupons);
                 } else {
                     setErrorMessage('No valid coupons found.');
                 }
@@ -130,6 +132,7 @@ const CouponScreen = () => {
                 try {
                     const userCoupons = await couponService.getCouponsByUserId(user.userId);
                     setFilteredCoupons(sortCouponsByExpiry(userCoupons));
+                    console.log(userCoupons);
                 } catch (error) {
                     console.error('Error fetching user coupons:', error);
                     setFilteredCoupons([]);
@@ -173,7 +176,7 @@ const CouponScreen = () => {
                     )}
                     {filteredCoupons.map((coupon, index) => (
                         <View key={index} style={styles.couponItem}>
-                            <Text style={styles.couponCode}>Code: {coupon.CouponID}</Text>
+                            <Text style={styles.couponCode}>Coupon Code: {coupon.couponID}</Text>
                             <Text style={styles.couponValue}>Value: ${coupon.value.toFixed(2)}</Text>
                             <Text style={styles.couponExpiry}>Expiry: {coupon.expiryDate}</Text>
                             <Text style={styles.couponStatus}>Status: {coupon.status}</Text>

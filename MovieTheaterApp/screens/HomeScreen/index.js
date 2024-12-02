@@ -7,6 +7,7 @@ import MovieCard from '../../components/MovieCard';
 import { styles } from './styles';
 import { SPACING } from '../../styles';
 import { movieService } from '../../services/movieService';
+import { useAuth } from '../../context/AuthContext';
 
 const HomeScreen = () => {
     const navigation = useNavigation();
@@ -16,17 +17,24 @@ const HomeScreen = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { width } = useWindowDimensions();
+    const { user } = useAuth();
+    console.log('User:', user); 
 
     useEffect(() => {
         fetchMovies();
-    }, []);
+    }, [user]);
 
     const fetchMovies = async () => {
         try {
             setLoading(true);
             setError(null);
             const data = await movieService.getAllMovies();
-            setMovies(data);
+
+            const filteredMovies = user
+            ? data
+            : data.filter(movie => !movie.isEarlyAccessOnly);
+    
+            setMovies(filteredMovies);
         } catch (error) {
             setError('Failed to fetch movies. Please try again later.');
             console.error('Error:', error);

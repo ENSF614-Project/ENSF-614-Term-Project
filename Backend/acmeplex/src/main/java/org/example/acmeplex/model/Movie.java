@@ -3,6 +3,7 @@ package org.example.acmeplex.model;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -36,6 +37,7 @@ public class Movie {
     @Column(nullable = false)
     private String posterUrl;
 
+    @JsonProperty("isEarlyAccessOnly")
     @Transient
     public boolean isEarlyAccessOnly() {
         return releaseDate != null &&

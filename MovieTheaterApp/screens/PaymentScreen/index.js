@@ -181,15 +181,16 @@ const PaymentScreen = ({ route, navigation }) => {
     };
 
     const handlePayment = async () => {
-        if (!isCardFormValid) {
+        // Skip card validation for registered users
+        if (!user && !isCardFormValid) {
             Alert.alert('Error', 'Please check all card details are correct');
             return;
         }
-
+    
         if (!validateEmail()) {
             return;
         }
-
+    
         setLoading(true);
         try {
             const result = await paymentFlowService.purchaseTickets({
@@ -200,34 +201,43 @@ const PaymentScreen = ({ route, navigation }) => {
                 couponId: selectedCoupon?.couponID,
                 finalTotal: discountedTotal,
             });
-
+    
             console.log('Showtime data:', showtime);
-
+    
             const formattedShowtime = {
-                date: showtime.startTime ?
-                    new Date(showtime.startTime).toLocaleDateString() :
-                    showtime.date,
-                time: showtime.startTime ?
-                    new Date(showtime.startTime).toLocaleTimeString() :
-                    showtime.time,
-                // Handle different possible theater data structures
-                theatre: typeof showtime.theatre === 'object' ?
-                    showtime.theatre.theatreName :
-                    (showtime.theatre || showtime.theatreName || 'Theater information unavailable')
+                date: showtime.startTime
+                    ? new Date(showtime.startTime).toLocaleDateString()
+                    : showtime.date,
+                time: showtime.startTime
+                    ? new Date(showtime.startTime).toLocaleTimeString()
+                    : showtime.time,
+                theatre: typeof showtime.theatre === 'object'
+                    ? showtime.theatre.theatreName
+                    : (showtime.theatre || showtime.theatreName || 'Theater information unavailable'),
             };
-
+    
             // Format the data for the email
             const emailData = {
                 templateParams: {
                     user_email: user?.email || email,
-                    receipt: `Thank you for your purchase!\n\nTotal Paid: $${discountedTotal.toFixed(2)}\n\nPayment Info: **** **** **** ${cardFormValues.cardNumber.slice(-4)}`,
-                    ticket_details: `Tickets:\n${selectedSeats.map(seat =>
-                        `Row: ${seat.row}, Seat: ${seat.seatNum}`
-                    ).join('\n')}`,
-                    movie_info: `Movie: ${movie.title}\nDate: ${showtime.startTime ? new Date(showtime.startTime).toLocaleDateString() : showtime.date}\nTime: ${showtime.startTime ? new Date(showtime.startTime).toLocaleTimeString() : showtime.time}`
-                }
+                    receipt: `Thank you for your purchase!\n\nTotal Paid: $${discountedTotal.toFixed(2)}\n\nPayment Info: ${
+                        user ? 'Registered user (no card details provided)' : `**** **** **** ${cardFormValues.cardNumber.slice(-4)}`
+                    }`,
+                    ticket_details: `Tickets:\n${selectedSeats
+                        .map((seat) => `Row: ${seat.row}, Seat: ${seat.seatNum}`)
+                        .join('\n')}`,
+                    movie_info: `Movie: ${movie.title}\nDate: ${
+                        showtime.startTime
+                            ? new Date(showtime.startTime).toLocaleDateString()
+                            : showtime.date
+                    }\nTime: ${
+                        showtime.startTime
+                            ? new Date(showtime.startTime).toLocaleTimeString()
+                            : showtime.time
+                    }`,
+                },
             };
-
+    
             // Send email
             const emailResponse = await fetch('http://localhost:5000/send-email', {
                 method: 'POST',
@@ -236,12 +246,12 @@ const PaymentScreen = ({ route, navigation }) => {
                 },
                 body: JSON.stringify(emailData),
             });
-
+    
             if (!emailResponse.ok) {
                 console.error('Failed to send confirmation email');
                 // Don't throw error here - we still want to complete the transaction
             }
-
+    
             // Navigate to confirmation screen
             navigation.replace('TicketConfirmation', {
                 tickets: result.tickets,
@@ -249,10 +259,12 @@ const PaymentScreen = ({ route, navigation }) => {
                 movie,
                 showtime: formattedShowtime,
                 total: discountedTotal,
-                paymentInfo: {
-                    ...cardFormValues,
-                    last4: cardFormValues.cardNumber.slice(-4)
-                }
+                paymentInfo: user
+                    ? { registeredUser: true }
+                    : {
+                          ...cardFormValues,
+                          last4: cardFormValues.cardNumber.slice(-4),
+                      },
             });
         } catch (error) {
             console.error('Payment error:', error);
@@ -380,24 +392,29 @@ const PaymentScreen = ({ route, navigation }) => {
             </View>
 
             {/* Payment Section */}
-            <View style={styles.paymentSection}>
-                <Text style={styles.sectionTitle}>Payment Details</Text>
-                <CreditCardForm
-                    onValuesChange={setCardFormValues}
-                    onValidationChange={(isValid, errors) => {
-                        setIsCardFormValid(isValid);
-                        setCardFormErrors(errors);
-                    }}
-                    errors={cardFormErrors}
-                    showSaveCard={!!user}
-                />
-            </View>
+            {!user && (
+                <View style={styles.paymentSection}>
+                    <Text style={styles.sectionTitle}>Payment Details</Text>
+                    <CreditCardForm
+                        onValuesChange={setCardFormValues}
+                        onValidationChange={(isValid, errors) => {
+                            setIsCardFormValid(isValid);
+                            setCardFormErrors(errors);
+                        }}
+                        errors={cardFormErrors}
+                        showSaveCard={false}
+                    />
+                </View>
+            )}
 
             {/* Payment Button */}
             <TouchableOpacity
-                style={[styles.payButton, (!isCardFormValid || loading) && styles.payButtonDisabled]}
+                style={[
+                    styles.payButton,
+                    ((!user && !isCardFormValid) || loading) && styles.payButtonDisabled
+                ]}
                 onPress={handlePayment}
-                disabled={!isCardFormValid || loading}
+                disabled={(!user && !isCardFormValid) || loading}
             >
                 {loading ? (
                     <ActivityIndicator color={styles.spinner.color} />

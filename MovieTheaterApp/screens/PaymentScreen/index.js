@@ -232,8 +232,6 @@ const PaymentScreen = ({ route, navigation }) => {
                             ? new Date(showtime.startTime).toLocaleTimeString()
                             : showtime.time
                         }\nTicket IDs: ${result.tickets.map(ticket => ticket.ticketID).join(', ')}`,
-
-
                 },
             };
 

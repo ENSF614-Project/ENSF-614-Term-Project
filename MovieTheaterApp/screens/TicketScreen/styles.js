@@ -142,6 +142,12 @@ export const styles = StyleSheet.create({
         ...TYPOGRAPHY.title,
         color: COLORS.button.danger.text,
     },
+    disabledButton: {
+        backgroundColor: '#cccccc', // Greyed-out background
+    },
+    disabledButtonText: {
+        color: '#888888', // Greyed-out text
+    },
     emptyContainer: {
         alignItems: 'center',
         padding: SPACING.xl,

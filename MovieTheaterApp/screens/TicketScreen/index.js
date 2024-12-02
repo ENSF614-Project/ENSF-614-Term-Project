@@ -54,9 +54,9 @@ const TicketScreen = () => {
             );
     
             // Filter out tickets with status "cancelled"
-            const activeTickets = detailedTickets.filter(ticket => ticket.status !== "CANCELLED");
+            //const activeTickets = detailedTickets.filter(ticket => ticket.status !== "CANCELLED");
     
-            setUserTickets(activeTickets);
+            setUserTickets(detailedTickets);
             setError(null);
         } catch (err) {
             setError('Failed to fetch tickets. Please try again.');
@@ -129,7 +129,7 @@ const TicketScreen = () => {
     };
 
     const renderTicketCard = (ticket) => {
-        const isActive = new Date(ticket.showtimeDetails.startTime) > new Date(); //Change for showtime need to create api
+        const isActive = ticket.status === 'BOOKED';
         const canCancel = new Date(ticket.cancellationDeadline) > new Date();
 
         return (
@@ -138,10 +138,10 @@ const TicketScreen = () => {
                     <Text style={styles.movieTitle}>{ticket.showtimeDetails.movie.title}</Text>
                     <View style={[
                         styles.statusBadge,
-                        isActive ? styles.activeBadge : styles.pastBadge
+                        ticket.status ==='BOOKED' ? styles.activeBadge : styles.pastBadge
                     ]}>
                         <Text style={styles.statusText}>
-                            {isActive ? 'Active' : 'Past'}
+                            {ticket.status}
                         </Text>
                     </View>
                 </View>
@@ -176,12 +176,15 @@ const TicketScreen = () => {
                     )}
                 </View>
 
-                {canCancel && isActive && user && (
+                {canCancel && isActive && (
                     <TouchableOpacity
-                        style={styles.cancelButton}
-                        onPress={() => handleCancelTicket(ticket.ticketID)}
+                        style={[styles.cancelButton, !isActive && styles.disabledButton]}
+                        onPress={isActive ? () => handleCancelTicket(ticket.ticketID) : null}
+                        disabled = {!isActive}
                     >
-                        <Text style={styles.cancelButtonText}>Cancel Ticket</Text>
+                        <Text style={[styles.cancelButtonText,
+                            !isActive && styles.disabledButtonText
+                        ]}>Cancel Ticket</Text>
                     </TouchableOpacity>
                 )}
             </View>

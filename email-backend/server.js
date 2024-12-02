@@ -41,6 +41,38 @@ app.post('/send-email', async (req, res) => {
     }
 });
 
+app.post('/send-email-register', async (req, res) => {
+    const { templateParams } = req.body;
+
+    // Configure the transporter (use your email credentials)
+    const transporter = nodemailer.createTransport({
+        service: 'gmail', // or any email service you use
+        auth: {
+            user: 'mohd.abusaleh@gmail.com',
+            pass: 'etyq wnea ojrg anrt',
+        },
+        tls: {
+            rejectUnauthorized: false, // Accept self-signed certificates
+        },
+    });
+
+    const mailOptions = {
+        from: 'mohd.abusaleh@gmail.com',
+        to: templateParams.user_email,
+        subject: 'Newly Registered User',
+        text: `Dear Valued Customer,\n\n${templateParams.receipt}`,
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', info.response);
+        res.status(200).send('Email sent successfully');
+    } catch (error) {
+        console.error('Failed to send email:', error);
+        res.status(500).send('Failed to send email');
+    }
+});
+
 // Email sending endpoint Cancel ticket
 app.post('/send-email-cancel', async (req, res) => {
     const { templateParams } = req.body;

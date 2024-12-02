@@ -102,7 +102,7 @@ const RegisterScreen = ({ navigation }) => {
                 },
             };
 
-            const emailResponse = await fetch('http://localhost:5000/send-email', {
+            const emailResponse = await fetch('http://localhost:5000/send-email-register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

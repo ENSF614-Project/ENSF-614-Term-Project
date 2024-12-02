@@ -17,7 +17,7 @@ A Movie Theater Ticket Reservation App
         1. Will need to find a way to ignore this file, just don't commit it for the meantime when you update it.
 1. Click the green play button next to the main class `AcmeplexApplication`
     1. This file is on the path `acmeplex\src\main\java\org\example\acmeplex\AcmeplexApplication.java`
-1. Test that the backend is working by going to http://localhost:8080/api/users/test
+1. Test that the backend is working by going to http://localhost:8080/api/registered-users/test
     1. You should see "Backend is working!"
 
 ## To run the frontend

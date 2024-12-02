@@ -186,11 +186,11 @@ const PaymentScreen = ({ route, navigation }) => {
             Alert.alert('Error', 'Please check all card details are correct');
             return;
         }
-    
+
         if (!validateEmail()) {
             return;
         }
-    
+
         setLoading(true);
         try {
             const result = await paymentFlowService.purchaseTickets({
@@ -201,9 +201,9 @@ const PaymentScreen = ({ route, navigation }) => {
                 couponId: selectedCoupon?.couponID,
                 finalTotal: discountedTotal,
             });
-    
+
             console.log('Showtime data:', showtime);
-    
+
             const formattedShowtime = {
                 date: showtime.startTime
                     ? new Date(showtime.startTime).toLocaleDateString()
@@ -215,29 +215,28 @@ const PaymentScreen = ({ route, navigation }) => {
                     ? showtime.theatre.theatreName
                     : (showtime.theatre || showtime.theatreName || 'Theater information unavailable'),
             };
-    
+
             // Format the data for the email
             const emailData = {
                 templateParams: {
                     user_email: user?.email || email,
-                    receipt: `Thank you for your purchase!\n\nTotal Paid: $${discountedTotal.toFixed(2)}\n\nPayment Info: ${
-                        user ? 'Registered user (no card details provided)' : `**** **** **** ${cardFormValues.cardNumber.slice(-4)}`
-                    }`,
+                    receipt: `Thank you for your purchase!\n\nTotal Paid: $${discountedTotal.toFixed(2)}\n\nPayment Info: ${user ? 'Registered user (no card details provided)' : `**** **** **** ${cardFormValues.cardNumber.slice(-4)}`
+                        }`,
                     ticket_details: `Tickets:\n${selectedSeats
                         .map((seat) => `Row: ${seat.row}, Seat: ${seat.seatNum}`)
                         .join('\n')}`,
-                    movie_info: `Movie: ${movie.title}\nDate: ${
-                        showtime.startTime
-                            ? new Date(showtime.startTime).toLocaleDateString()
-                            : showtime.date
-                    }\nTime: ${
-                        showtime.startTime
+                    movie_info: `Movie: ${movie.title}\nDate: ${showtime.startTime
+                        ? new Date(showtime.startTime).toLocaleDateString()
+                        : showtime.date
+                        }\nTime: ${showtime.startTime
                             ? new Date(showtime.startTime).toLocaleTimeString()
                             : showtime.time
-                    }`,
+                        }\nTicket IDs: ${result.tickets.map(ticket => ticket.ticketID).join(', ')}`,
+
+
                 },
             };
-    
+
             // Send email
             const emailResponse = await fetch('http://localhost:5000/send-email', {
                 method: 'POST',
@@ -246,12 +245,12 @@ const PaymentScreen = ({ route, navigation }) => {
                 },
                 body: JSON.stringify(emailData),
             });
-    
+
             if (!emailResponse.ok) {
                 console.error('Failed to send confirmation email');
                 // Don't throw error here - we still want to complete the transaction
             }
-    
+
             // Navigate to confirmation screen
             navigation.replace('TicketConfirmation', {
                 tickets: result.tickets,
@@ -262,9 +261,9 @@ const PaymentScreen = ({ route, navigation }) => {
                 paymentInfo: user
                     ? { registeredUser: true }
                     : {
-                          ...cardFormValues,
-                          last4: cardFormValues.cardNumber.slice(-4),
-                      },
+                        ...cardFormValues,
+                        last4: cardFormValues.cardNumber.slice(-4),
+                    },
             });
         } catch (error) {
             console.error('Payment error:', error);

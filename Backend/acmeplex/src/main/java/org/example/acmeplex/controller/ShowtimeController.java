@@ -52,6 +52,14 @@ public class ShowtimeController {
         return ResponseEntity.ok(showtime);
     }
 
+    @GetMapping("/{showtimeId}")
+    public ResponseEntity<Showtime> getShowtimeById(@PathVariable Integer showtimeId){
+        return showtimeService.getShowtimeById(showtimeId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+
     @GetMapping("/{showtimeId}/startTime")
     public ResponseEntity<LocalDateTime> getStartTimeByShowtimeId(@PathVariable Integer showtimeId) {
         try {

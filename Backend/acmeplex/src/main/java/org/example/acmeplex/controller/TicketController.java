@@ -9,10 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tickets")
+@CrossOrigin(origins = "*")
 public class TicketController {
 
     @Autowired
@@ -58,9 +62,11 @@ public class TicketController {
 
     // Cancel a ticket and generate a coupon
     @PutMapping("/{ticketId}/cancel")
-    public ResponseEntity<String> cancelTicket(@PathVariable Long ticketId) {
-        ticketService.cancelTicket(ticketId);
-        return ResponseEntity.ok("Ticket cancelled successfully, and a coupon was issued.");
+    public ResponseEntity<Map<String, String>> cancelTicket(@PathVariable Long ticketId) {
+        ticketService   .cancelTicket(ticketId);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Ticket " + ticketId + " canceled successfully");
+        return ResponseEntity.ok(response);
     }
 
     // Get tickets by user

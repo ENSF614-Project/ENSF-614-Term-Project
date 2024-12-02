@@ -10,9 +10,10 @@ import {
 } from 'react-native';
 import { Ticket, AlertCircle } from 'lucide-react-native';
 import { styles } from './styles';
-
 import { useAuth } from '../../context/AuthContext';
 import { ticketService } from '../../services/ticketService'
+import { showtimeService } from '../../services/showtimeService'
+import { seatService } from '../../services/seatService'
 
 const TicketScreen = () => {
     const { user } = useAuth();
@@ -32,15 +33,34 @@ const TicketScreen = () => {
         setLoading(true);
         try {
             const tickets = await ticketService.getUserTickets(user.userId);
-            console.log('test');
-            setUserTickets(tickets);
-            setError(null);
-        } catch (err) {
-            setError('Failed to fetch tickets. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
+
+            // Fetch additional details for each ticket
+            const ticket = await Promise.all(
+                tickets.map(async (ticket) => {
+                try {
+                    const showtime = await showtimeService.getShowtimeById(ticket.showtimeID);
+                    const seat = await seatService.getSeatById(ticket.seatID);
+
+                    return {
+                        ...ticket,
+                        showtimeDetails: showtime,
+                        seatDetails: seat,
+                    };
+                } catch (error) {
+                    console.error(`Error fetching details for ticket ID ${ticket.ticketID}:`, error);
+                    return { ...ticket, showtimeDetails: null, seatDetails: null };
+                }
+            })
+        );
+        console.log('test');
+        setUserTickets(ticket);
+        setError(null);
+    } catch (err) {
+        setError('Failed to fetch tickets. Please try again.');
+    } finally {
+        setLoading(false);
+    }
+};
 
     const handleTicketSearch = async () => {
         if (!ticketNumber.trim()) {
@@ -52,8 +72,20 @@ const TicketScreen = () => {
         try {
             const ticket = await ticketService.getTicketById(ticketNumber);
             if (ticket) {
-                setSearchedTicket(ticket);
-                setError(null);
+                try{
+                    const showtime = await showtimeService.getShowtimeById(ticket.showtimeID);
+                    const seat = await seatService.getSeatById(ticket.seatID);
+
+                    setSearchedTicket({
+                        ...ticket,
+                        showtimeDetails: showtime,
+                        seatDetails: seat,
+                    });
+                    setError(null);
+                }catch (error) {
+                    console.error('Error enriching ticket details:', error);
+                    setSearchedTicket(ticket); // Use the ticket as is if enrichment fails
+                }
             } else {
                 setError('Ticket not found');
                 setSearchedTicket(null);
@@ -65,33 +97,49 @@ const TicketScreen = () => {
         }
     };
 
+    // const handleCancelTicket = async (ticketId) => {
+    //     //link to cancel button
+    //     Alert.alert(
+    //         'Confirm Cancellation',
+    //         'Are you sure you want to cancel this ticket?',
+    //         [
+    //             { text: 'No', style: 'cancel' },
+    //             {
+    //                 text: 'Yes',
+    //                 onPress: async () => {
+    //                     setLoading(true);
+    //                     try {
+    //                         await ticketService.cancelTicketById(ticketId);
+    //                         setUserTickets((prev) =>
+    //                             prev.filter((ticket) => ticket.ticketID !== ticketId)
+    //                         );
+    //                         Alert.alert('Success', 'Ticket canceled successfully.');
+    //                     } catch (err) {
+    //                         Alert.alert('Error', 'Failed to cancel ticket. Please try again.');
+    //                     } finally {
+    //                         setLoading(false);
+    //                     }
+    //                 }
+    //             }
+    //         ]
+    //     );
+    // };
+
     const handleCancelTicket = async (ticketId) => {
-        //link to cancel button
-        Alert.alert(
-            'Confirm Cancellation',
-            'Are you sure you want to cancel this ticket?',
-            [
-                { text: 'No', style: 'cancel' },
-                {
-                    text: 'Yes',
-                    onPress: async () => {
-                        setLoading(true);
-                        try {
-                            await ticketService.cancelTicketById(ticketId);
-                            setUserTickets((prev) =>
-                                prev.filter((ticket) => ticket.ticketID !== ticketId)
-                            );
-                            Alert.alert('Success', 'Ticket canceled successfully.');
-                        } catch (err) {
-                            Alert.alert('Error', 'Failed to cancel ticket. Please try again.');
-                        } finally {
-                            setLoading(false);
-                        }
-                    }
-                }
-            ]
-        );
+        setLoading(true);
+        try {
+            await ticketService.cancelTicketById(ticketId);
+            setUserTickets((prev) =>
+                prev.filter((ticket) => ticket.ticketID !== ticketId)
+            );
+            console.log('Ticket canceled successfully.');
+        } catch (err) {
+            console.error('Failed to cancel ticket. Please try again.', err);
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleString('en-US', {
@@ -105,13 +153,13 @@ const TicketScreen = () => {
     };
 
     const renderTicketCard = (ticket) => {
-        const isActive = new Date(ticket.showtimeID.startTime) > new Date(); //Change for showtime need to create api
+        const isActive = new Date(ticket.showtimeDetails.startTime) > new Date(); //Change for showtime need to create api
         const canCancel = new Date(ticket.cancellationDeadline) > new Date();
 
         return (
             <View key={ticket.ticketID} style={styles.ticketCard}>
                 <View style={styles.ticketHeader}>
-                    <Text style={styles.movieTitle}>{ticket.movieTitle}</Text>
+                    <Text style={styles.movieTitle}>{ticket.showtimeDetails.movie.title}</Text>
                     <View style={[
                         styles.statusBadge,
                         isActive ? styles.activeBadge : styles.pastBadge
@@ -125,18 +173,18 @@ const TicketScreen = () => {
                 <View style={styles.ticketInfo}>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Theatre:</Text>
-                        <Text style={styles.infoValue}>{ticket.showtimeID}</Text>
+                        <Text style={styles.infoValue}>{ticket.showtimeDetails.theatre.theatreName}</Text>
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Seat:</Text>
                         <Text style={styles.infoValue}>
-                            {[ticket.seatID.seatRow, ticket.seatID.seatNum].join(' ')}
+                            {[ticket.seatDetails.seatRow, ticket.seatDetails.seatNum].join(' ')}
                         
                         </Text>
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Showtime:</Text>
-                        <Text style={styles.infoValue}>{formatDate(ticket.showtimeID.startTime)}</Text>
+                        <Text style={styles.infoValue}>{formatDate(ticket.showtimeDetails.startTime)}</Text>
                     </View>
                     <View style={styles.infoRow}>
                         <Text style={styles.infoLabel}>Price:</Text>

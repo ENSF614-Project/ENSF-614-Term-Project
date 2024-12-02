@@ -13,5 +13,18 @@ export const showtimeService = {
             console.error('Error fetching movie showtimes:', error);
             throw error;
         }
-    }
+    },
+
+    getShowtimeById: async (showtimeId) => {
+        try{
+            const response = await fetch(`${API_URL}/api/showtime/${showtimeId}`);
+            if(!response.ok){
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching movie showtimes:', error);
+            throw error;
+        }
+    },
 };

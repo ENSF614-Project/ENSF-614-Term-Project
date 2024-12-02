@@ -31,7 +31,9 @@ export const ticketService = {
     // Cancel ticket by ticketID
     async cancelTicketById(ticketId) {
         try {
-            const response = await fetch(`${API_URL}/api/tickets/${ticketId}/cancel`);
+            const response = await fetch(`${API_URL}/api/tickets/${ticketId}/cancel`,{
+                method: 'PUT',
+            });
             if (!response.ok) throw new Error('Failed to fetch coupon');
             return await response.json();
         } catch (error) {
@@ -39,9 +41,4 @@ export const ticketService = {
             throw error;
         }
     },
-
-
-
-
-
 };

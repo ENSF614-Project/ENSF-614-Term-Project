@@ -9,6 +9,7 @@ import org.example.acmeplex.repository.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,8 @@ public class TicketService {
 
     @Autowired
     private SeatRepository seatRepository;
+    @Autowired
+    private ShowtimeService showtimeService;
 
     public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
@@ -67,7 +70,11 @@ public class TicketService {
             ticket.setShowtimeID(showtimeID);
             ticket.setSeatID(seatID);
             ticket.setPurchasedDate(new Date());
-            ticket.setCancellationDeadline(new Date(System.currentTimeMillis() + (72L * 60 * 60 * 1000)));
+            ticket.setCancellationDeadline(Date.from(
+                    showtimeService.getStartTimeByShowtimeId(ticket.getShowtimeID())
+                            .minusDays(3)
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()));
             ticket.setPrice(price);
             ticket.setRefund(0.0);
             ticket.setStatus("BOOKED");

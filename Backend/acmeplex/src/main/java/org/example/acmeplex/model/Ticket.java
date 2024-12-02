@@ -3,6 +3,8 @@ package org.example.acmeplex.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -32,7 +34,7 @@ public class Ticket {
     @Column(name = "purchased_date", nullable = false)
     private Date purchasedDate;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "cancellation_deadline", nullable = false)
     private Date cancellationDeadline;
 

@@ -90,7 +90,30 @@ const RegisterScreen = ({ navigation }) => {
             // Step 3: Pay the annual fee
             const feePayment = await paymentService.payAnnualFee(registeredUser, 20);
             console.log('Annual fee payment successful:', feePayment);
-    
+
+            // Calculate the annual fee due date
+            const annualFeeDueDate = new Date();
+            annualFeeDueDate.setFullYear(annualFeeDueDate.getFullYear() + 1);
+
+            const emailData = {
+                templateParams: {
+                    user_email: userData.email, // Ensure this is defined and valid
+                    receipt: `Welcome to our platform! Your annual membership fee has been successfully paid.\n\nMembership Fee: $20.00\n\nMembership Valid Until: ${annualFeeDueDate.toLocaleDateString()}`,
+                },
+            };
+
+            const emailResponse = await fetch('http://localhost:5000/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(emailData),
+            });
+
+            if (!emailResponse.ok) {
+                console.error('Failed to send registration confirmation email');
+            }
+
             // Notify success and navigate to login
             const isLoggedIn = await login(userData.username, userData.password);
             if (isLoggedIn) {

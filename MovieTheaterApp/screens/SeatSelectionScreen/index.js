@@ -81,17 +81,32 @@ const SeatSelectionScreen = ({ route, navigation }) => {
 
     const toggleSeat = (row, seatNum) => {
         if (isSeatOccupied(row, seatNum)) return;
-
+    
         const seatData = seats.find(s => s.seatRow === row && s.seatNum === seatNum);
         if (!seatData) return;
 
-        setSelectedSeats(prev => {
-            const seatIndex = prev.findIndex(s => s.row === row && s.seatNum === seatNum);
-            if (seatIndex >= 0) {
-                return prev.filter((_, i) => i !== seatIndex);
-            }
-            return [...prev, { row, seatNum, seatId: seatData.seatId }];
-        });
+        const maxEarlyAccessSeats = Math.floor(seats.length * 0.1);
+    
+        // Check if the seat is already selected (deselecting case)
+        const seatIndex = selectedSeats.findIndex(s => s.row === row && s.seatNum === seatNum);
+        if (seatIndex >= 0) {
+            // If the seat is already selected, allow deselection
+            setSelectedSeats(prev => prev.filter((_, i) => i !== seatIndex));
+            return;
+        }
+    
+        const earlyAccessSeatsSelected = selectedSeats.filter(seat => seatData.showtime.earlyAccessOnly).length;
+        const earlyAccessSeatsOccupied = seats.filter(seat => !seat.isAvailable && seat.showtime.earlyAccessOnly).length;
+    
+        const totalEarlyAccessSeats = earlyAccessSeatsSelected + earlyAccessSeatsOccupied;
+    
+        if (seatData.showtime.earlyAccessOnly && totalEarlyAccessSeats >= maxEarlyAccessSeats) {
+            alert('You cannot select more than 10 seats for early-access movies.');
+            return;
+        }
+    
+        // Toggle seat selection (add the seat)
+        setSelectedSeats(prev => [...prev, { row, seatNum, seatId: seatData.seatId }]);
     };
 
     const handleConfirm = () => {
@@ -156,7 +171,7 @@ const SeatSelectionScreen = ({ route, navigation }) => {
     }
 
     const { date, time } = formatShowtimeInfo();
-
+    //console.log(seats);
     return (
         <ScrollView style={styles.container}>
             <View style={styles.movieInfo}>

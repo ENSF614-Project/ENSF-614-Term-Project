@@ -39,6 +39,8 @@ A Movie Theater Ticket Reservation App
    1. `npm install express`
    1. `npm install cors`
 1. Run the backend: `node server.js`
+1. To change the email that sends the Users Notifications:
+   1. Update the Email, and Passwords for each template in `email-backend/server.js`
 
 ## Code to run when errors occur
 ### Frontend

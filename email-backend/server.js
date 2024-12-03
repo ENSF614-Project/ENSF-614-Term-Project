@@ -16,8 +16,8 @@ app.post('/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail', // or any email service you use
         auth: {
-            user: 'ENSF614GROUP19@GMAIL.COM',
-            pass: 'gxbz nylr cmcm iiqg',
+            user: 'ENSF614GROUP19@GMAIL.COM', // email
+            pass: 'gxbz nylr cmcm iiqg', // email password, or app pass
         },
         tls: {
             rejectUnauthorized: false, // Accept self-signed certificates

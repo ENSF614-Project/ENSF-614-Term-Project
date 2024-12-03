@@ -16,8 +16,8 @@ app.post('/send-email', async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail', // or any email service you use
         auth: {
-            user: 'mohd.abusaleh@gmail.com',
-            pass: 'etyq wnea ojrg anrt',
+            user: 'ENSF614GROUP19@GMAIL.COM',
+            pass: 'gxbz nylr cmcm iiqg',
         },
         tls: {
             rejectUnauthorized: false, // Accept self-signed certificates
@@ -25,7 +25,7 @@ app.post('/send-email', async (req, res) => {
     });
 
     const mailOptions = {
-        from: 'mohd.abusaleh@gmail.com',
+        from: 'ENSF614GROUP19@GMAIL.COM',
         to: templateParams.user_email,
         subject: 'Your Receipt and Ticket',
         text: `Dear Valued Customer,\n\n${templateParams.receipt}\n\n${templateParams.ticket_details}\n\n${templateParams.movie_info}`,
@@ -48,8 +48,8 @@ app.post('/send-email-register', async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail', // or any email service you use
         auth: {
-            user: 'mohd.abusaleh@gmail.com',
-            pass: 'etyq wnea ojrg anrt',
+            user: 'ENSF614GROUP19@GMAIL.COM',
+            pass: 'gxbz nylr cmcm iiqg',
         },
         tls: {
             rejectUnauthorized: false, // Accept self-signed certificates
@@ -57,7 +57,7 @@ app.post('/send-email-register', async (req, res) => {
     });
 
     const mailOptions = {
-        from: 'mohd.abusaleh@gmail.com',
+        from: 'ENSF614GROUP19@GMAIL.COM',
         to: templateParams.user_email,
         subject: 'Newly Registered User',
         text: `Dear Valued Customer,\n\n${templateParams.receipt}`,
@@ -81,8 +81,8 @@ app.post('/send-email-cancel', async (req, res) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail', // or any email service you use
         auth: {
-            user: 'mohd.abusaleh@gmail.com',
-            pass: 'etyq wnea ojrg anrt',
+            user: 'ENSF614GROUP19@GMAIL.COM',
+            pass: 'gxbz nylr cmcm iiqg',
         },
         tls: {
             rejectUnauthorized: false, // Accept self-signed certificates
@@ -90,7 +90,7 @@ app.post('/send-email-cancel', async (req, res) => {
     });
 
     const mailOptions = {
-        from: 'mohd.abusaleh@gmail.com',
+        from: 'ENSF614GROUP19@GMAIL.COM',
         to: templateParams.user_email,
         subject: 'Your Cancelled Ticket Info',
         text: `Dear Valued Customer,\n\nYou've cancelled the following tickets:\n${templateParams.ticketStuff}
